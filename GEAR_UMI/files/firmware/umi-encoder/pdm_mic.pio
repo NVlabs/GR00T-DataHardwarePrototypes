@@ -1,0 +1,87 @@
+; SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+; SPDX-License-Identifier: Apache-2.0
+
+; pdm_mic.pio — PIO programs for stereo PDM DMIC capture
+;
+; Two programs are provided:
+;
+;   pdm_mic_master — Drives CLK via sideset and reads one DATA pin.
+;                    Used for the left channel (DATL) on SM0.
+;
+;   pdm_mic_slave  — No CLK output, reads one DATA pin only.
+;                    Used for the right channel (DATR) on SM1.
+;                    Must be started in sync with master via
+;                    pio_enable_sm_mask_in_sync().
+;
+; Both programs are exactly 4 instructions long so they share the same
+; timing: 4 PIO cycles per PDM bit.
+;
+; PDM CLK frequency = PIO clock / 4
+; For 48 kHz @ decimation 64: PDM CLK = 3.072 MHz, PIO clock = 12.288 MHz
+;
+; Data is shifted left into ISR, autopush at 8 bits → 1 byte per FIFO word.
+; FIFO is joined RX for maximum depth (8 entries).
+
+; ---- Master: sideset drives CLK, reads DATA ----
+.program pdm_mic_master
+.side_set 1
+.wrap_target
+    nop              side 0
+    in  pins, 1      side 0
+    push iffull noblock side 1
+    nop              side 1
+.wrap
+
+% c-sdk {
+#include "hardware/clocks.h"
+
+static inline void pdm_mic_master_init(PIO pio, uint sm, uint offset,
+                                       float clk_div,
+                                       uint data_pin, uint clk_pin) {
+    pio_sm_set_consecutive_pindirs(pio, sm, data_pin, 1, false);
+    pio_sm_set_consecutive_pindirs(pio, sm, clk_pin, 1, true);
+
+    pio_sm_config c = pdm_mic_master_program_get_default_config(offset);
+
+    sm_config_set_sideset_pins(&c, clk_pin);
+    sm_config_set_in_pins(&c, data_pin);
+
+    pio_gpio_init(pio, clk_pin);
+    pio_gpio_init(pio, data_pin);
+
+    sm_config_set_in_shift(&c, false, false, 8);
+    sm_config_set_fifo_join(&c, PIO_FIFO_JOIN_RX);
+    sm_config_set_clkdiv(&c, clk_div);
+
+    pio_sm_init(pio, sm, offset, &c);
+}
+%}
+
+; ---- Slave: no CLK output, reads DATA only ----
+; Same 4-cycle structure as master so timing is aligned when started in sync.
+.program pdm_mic_slave
+.wrap_target
+    nop
+    in  pins, 1
+    push iffull noblock
+    nop
+.wrap
+
+% c-sdk {
+static inline void pdm_mic_slave_init(PIO pio, uint sm, uint offset,
+                                      float clk_div, uint data_pin) {
+    pio_sm_set_consecutive_pindirs(pio, sm, data_pin, 1, false);
+
+    pio_sm_config c = pdm_mic_slave_program_get_default_config(offset);
+
+    sm_config_set_in_pins(&c, data_pin);
+
+    pio_gpio_init(pio, data_pin);
+
+    sm_config_set_in_shift(&c, false, false, 8);
+    sm_config_set_fifo_join(&c, PIO_FIFO_JOIN_RX);
+    sm_config_set_clkdiv(&c, clk_div);
+
+    pio_sm_init(pio, sm, offset, &c);
+}
+%}

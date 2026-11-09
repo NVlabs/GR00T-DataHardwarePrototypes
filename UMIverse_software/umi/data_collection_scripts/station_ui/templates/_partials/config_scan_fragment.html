@@ -1,0 +1,8 @@
+{# Return scan status and updated datalists together. Replace options, never inputs,
+   so in-progress edits survive discovery. #}
+{% include "_partials/config_scan.html" %}
+{% with oob = True %}{% include "_partials/device_choices.html" %}{% endwith %}
+
+{% with oob = True %}{% include "_partials/device_summary.html" %}{% endwith %}
+
+{% with oob = True %}{% include "_partials/gripper_diagrams.html" %}{% endwith %}

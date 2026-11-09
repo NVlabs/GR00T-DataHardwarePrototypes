@@ -1,0 +1,45 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["gear_neck"]
+
+[project]
+name = "gear-neck"
+version = "0.1.0"
+description = "Bring-up tools and a simple yaw/roll/pitch interface for the GEAR Neck (SteadyWin GIM3505-9 actuators, GDK CAN protocol V2.0)"
+requires-python = ">=3.10"
+dependencies = [
+    # The serial extra lets the slcan interface talk to the USB-CAN adapter
+    # directly, without slcand.
+    "python-can[serial]>=4.4",
+    # Reads config/neck.yaml.
+    "PyYAML>=6.0",
+]
+
+[project.scripts]
+neck_assign_id = "gear_neck.assign_id:main"
+neck_zero = "gear_neck.zeroing:main"
+neck_angles = "gear_neck.cli:angles_main"
+neck_move = "gear_neck.cli:move_main"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+    "ruff>=0.14.10",
+]
+
+# This project is a member of the uv workspace at the repository root, which
+# owns the lock file: run `uv sync --package gear-neck` there, not here.
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Project website
+    url: https://research.nvidia.com/labs/gear/hardware-prototypes/
+    about: Build guides, BOMs, and downloads for each device.
+  - name: Email the GEAR hardware team
+    url: mailto:gear-hardware@nvidia.com
+    about: For questions that should not be public.

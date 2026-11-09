@@ -1,0 +1,49 @@
+{# Refreshed with recording status so saved configuration never leaves stale guidance. #}
+    {% if guard and can_edit %}
+      <div class="banner banner--warn" role="status">
+        <span class="banner__icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.3 4.2 2.6 18a2 2 0 0 0 1.7 3h15.4a2 2 0 0 0 1.7-3L13.7 4.2a2 2 0 0 0-3.4 0Z"></path>
+            <path d="M12 9 L12 13"></path>
+            <path d="M12 17 L12.01 17"></path>
+          </svg>
+        </span>
+        <div>
+          <b>Not ready to record.</b> {{ guard }}
+        </div>
+        <form class="banner__action" method="get" action="/">
+          <button class="btn" type="submit">Go to Setup</button>
+        </form>
+      </div>
+    {% endif %}
+<section class="section">
+  <div class="section__header">
+
+    <h2>This session</h2>
+  </div>
+  {# Derive the launch summary from the same current preset and generated config used
+     by preflight. #}
+  <div class="card">
+    <div class="device-row">
+      <span class="device-row__name">Setup</span>
+      <span class="device-row__value">
+        {% if preset %}
+          {{ preset.label }} · {{ preset.operation_mode }}
+        {% else %}
+          not chosen
+        {% endif %}
+      </span>
+    </div>
+    <div class="device-row">
+      <span class="device-row__name">Task</span>
+      <span class="device-row__value">{{ task_name or "—" }}</span>
+    </div>
+    <div class="device-row">
+      {# Show the task description that episodes and LeRobot annotations inherit;
+         reject template placeholders before launch. #}
+      <span class="device-row__name">Task description</span>
+      <span class="device-row__value">{{ task_description or "—" }}</span>
+    </div>
+  </div>
+</section>
+

@@ -1,0 +1,24 @@
+# Parameters of the tactile robot-action conversion
+# (real_scripts/dexumi_pipeline/convert_to_robot_action.py, `./launch.sh convert`)
+# — the one place to change them. The LeRobot conversion (`./launch.sh lerobot`
+# and the GUI's "Convert for training") reads them too. A converter CLI flag
+# overrides its key for one run (`./launch.sh convert --help`); --config points
+# the converter at another file with this block. The converter refuses a file
+# without it, and every key must be present.
+robot_action:
+  # Force-norm deadband in Newtons: a fingertip whose smoothed force norm stays
+  # below it is treated as not in contact and contributes no torque.
+  deadband_n: 0.1
+  # EMA factor on the calibrated tactile forces (1.0 = no smoothing).
+  ema_alpha: 0.3
+  # Sensor-frame force components entering the torque math: comma-separated
+  # tokens from x, y, z, normal (e.g. "y,z"), or "all" (full vector incl. 6-D
+  # moments). z = pad-normal only.
+  components: z
+  # Which recorded tactile measurement point to use: first | second | mean.
+  tactile_use_point: mean
+  # FALLBACK robot-hand config for an unprefixed legacy single-hand source.
+  # Glove calibrations name their own hand_config, and a left_/right_ source
+  # without one uses umi/control/robot/configs/xhand_<side>.yaml.
+  # null = umi/control/robot/configs/xhand_right.yaml.
+  hand_config: null

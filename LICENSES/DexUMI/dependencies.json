@@ -1,0 +1,915 @@
+{
+  "audit_date": "2026-10-29",
+  "source": "DexUMI station software as audited before its import into this repository; pyproject_sha256 and lockfile_sha256 identify the audited files",
+  "pyproject_sha256": "41497f17a93e6d901280ce16f8e0bca636cec686dd4446847a787cfab97a6bcd",
+  "lockfile_sha256": "22f24767b111069008f92de84486ea5bdc5526968416c22e26151305f282252c",
+  "current_lock": {
+    "path": "uv.lock",
+    "sha256": "53b27000090238468709beac8dd1b7d25d30d84aeb77ad5416a6171b0dceb403",
+    "checked": "2026-11-03",
+    "note": "The DexUMI station software is imported at UMIverse_software/dexumi/data_collection_scripts and resolves together with the UMI software in the repository-root uv workspace. Every third-party name/version in that lock appears either in this record or in the earlier UMI dependency record; see LICENSES/python-dependencies.md."
+  },
+  "migration_status": "Imported. Retained notices cover 19 historically used dependency variants: 13 are in the current workspace lock (record3d, and Pinocchio with its eleven exclusive dependencies, restored at the same versions for the tactile robot-action conversion) and 6 are retired. The browser viewer and native hand simulation have been removed.",
+  "scope": "Retained publisher declarations and selected archive notices for current and retired DexUMI dependency variants. The current dependency set is listed in the root uv.lock and LICENSES/python-dependencies.md; this is not an installed-image or exhaustive native binary clearance.",
+  "packages": [
+    {
+      "name": "absl-py",
+      "version": "2.4.0",
+      "license_summary": "Apache-2.0",
+      "source": {
+        "registry": "https://pypi.org/simple"
+      },
+      "delta": "new-name-in-lock",
+      "artifact": {
+        "url": "https://files.pythonhosted.org/packages/18/a6/907a406bb7d359e6a63f99c313846d9eec4f7e6f7437809e03aa00fa3074/absl_py-2.4.0-py3-none-any.whl",
+        "filename": "absl_py-2.4.0-py3-none-any.whl",
+        "sha256": "88476fd881ca8aab94ffa78b7b6c632a782ab3ba1cd19c9bd423abc4fb4cd28d",
+        "bytes": 135750
+      },
+      "additional_artifacts": [],
+      "metadata_url": "https://pypi.org/pypi/absl-py/2.4.0/json",
+      "metadata_sha256": "5abb85de991abc2d3f32415d3333cf6a4091bdc8b90a2123ea56ff32c7a37f77",
+      "license_expression": "Apache-2.0",
+      "license_classifiers": [
+        "License :: OSI Approved :: Apache Software License"
+      ],
+      "license_files": [
+        {
+          "path": "absl-py-2.4.0/absl_py-2.4.0.dist-info/licenses/AUTHORS",
+          "archive_member": "absl_py-2.4.0.dist-info/licenses/AUTHORS",
+          "sha256": "6282ee76cca569083b5b998b9f816ba1032e127b8dc7c46942b86477fc6fbfa5",
+          "bytes": 296
+        },
+        {
+          "path": "absl-py-2.4.0/absl_py-2.4.0.dist-info/licenses/LICENSE",
+          "archive_member": "absl_py-2.4.0.dist-info/licenses/LICENSE",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "bytes": 11358
+        }
+      ]
+    },
+    {
+      "name": "cmeel",
+      "version": "0.59.0",
+      "license_summary": "BSD-2-Clause",
+      "source": {
+        "registry": "https://pypi.org/simple"
+      },
+      "delta": "new-name-in-lock",
+      "artifact": {
+        "url": "https://files.pythonhosted.org/packages/90/c7/f7a2ea2e88cba4828c9b5bba5b8448ad6e6cbd652d782cc97bb14a54e6a6/cmeel-0.59.0-py3-none-any.whl",
+        "filename": "cmeel-0.59.0-py3-none-any.whl",
+        "sha256": "04a24b960e602484306721ce148610ddda4cbc83b8c5f27ef915366a86901e06",
+        "bytes": 20991
+      },
+      "additional_artifacts": [],
+      "metadata_url": "https://pypi.org/pypi/cmeel/0.59.0/json",
+      "metadata_sha256": "d0dac309c088cfbe5416e2d8b69efb9cb599076ac1b91fa6ad7e60c0045ec673",
+      "license_expression": "BSD-2-Clause",
+      "license_classifiers": [],
+      "license_files": [
+        {
+          "path": "cmeel-0.59.0/cmeel-0.59.0.dist-info/licenses/LICENSE",
+          "archive_member": "cmeel-0.59.0.dist-info/licenses/LICENSE",
+          "sha256": "e101c4baa2036ec7326c1736d4271acf04638b1fab57e007d90019e08ab19734",
+          "bytes": 1324
+        }
+      ]
+    },
+    {
+      "name": "cmeel-assimp",
+      "version": "5.4.3.1",
+      "license_summary": "BSD-3-Clause; component-specific notices retained",
+      "source": {
+        "registry": "https://pypi.org/simple"
+      },
+      "delta": "new-name-in-lock",
+      "artifact": {
+        "url": "https://files.pythonhosted.org/packages/a1/ca/2a90a07d23f0c540fdcc1b5a50e3b424760db880e13bdf246e8b35abfaba/cmeel_assimp-5.4.3.1-0-py3-none-manylinux_2_28_x86_64.whl",
+        "filename": "cmeel_assimp-5.4.3.1-0-py3-none-manylinux_2_28_x86_64.whl",
+        "sha256": "ec259b1aad47c3f5b386004570b65b2b06a4d2a4d00b9959469e5528d029b31b",
+        "bytes": 14445192
+      },
+      "additional_artifacts": [
+        {
+          "url": "https://files.pythonhosted.org/packages/79/ac/f01a4e8c93e7e76f04788bad60bc5eaf7d4862eef24c11dd38bc8b61e819/cmeel_assimp-5.4.3.1.tar.gz",
+          "filename": "cmeel_assimp-5.4.3.1.tar.gz",
+          "sha256": "bd663a65ed143e71fe4723e787cbf1480e42cea4d2450c15cb5d9d4223d24f3d",
+          "bytes": 53703174
+        }
+      ],
+      "metadata_url": "https://pypi.org/pypi/cmeel-assimp/5.4.3.1/json",
+      "metadata_sha256": "1225be9828a89befe63f7a4f27f28c658e9c05e4280c8d618df440f19fdfffc8",
+      "license_expression": "BSD-3-Clause",
+      "license_classifiers": [],
+      "license_files": [
+        {
+          "path": "cmeel-assimp-5.4.3.1/source-distribution/cmeel_assimp-5.4.3.1/assimp/LICENSE",
+          "archive_member": "cmeel_assimp-5.4.3.1/assimp/LICENSE",
+          "sha256": "147874443d242b4e2bae97036e26ec9d6b37f706174c1bd5ecfcc8c1294cef51",
+          "bytes": 3791
+        },
+        {
+          "path": "cmeel-assimp-5.4.3.1/source-distribution/cmeel_assimp-5.4.3.1/assimp/contrib/clipper/License.txt",
+          "archive_member": "cmeel_assimp-5.4.3.1/assimp/contrib/clipper/License.txt",
+          "sha256": "1bc8ddf91ba50e4186abb6b2339910e4529471ad8181b7cf2a5026c09ce09294",
+          "bytes": 1374
+        },
+        {
+          "path": "cmeel-assimp-5.4.3.1/source-distribution/cmeel_assimp-5.4.3.1/assimp/contrib/draco/AUTHORS",
+          "archive_member": "cmeel_assimp-5.4.3.1/assimp/contrib/draco/AUTHORS",
+          "sha256": "7399754545fa82fbf402e3e91d50de0b63772870fd807c48dd9af25c042efb10",
+          "bytes": 317
+        },
+        {
+          "path": "cmeel-assimp-5.4.3.1/source-distribution/cmeel_assimp-5.4.3.1/assimp/contrib/draco/LICENSE",
+          "archive_member": "cmeel_assimp-5.4.3.1/assimp/contrib/draco/LICENSE",
+          "sha256": "d3709b0fb4b8a94bbb1d02b8a2e484f258b0d9c5c5a01f940391f3fe662cd1a4",
+          "bytes": 13898
+        },
+        {
+          "path": "cmeel-assimp-5.4.3.1/source-distribution/cmeel_assimp-5.4.3.1/assimp/contrib/openddlparser/LICENSE",
+          "archive_member": "cmeel_assimp-5.4.3.1/assimp/contrib/openddlparser/LICENSE",
+          "sha256": "656597ef86119e4a526fb8621e0112b95051cf9d63a311b09b3a73346da00ead",
+          "bytes": 1079
+        },
+        {
+          "path": "cmeel-assimp-5.4.3.1/source-distribution/cmeel_assimp-5.4.3.1/assimp/contrib/poly2tri/AUTHORS",
+          "archive_member": "cmeel_assimp-5.4.3.1/assimp/contrib/poly2tri/AUTHORS",
+          "sha256": "a784490f8de628eac4e1c4ba6e818a6369b05c907c48253bf2c931472416998a",
+          "bytes": 147
+        },
+        {
+          "path": "cmeel-assimp-5.4.3.1/source-distribution/cmeel_assimp-5.4.3.1/assimp/contrib/poly2tri/LICENSE",
+          "archive_member": "cmeel_assimp-5.4.3.1/assimp/contrib/poly2tri/LICENSE",
+          "sha256": "578790e1377a270831ede8c64d7c92d411b6e5a55ce32fbb84a35b376af25ee0",
+          "bytes": 1489
+        },
+        {
+          "path": "cmeel-assimp-5.4.3.1/source-distribution/cmeel_assimp-5.4.3.1/assimp/contrib/rapidjson/license.txt",
+          "archive_member": "cmeel_assimp-5.4.3.1/assimp/contrib/rapidjson/license.txt",
+          "sha256": "a140e5d46fe734a1c78f1a3c3ef207871dd75648be71fdda8e309b23ab8b1f32",
+          "bytes": 5152
+        },
+        {
+          "path": "cmeel-assimp-5.4.3.1/source-distribution/cmeel_assimp-5.4.3.1/assimp/contrib/utf8cpp/doc/LICENSE",
+          "archive_member": "cmeel_assimp-5.4.3.1/assimp/contrib/utf8cpp/doc/LICENSE",
+          "sha256": "c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566",
+          "bytes": 1338
+        },
+        {
+          "path": "cmeel-assimp-5.4.3.1/source-distribution/cmeel_assimp-5.4.3.1/assimp/contrib/zlib/LICENSE",
+          "archive_member": "cmeel_assimp-5.4.3.1/assimp/contrib/zlib/LICENSE",
+          "sha256": "845efc77857d485d91fb3e0b884aaa929368c717ae8186b66fe1ed2495753243",
+          "bytes": 1002
+        }
+      ]
+    },
+    {
+      "name": "cmeel-boost",
+      "version": "1.87.0.1",
+      "license_summary": "BSL-1.0 (Boost 1.87.0)",
+      "source": {
+        "registry": "https://pypi.org/simple"
+      },
+      "delta": "new-name-in-lock",
+      "artifact": {
+        "url": "https://files.pythonhosted.org/packages/ca/48/d4145d17b4abede4df4300b49749efe00e00aae4b654b799dc6c4895e177/cmeel_boost-1.87.0.1-0-cp312-cp312-manylinux_2_28_x86_64.whl",
+        "filename": "cmeel_boost-1.87.0.1-0-cp312-cp312-manylinux_2_28_x86_64.whl",
+        "sha256": "fd09a404663bbf610d0a6d786e0ed53a656f2d3dd50b30cf73324b982dd04753",
+        "bytes": 35946214
+      },
+      "additional_artifacts": [
+        {
+          "url": "https://files.pythonhosted.org/packages/98/ee/a4c9eff9efe87945b770a3b773630cd72cb5f178de2daec719507e0f6024/cmeel_boost-1.87.0.1.tar.gz",
+          "filename": "cmeel_boost-1.87.0.1.tar.gz",
+          "sha256": "c1b706e1f0c878693a96f6c92072596dcdf27bd14833b1cbbffd65a8b7e8d00f",
+          "bytes": 4075
+        }
+      ],
+      "metadata_url": "https://pypi.org/pypi/cmeel-boost/1.87.0.1/json",
+      "metadata_sha256": "1cca114cc0fcb6adb4ff0a59f74a3006ee4894259dd1024a0f1f92c29f980028",
+      "license_expression": "BSL-1.0",
+      "license_classifiers": [],
+      "license_files": [
+        {
+          "url": "https://raw.githubusercontent.com/boostorg/boost/boost-1.87.0/LICENSE_1_0.txt",
+          "path": "cmeel-boost-1.87.0.1/upstream/boost-1.87.0-LICENSE_1_0.txt",
+          "sha256": "c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566",
+          "bytes": 1338
+        }
+      ]
+    },
+    {
+      "name": "cmeel-console-bridge",
+      "version": "1.0.2.3",
+      "license_summary": "BSD-3-Clause (upstream source; metadata says Zlib)",
+      "source": {
+        "registry": "https://pypi.org/simple"
+      },
+      "delta": "new-name-in-lock",
+      "artifact": {
+        "url": "https://files.pythonhosted.org/packages/50/a5/70e23c5570506bb39b56aa4d0f3a4a414e38082ddb33e86a48b546620121/cmeel_console_bridge-1.0.2.3-0-py3-none-manylinux_2_28_x86_64.whl",
+        "filename": "cmeel_console_bridge-1.0.2.3-0-py3-none-manylinux_2_28_x86_64.whl",
+        "sha256": "5bb1115ed38441b2396e732e10ec63d1e68445674f9f5d321f7985eb10e9aeef",
+        "bytes": 24477
+      },
+      "additional_artifacts": [
+        {
+          "url": "https://files.pythonhosted.org/packages/83/13/2e9e9d23db8548aef975564055bdb4fb6da8a397a1e7df8cb61f5afebefb/cmeel_console_bridge-1.0.2.3.tar.gz",
+          "filename": "cmeel_console_bridge-1.0.2.3.tar.gz",
+          "sha256": "3b2837da7ab408e9d1a775c83c0a7772356062b3a3672e4ce247f2da71a8ecd9",
+          "bytes": 262061
+        }
+      ],
+      "metadata_url": "https://pypi.org/pypi/cmeel-console-bridge/1.0.2.3/json",
+      "metadata_sha256": "62b201312e8ff416f288a5bb18269baef1935d9a83030fc50f4405e46b11c3a6",
+      "license_expression": "Zlib",
+      "license_classifiers": [],
+      "license_files": [
+        {
+          "path": "cmeel-console-bridge-1.0.2.3/source-distribution/cmeel_console_bridge-1.0.2.3/console_bridge/LICENSE",
+          "archive_member": "cmeel_console_bridge-1.0.2.3/console_bridge/LICENSE",
+          "sha256": "143077f9f6a8de5a99f78c2c2472801fb53cf240277ef661642f079b9acdfff8",
+          "bytes": 1459
+        },
+        {
+          "path": "cmeel-console-bridge-1.0.2.3/source-notices/console.h.txt",
+          "archive": "cmeel_console_bridge-1.0.2.3.tar.gz",
+          "archive_member": "cmeel_console_bridge-1.0.2.3/console_bridge/include/console_bridge/console.h",
+          "extraction": "first C comment, followed by newline",
+          "sha256": "294c941b90fa6fe935e31514b1981cba0ebd4c03fff8b4f6079d47ddb46f6756",
+          "bytes": 1770
+        }
+      ],
+      "review_note": "Metadata says Zlib. The source distribution console_bridge/LICENSE and include/console_bridge/console.h carry BSD-3-Clause terms, with the header naming Willow Garage. Preserve the source notices and clarify the metadata discrepancy when needed."
+    },
+    {
+      "name": "cmeel-octomap",
+      "version": "1.10.0",
+      "license_summary": "BSD-3-Clause (OctoMap library)",
+      "source": {
+        "registry": "https://pypi.org/simple"
+      },
+      "delta": "new-name-in-lock",
+      "artifact": {
+        "url": "https://files.pythonhosted.org/packages/a2/15/9617b7039afd6d17d3148f6f970d953f5e265d7736f8fdbca09c86e976a0/cmeel_octomap-1.10.0-4-py3-none-manylinux_2_28_x86_64.whl",
+        "filename": "cmeel_octomap-1.10.0-4-py3-none-manylinux_2_28_x86_64.whl",
+        "sha256": "5fdb04546fff3accac5f8626c3fc15c3b99e94ab887793565e0b92cedaf96468",
+        "bytes": 1105037
+      },
+      "additional_artifacts": [
+        {
+          "url": "https://files.pythonhosted.org/packages/89/ab/2fed2dbee13e4b39949591685419f1dbb691295e32a6bbbaf87edc005922/cmeel_octomap-1.10.0.tar.gz",
+          "filename": "cmeel_octomap-1.10.0.tar.gz",
+          "sha256": "bd79d1d17adede534de242e42e13ef0d9f04bdd27daf7d56c57f7c43670c9b05",
+          "bytes": 1694189
+        }
+      ],
+      "metadata_url": "https://pypi.org/pypi/cmeel-octomap/1.10.0/json",
+      "metadata_sha256": "e6bce0fc0604269a097d44efe00ae58da3930d5621aa15aec535e4c38e173da6",
+      "license_expression": null,
+      "license_classifiers": [],
+      "license_files": [
+        {
+          "path": "cmeel-octomap-1.10.0/source-distribution/cmeel_octomap-1.10.0/octomap/octomap/AUTHORS.txt",
+          "archive_member": "cmeel_octomap-1.10.0/octomap/octomap/AUTHORS.txt",
+          "sha256": "a74764a3b130f938d47ba628b703d2602bda1affc0428e23188b68f33b3fdad3",
+          "bytes": 485
+        },
+        {
+          "path": "cmeel-octomap-1.10.0/source-distribution/cmeel_octomap-1.10.0/octomap/octomap/LICENSE.txt",
+          "archive_member": "cmeel_octomap-1.10.0/octomap/octomap/LICENSE.txt",
+          "sha256": "8a9ce1eadc1dd0fc4ee57a6016cb40eddc7003d2da824c58d55463f2b9ceb4ca",
+          "bytes": 1698
+        }
+      ],
+      "review_note": "Metadata lacks a useful license declaration. The source distribution octomap/octomap/LICENSE.txt supplies BSD-3-Clause terms. The separate Octovis GUI and its QGLViewer license are outside the configured octomap/octomap build and are not attributed as linked components here."
+    },
+    {
+      "name": "cmeel-qhull",
+      "version": "8.0.2.1",
+      "license_summary": "Qhull",
+      "source": {
+        "registry": "https://pypi.org/simple"
+      },
+      "delta": "new-name-in-lock",
+      "artifact": {
+        "url": "https://files.pythonhosted.org/packages/b4/16/ef7b6201835ba2492753c9c91b266d047b6664507be42ec858e2b24673b5/cmeel_qhull-8.0.2.1-0-py3-none-manylinux_2_28_x86_64.whl",
+        "filename": "cmeel_qhull-8.0.2.1-0-py3-none-manylinux_2_28_x86_64.whl",
+        "sha256": "c513abafa40e2b8eb7cd3640e3f92d5391fbd6ec0f4182dbf9536934d8a8ea3e",
+        "bytes": 3194917
+      },
+      "additional_artifacts": [],
+      "metadata_url": "https://pypi.org/pypi/cmeel-qhull/8.0.2.1/json",
+      "metadata_sha256": "b03aa832e73cfe988cec624281c277625959fb98cbbc97ece91151dba9f6bc56",
+      "license_expression": null,
+      "license_classifiers": [],
+      "license_files": [
+        {
+          "path": "cmeel-qhull-8.0.2.1/cmeel.prefix/share/doc/qhull/COPYING.txt",
+          "archive_member": "cmeel.prefix/share/doc/qhull/COPYING.txt",
+          "sha256": "106d55c931fd6a84822e5345d900273d059f1c27310d02567ccb313c5d18c55d",
+          "bytes": 1720
+        },
+        {
+          "path": "cmeel-qhull-8.0.2.1/cmeel_qhull-8.0.2.1.dist-info/license/qhull/COPYING.txt",
+          "archive_member": "cmeel_qhull-8.0.2.1.dist-info/license/qhull/COPYING.txt",
+          "sha256": "106d55c931fd6a84822e5345d900273d059f1c27310d02567ccb313c5d18c55d",
+          "bytes": 1720
+        }
+      ]
+    },
+    {
+      "name": "cmeel-tinyxml2",
+      "version": "10.0.0",
+      "license_summary": "Zlib",
+      "source": {
+        "registry": "https://pypi.org/simple"
+      },
+      "delta": "new-name-in-lock",
+      "artifact": {
+        "url": "https://files.pythonhosted.org/packages/14/f9/d0420c39e9ade99beeec61cd3abc68880fe6e14d85e9df292af8fabe65c8/cmeel_tinyxml2-10.0.0-0-py3-none-manylinux_2_28_x86_64.whl",
+        "filename": "cmeel_tinyxml2-10.0.0-0-py3-none-manylinux_2_28_x86_64.whl",
+        "sha256": "ecd6e99caa2a06ac0d4b333b740c20fca526d0ca426f99eb5c0a0039117afdb6",
+        "bytes": 147025
+      },
+      "additional_artifacts": [
+        {
+          "url": "https://files.pythonhosted.org/packages/28/9f/030eca702c485f7a641f975f167fa93164911b3329f005fb0730ff5e793f/cmeel_tinyxml2-10.0.0.tar.gz",
+          "filename": "cmeel_tinyxml2-10.0.0.tar.gz",
+          "sha256": "00252aefc1c94a55b89f25ad08ee79fda2da8d1d94703e051598ddb52a9088fe",
+          "bytes": 645297
+        }
+      ],
+      "metadata_url": "https://pypi.org/pypi/cmeel-tinyxml2/10.0.0/json",
+      "metadata_sha256": "12abcf79ed0595a88dae0889ce99938d0b12ce23c11a9aef6925c22145811b11",
+      "license_expression": "Zlib",
+      "license_classifiers": [],
+      "license_files": [
+        {
+          "path": "cmeel-tinyxml2-10.0.0/source-distribution/cmeel_tinyxml2-10.0.0/tinyxml2/LICENSE.txt",
+          "archive_member": "cmeel_tinyxml2-10.0.0/tinyxml2/LICENSE.txt",
+          "sha256": "9332252e9b9e46db8285d4a3f0bf25f139bf1dca6781b956d57f2302efca6432",
+          "bytes": 808
+        }
+      ]
+    },
+    {
+      "name": "cmeel-urdfdom",
+      "version": "4.0.1",
+      "license_summary": "BSD-3-Clause",
+      "source": {
+        "registry": "https://pypi.org/simple"
+      },
+      "delta": "new-name-in-lock",
+      "artifact": {
+        "url": "https://files.pythonhosted.org/packages/c3/82/cb3f8f587d293a17bdbea15b50cdaa4a1e28e04583eb4cb4821685b89466/cmeel_urdfdom-4.0.1-0-py3-none-manylinux_2_28_x86_64.whl",
+        "filename": "cmeel_urdfdom-4.0.1-0-py3-none-manylinux_2_28_x86_64.whl",
+        "sha256": "12e39fc388c077d79fc9b3841d3d972a1da90b90de754d3363194c1540e18abf",
+        "bytes": 399619
+      },
+      "additional_artifacts": [
+        {
+          "url": "https://files.pythonhosted.org/packages/31/09/be81a5e7db56f34b6ccdbe7afe855c95a18c8439e173519e0146e9276a8c/cmeel_urdfdom-4.0.1.tar.gz",
+          "filename": "cmeel_urdfdom-4.0.1.tar.gz",
+          "sha256": "2e3f41e8483889e195b574acb326a4464cf11a3c0a8724031ac28bcda2223efc",
+          "bytes": 291511
+        }
+      ],
+      "metadata_url": "https://pypi.org/pypi/cmeel-urdfdom/4.0.1/json",
+      "metadata_sha256": "7b512663092a57cdce8c533c88e83bf90b9ce4fe27bac0090d2172fae8b3174e",
+      "license_expression": "BSD-3-Clause",
+      "license_classifiers": [],
+      "license_files": [
+        {
+          "path": "cmeel-urdfdom-4.0.1/source-distribution/cmeel_urdfdom-4.0.1/urdfdom/LICENSE",
+          "archive_member": "cmeel_urdfdom-4.0.1/urdfdom/LICENSE",
+          "sha256": "691230016abaee7fc1f685d49632d762a45bb55c5c3d0f805ba950ec53fd189a",
+          "bytes": 1774
+        }
+      ]
+    },
+    {
+      "name": "cmeel-zlib",
+      "version": "1.3.1",
+      "license_summary": "Zlib",
+      "source": {
+        "registry": "https://pypi.org/simple"
+      },
+      "delta": "new-name-in-lock",
+      "artifact": {
+        "url": "https://files.pythonhosted.org/packages/21/10/13b53ce0f693085cbad31be9fceb1b6a2b4e3bae5851c1f114c3e7b3c447/cmeel_zlib-1.3.1-0-py3-none-manylinux_2_28_x86_64.whl",
+        "filename": "cmeel_zlib-1.3.1-0-py3-none-manylinux_2_28_x86_64.whl",
+        "sha256": "7f95b4ed5090fb0fef195f52485f3719dd60213e67a4c07ac4718660bd24da25",
+        "bytes": 282556
+      },
+      "additional_artifacts": [
+        {
+          "url": "https://files.pythonhosted.org/packages/5a/74/b458f2fbfb652479c06400937cd67022e50d312033221602a9eca75022bc/cmeel_zlib-1.3.1.tar.gz",
+          "filename": "cmeel_zlib-1.3.1.tar.gz",
+          "sha256": "ebb34c54d1b7921dee5e7cd7003c9203b3297a5ba9d93983f1b7d3bb04976c3a",
+          "bytes": 3051
+        }
+      ],
+      "metadata_url": "https://pypi.org/pypi/cmeel-zlib/1.3.1/json",
+      "metadata_sha256": "da83ed600e3c47623f41761b2e5cf3c5acaf5a2d96633cd5fa85759efcac7d5a",
+      "license_expression": "Zlib",
+      "license_classifiers": [],
+      "license_files": [
+        {
+          "url": "https://raw.githubusercontent.com/madler/zlib/v1.3.1/LICENSE",
+          "path": "cmeel-zlib-1.3.1/upstream/zlib-1.3.1-LICENSE",
+          "sha256": "845efc77857d485d91fb3e0b884aaa929368c717ae8186b66fe1ed2495753243",
+          "bytes": 1002
+        }
+      ]
+    },
+    {
+      "name": "coal",
+      "version": "3.0.1",
+      "license_summary": "BSD-3-Clause",
+      "source": {
+        "registry": "https://pypi.org/simple"
+      },
+      "delta": "new-name-in-lock",
+      "artifact": {
+        "url": "https://files.pythonhosted.org/packages/28/e2/958e80e25aa613ce0d29a8ab6c7b6af66c1994063835921eda48ce0f9950/coal-3.0.1-1-cp312-cp312-manylinux_2_28_x86_64.whl",
+        "filename": "coal-3.0.1-1-cp312-cp312-manylinux_2_28_x86_64.whl",
+        "sha256": "2be5e8cb3ff165d564ecd9de8a8af6add2b3c404def0d4d9653b42bb034c54bb",
+        "bytes": 6419947
+      },
+      "additional_artifacts": [],
+      "metadata_url": "https://pypi.org/pypi/coal/3.0.1/json",
+      "metadata_sha256": "7d3cedab0a0082a2e99e75491b7952b126ea4adbd734bc4b37da4193fd0304c4",
+      "license_expression": "BSD-3-Clause",
+      "license_classifiers": [],
+      "license_files": [
+        {
+          "path": "coal-3.0.1/coal-3.0.1.dist-info/licenses/LICENSE",
+          "archive_member": "coal-3.0.1.dist-info/licenses/LICENSE",
+          "sha256": "3d9defa37eddab9a3dd929839414ef9736ed8045e9cde817e6468fa620f114e8",
+          "bytes": 1710
+        }
+      ]
+    },
+    {
+      "name": "eigenpy",
+      "version": "3.10.3",
+      "license_summary": "BSD-2-Clause",
+      "source": {
+        "registry": "https://pypi.org/simple"
+      },
+      "delta": "new-name-in-lock",
+      "artifact": {
+        "url": "https://files.pythonhosted.org/packages/93/0c/3efa6ec843e530d07436513972c92c5dc0ed9e2f774ab265b782beb4eeab/eigenpy-3.10.3-0-cp312-cp312-manylinux_2_28_x86_64.whl",
+        "filename": "eigenpy-3.10.3-0-cp312-cp312-manylinux_2_28_x86_64.whl",
+        "sha256": "f151f6fe4f5b575429d69411e12881622b1e76f6fd3805b4081c397fe46cf229",
+        "bytes": 4944229
+      },
+      "additional_artifacts": [],
+      "metadata_url": "https://pypi.org/pypi/eigenpy/3.10.3/json",
+      "metadata_sha256": "55b96b19106a801902e387c8674f64261069cbfc9286abb36273a6c008ce137f",
+      "license_expression": "BSD-2-Clause",
+      "license_classifiers": [],
+      "license_files": [
+        {
+          "path": "eigenpy-3.10.3/eigenpy-3.10.3.dist-info/licenses/LICENSE",
+          "archive_member": "eigenpy-3.10.3.dist-info/licenses/LICENSE",
+          "sha256": "65f3e299c96503a864c13981c254c774299322d29143ac2fd82d754b96b2ec57",
+          "bytes": 1350
+        }
+      ]
+    },
+    {
+      "name": "etils",
+      "version": "1.14.0",
+      "license_summary": "Apache-2.0",
+      "source": {
+        "registry": "https://pypi.org/simple"
+      },
+      "delta": "new-name-in-lock",
+      "artifact": {
+        "url": "https://files.pythonhosted.org/packages/5a/3d/589663aeeacd59bb2f3e8596bfd3e81cf0fb18d70bb433199041f469771b/etils-1.14.0-py3-none-any.whl",
+        "filename": "etils-1.14.0-py3-none-any.whl",
+        "sha256": "b5df7341f54dbe1405a4450b2741207b4a8c279780402b45f87202b94dfc52b4",
+        "bytes": 172934
+      },
+      "additional_artifacts": [],
+      "metadata_url": "https://pypi.org/pypi/etils/1.14.0/json",
+      "metadata_sha256": "7151c5a55b22a0ebee2cf7b2eee5572daf037472688aa9382f98cb42af822a00",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: Apache Software License"
+      ],
+      "license_files": [
+        {
+          "path": "etils-1.14.0/etils-1.14.0.dist-info/licenses/LICENSE",
+          "archive_member": "etils-1.14.0.dist-info/licenses/LICENSE",
+          "sha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd",
+          "bytes": 11357
+        }
+      ]
+    },
+    {
+      "name": "glfw",
+      "version": "2.10.0",
+      "license_summary": "MIT (Python wrapper); Zlib (GLFW 3.4 native library)",
+      "source": {
+        "registry": "https://pypi.org/simple"
+      },
+      "delta": "new-name-in-lock",
+      "artifact": {
+        "url": "https://files.pythonhosted.org/packages/fa/c4/82ac75fdcfba2896da7a573c0fc7f8ceb8f77ead6866d500d06c32f1c464/glfw-2.10.0-py2.py3-none-manylinux2014_x86_64.whl",
+        "filename": "glfw-2.10.0-py2.py3-none-manylinux2014_x86_64.whl",
+        "sha256": "68cf3752bdadb6f4bc0a876247c28c88c7251ac39f8af076ed938fdfd71e72dd",
+        "bytes": 241944
+      },
+      "additional_artifacts": [
+        {
+          "url": "https://files.pythonhosted.org/packages/96/72/642d4f12f61816ac96777f7360d413e3977a7dd08237d196f02da681b186/glfw-2.10.0.tar.gz",
+          "filename": "glfw-2.10.0.tar.gz",
+          "sha256": "801e55d8581b34df9aa2cfea43feb06ff617576e2a8cc5dac23ee75b26d10abe",
+          "bytes": 31475
+        }
+      ],
+      "metadata_url": "https://pypi.org/pypi/glfw/2.10.0/json",
+      "metadata_sha256": "cce293f9fa770fc862a5650dcbed2bddd421cd4bd4a16308e019351d25265f96",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "license_files": [
+        {
+          "path": "glfw-2.10.0/glfw-2.10.0.dist-info/LICENSE.txt",
+          "archive_member": "glfw-2.10.0.dist-info/LICENSE.txt",
+          "sha256": "83e675a7714eb01db1ed75cedcf349ab9dd9630782f81c08161cb58cc67ca1ca",
+          "bytes": 1085
+        },
+        {
+          "path": "glfw-2.10.0/source-distribution/glfw-2.10.0/LICENSE.txt",
+          "archive_member": "glfw-2.10.0/LICENSE.txt",
+          "sha256": "83e675a7714eb01db1ed75cedcf349ab9dd9630782f81c08161cb58cc67ca1ca",
+          "bytes": 1085
+        },
+        {
+          "url": "https://raw.githubusercontent.com/glfw/glfw/3.4/LICENSE.md",
+          "path": "glfw-2.10.0/upstream/glfw-3.4-LICENSE.md",
+          "sha256": "149704059b5d0bf551637e50042dd4de9c2cae921021f6636298911e3a5f9462",
+          "bytes": 904
+        }
+      ],
+      "review_note": "The inspected wheel contains Wayland and X11 libglfw binaries whose version strings identify 3.4.0. The separate native GLFW 3.4 Zlib license is retained alongside the MIT Python-wrapper license."
+    },
+    {
+      "name": "mujoco",
+      "version": "3.3.5",
+      "license_summary": "Apache-2.0; packaged third-party notices retained",
+      "source": {
+        "registry": "https://pypi.org/simple"
+      },
+      "delta": "new-name-in-lock",
+      "artifact": {
+        "url": "https://files.pythonhosted.org/packages/6d/87/f5454b3e3844bb5c37037a4f3e5e6e70a37263f06d34c2a5b62e801a5b3f/mujoco-3.3.5-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+        "filename": "mujoco-3.3.5-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+        "sha256": "802101bd705cb46973e2a0bc70e0d0d3581a2f6f764678bc6aa5253539ff341d",
+        "bytes": 6710089
+      },
+      "additional_artifacts": [],
+      "metadata_url": "https://pypi.org/pypi/mujoco/3.3.5/json",
+      "metadata_sha256": "6bd97c6743f70e39d6f9347a5d5f0f8a9bcf12e24b09d2f3156e202ac07516ea",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: Apache Software License"
+      ],
+      "license_files": [
+        {
+          "path": "mujoco-3.3.5/mujoco-3.3.5.dist-info/licenses/LICENSE",
+          "archive_member": "mujoco-3.3.5.dist-info/licenses/LICENSE",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "bytes": 11358
+        },
+        {
+          "path": "mujoco-3.3.5/mujoco-3.3.5.dist-info/licenses/LICENSES_THIRD_PARTY.md",
+          "archive_member": "mujoco-3.3.5.dist-info/licenses/LICENSES_THIRD_PARTY.md",
+          "sha256": "62547d50857e51b2021f0df550982a6829954668ba4765b7739344a7e2386941",
+          "bytes": 37638
+        }
+      ],
+      "review_note": "The wheel LICENSES_THIRD_PARTY.md is preserved in full; it covers native subcomponents beyond the Python package metadata."
+    },
+    {
+      "name": "pin",
+      "version": "3.7.0",
+      "license_summary": "BSD-2-Clause (Pinocchio)",
+      "source": {
+        "registry": "https://pypi.org/simple"
+      },
+      "delta": "new-name-in-lock",
+      "artifact": {
+        "url": "https://files.pythonhosted.org/packages/e0/4e/ca62c40f55eab8f4c753f284e5b22b44ee77010bec00d0e250a693730487/pin-3.7.0-0-cp312-cp312-manylinux_2_28_x86_64.whl",
+        "filename": "pin-3.7.0-0-cp312-cp312-manylinux_2_28_x86_64.whl",
+        "sha256": "48c63f05e442099995b2d9e2b87ce023377d089a49f684a9f57509bb5a5e89f0",
+        "bytes": 18074231
+      },
+      "additional_artifacts": [],
+      "metadata_url": "https://pypi.org/pypi/pin/3.7.0/json",
+      "metadata_sha256": "b33ddd1c3ec5e6bd70da14ed2de4d819334aeeee67e311df2a47e9bafa573402",
+      "license_expression": "BSD-3-Clause",
+      "license_classifiers": [],
+      "license_files": [
+        {
+          "path": "pin-3.7.0/pin-3.7.0.dist-info/licenses/LICENSE",
+          "archive_member": "pin-3.7.0.dist-info/licenses/LICENSE",
+          "sha256": "65b81e23a8e20d7c9d28239bbe9c9afc8d72dccd18833a4d443f0ed9e71738ce",
+          "bytes": 1350
+        }
+      ]
+    },
+    {
+      "name": "pyopengl",
+      "version": "3.1.0",
+      "license_summary": "BSD-style main terms and additional component licenses; see complete license",
+      "source": {
+        "registry": "https://pypi.org/simple"
+      },
+      "delta": "new-name-in-lock",
+      "artifact": {
+        "url": "https://files.pythonhosted.org/packages/9c/1d/4544708aaa89f26c97cc09450bb333a23724a320923e74d73e028b3560f9/PyOpenGL-3.1.0.tar.gz",
+        "filename": "PyOpenGL-3.1.0.tar.gz",
+        "sha256": "9b47c5c3a094fa518ca88aeed35ae75834d53e4285512c61879f67a48c94ddaf",
+        "bytes": 1172688
+      },
+      "additional_artifacts": [],
+      "metadata_url": "https://pypi.org/pypi/pyopengl/3.1.0/json",
+      "metadata_sha256": "63029e4dca4d0eaf921ba91295769c9adefa7520ca7c7475074e641a7b8c1299",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: BSD License"
+      ],
+      "license_files": [
+        {
+          "path": "pyopengl-3.1.0/PyOpenGL-3.1.0/license.txt",
+          "archive_member": "PyOpenGL-3.1.0/license.txt",
+          "sha256": "2755e9eea3c914a1549fa824bd466bed408d3fe347337476e87f42a2c4986d93",
+          "bytes": 11117
+        },
+        {
+          "path": "pyopengl-3.1.0/PyOpenGL-3.1.0/OpenGL/DLLS/gle_COPYING",
+          "archive_member": "PyOpenGL-3.1.0/OpenGL/DLLS/gle_COPYING",
+          "sha256": "8846082ee877f8399cd3072ed5a22215c54728005da6d13d71fa922021c3937b",
+          "bytes": 19125
+        },
+        {
+          "path": "pyopengl-3.1.0/PyOpenGL-3.1.0/OpenGL/DLLS/gle_COPYING.src",
+          "archive_member": "PyOpenGL-3.1.0/OpenGL/DLLS/gle_COPYING.src",
+          "sha256": "17c3504e92fa17b916f2ae09e9c192263a68bd8f1429e18de8a809bba46cf82d",
+          "bytes": 3261
+        },
+        {
+          "path": "pyopengl-3.1.0/PyOpenGL-3.1.0/OpenGL/DLLS/gle_AUTHORS",
+          "archive_member": "PyOpenGL-3.1.0/OpenGL/DLLS/gle_AUTHORS",
+          "sha256": "f85b8ab689da05526c90715012a9c6a0164717f866395859fa2bcfc79c843169",
+          "bytes": 290
+        }
+      ]
+    },
+    {
+      "name": "python-xlib",
+      "version": "0.33",
+      "license_summary": "LGPL-2.1-or-later",
+      "source": {
+        "registry": "https://pypi.org/simple"
+      },
+      "delta": "new-name-in-lock",
+      "artifact": {
+        "url": "https://files.pythonhosted.org/packages/fc/b8/ff33610932e0ee81ae7f1269c890f697d56ff74b9f5b2ee5d9b7fa2c5355/python_xlib-0.33-py2.py3-none-any.whl",
+        "filename": "python_xlib-0.33-py2.py3-none-any.whl",
+        "sha256": "c3534038d42e0df2f1392a1b30a15a4ff5fdc2b86cfa94f072bf11b10a164398",
+        "bytes": 182185
+      },
+      "additional_artifacts": [],
+      "metadata_url": "https://pypi.org/pypi/python-xlib/0.33/json",
+      "metadata_sha256": "730738e496a884b22ed58ec428df689c9b03083da3992da068e08301ff05af51",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: GNU Lesser General Public License v2 or later (LGPLv2+)"
+      ],
+      "license_files": [
+        {
+          "path": "python-xlib-0.33/python_xlib-0.33.dist-info/LICENSE",
+          "archive_member": "python_xlib-0.33.dist-info/LICENSE",
+          "sha256": "3bb6f6bec94b99e2927a8880bf49c401f5e8f48a20ddea96310860264cae20b0",
+          "bytes": 26965
+        },
+        {
+          "path": "python-xlib-0.33/source-notices/Xlib-init.txt",
+          "archive_member": "Xlib/__init__.py",
+          "extraction": "leading source comments and whitespace, normalized final line ending",
+          "sha256": "d43f7dadc101f72f861614af76008d702e9aaa87586fbac9318bc13f18c9f36d",
+          "bytes": 871
+        }
+      ]
+    },
+    {
+      "name": "record3d",
+      "version": "1.4.1",
+      "license_summary": "LGPL-2.1; bundled native components and pybind11 retain their own terms",
+      "source": {
+        "git": "https://github.com/marek-simonik/record3d.git?rev=master#79e6f44697150a4f036034af8fec903d11ac6f00"
+      },
+      "source_commit": "79e6f44697150a4f036034af8fec903d11ac6f00",
+      "delta": "different-source-same-version",
+      "artifact": {
+        "url": "https://codeload.github.com/marek-simonik/record3d/tar.gz/79e6f44697150a4f036034af8fec903d11ac6f00",
+        "sha256": "c81be03817818931788d903f96e05eb30fba7deb86705386dbd39f6a53397999",
+        "bytes": 594617
+      },
+      "license_files": [
+        {
+          "path": "record3d-79e6f446/LICENSE",
+          "archive_member": "record3d-79e6f44697150a4f036034af8fec903d11ac6f00/LICENSE",
+          "sha256": "e237fa56668030e928551ddd60f05df5fe957f75eab874bbd017e085ed722e7c",
+          "bytes": 26434
+        },
+        {
+          "path": "record3d-79e6f446/libs/unix/libusbmuxd/AUTHORS",
+          "archive_member": "record3d-79e6f44697150a4f036034af8fec903d11ac6f00/libs/unix/libusbmuxd/AUTHORS",
+          "sha256": "f76632e73560fb36850d2d70cf72960240a82d8c527022a4165370f8a81fa9fc",
+          "bytes": 140
+        },
+        {
+          "path": "record3d-79e6f446/libs/unix/libusbmuxd/COPYING",
+          "archive_member": "record3d-79e6f44697150a4f036034af8fec903d11ac6f00/libs/unix/libusbmuxd/COPYING",
+          "sha256": "e237fa56668030e928551ddd60f05df5fe957f75eab874bbd017e085ed722e7c",
+          "bytes": 26434
+        },
+        {
+          "path": "record3d-79e6f446/libs/unix/libusbmuxd/libs/libplist/AUTHORS",
+          "archive_member": "record3d-79e6f44697150a4f036034af8fec903d11ac6f00/libs/unix/libusbmuxd/libs/libplist/AUTHORS",
+          "sha256": "9ee5828311bc47160791e9fc1574cb356d9d6a661b1d194a97cd254d58c9d3b9",
+          "bytes": 395
+        },
+        {
+          "path": "record3d-79e6f446/libs/unix/libusbmuxd/libs/libplist/COPYING",
+          "archive_member": "record3d-79e6f44697150a4f036034af8fec903d11ac6f00/libs/unix/libusbmuxd/libs/libplist/COPYING",
+          "sha256": "7619c753cac95d4740220223bde48a032606fcaccde5e546f9bc444c81ab356d",
+          "bytes": 17988
+        },
+        {
+          "path": "record3d-79e6f446/libs/unix/libusbmuxd/libs/libplist/COPYING.LESSER",
+          "archive_member": "record3d-79e6f44697150a4f036034af8fec903d11ac6f00/libs/unix/libusbmuxd/libs/libplist/COPYING.LESSER",
+          "sha256": "e237fa56668030e928551ddd60f05df5fe957f75eab874bbd017e085ed722e7c",
+          "bytes": 26434
+        },
+        {
+          "path": "record3d-79e6f446/libs/unix/libusbmuxd/libs/libplist/libcnary/COPYING",
+          "archive_member": "record3d-79e6f44697150a4f036034af8fec903d11ac6f00/libs/unix/libusbmuxd/libs/libplist/libcnary/COPYING",
+          "sha256": "e237fa56668030e928551ddd60f05df5fe957f75eab874bbd017e085ed722e7c",
+          "bytes": 26434
+        },
+        {
+          "path": "record3d-79e6f446/source-notices/libs/unix/libusbmuxd/libs/libplist/libcnary/cnary.c.txt",
+          "archive_member": "record3d-79e6f44697150a4f036034af8fec903d11ac6f00/libs/unix/libusbmuxd/libs/libplist/libcnary/cnary.c",
+          "extraction": "first C comment, followed by newline",
+          "sha256": "60740e6906c0d5ecbbe3f18ee6fa3065e42211bf733db61d15390af9c7b6aaab",
+          "bytes": 879
+        },
+        {
+          "path": "record3d-79e6f446/source-notices/libs/unix/libusbmuxd/libs/libplist/src/plist.c.txt",
+          "archive_member": "record3d-79e6f44697150a4f036034af8fec903d11ac6f00/libs/unix/libusbmuxd/libs/libplist/src/plist.c",
+          "extraction": "first C comment, followed by newline",
+          "sha256": "315474dc13e3f7b951f0acafd5c38c135c5eca7e907ada161a38064ae1741db7",
+          "bytes": 976
+        },
+        {
+          "path": "record3d-79e6f446/source-notices/libs/unix/libusbmuxd/libs/libplist/tools/plistutil.c.txt",
+          "archive_member": "record3d-79e6f44697150a4f036034af8fec903d11ac6f00/libs/unix/libusbmuxd/libs/libplist/tools/plistutil.c",
+          "extraction": "first C comment, followed by newline",
+          "sha256": "397d022c9f8747a6738bde9d691ec0e6e21bf94b32e307e32418a105c89b488e",
+          "bytes": 941
+        },
+        {
+          "path": "record3d-79e6f446/source-notices/libs/unix/libusbmuxd/src/libusbmuxd.c.txt",
+          "archive_member": "record3d-79e6f44697150a4f036034af8fec903d11ac6f00/libs/unix/libusbmuxd/src/libusbmuxd.c",
+          "extraction": "first C comment, followed by newline",
+          "sha256": "a9b84d9204557b4bbf3888bac88c9c2f59da12dc506854acf015fe7d564c5dbe",
+          "bytes": 966
+        },
+        {
+          "path": "record3d-79e6f446/libs/unix/lzfse-lzfse-1.0/LICENSE",
+          "archive_member": "record3d-79e6f44697150a4f036034af8fec903d11ac6f00/libs/unix/lzfse-lzfse-1.0/LICENSE",
+          "sha256": "2a20082c2219edbbdb2e862a0566ba4f762a564ade7c04b09250ae4464bc4b32",
+          "bytes": 1514
+        },
+        {
+          "path": "record3d-79e6f446/libs/win/libusbmuxd/AUTHORS",
+          "archive_member": "record3d-79e6f44697150a4f036034af8fec903d11ac6f00/libs/win/libusbmuxd/AUTHORS",
+          "sha256": "f76632e73560fb36850d2d70cf72960240a82d8c527022a4165370f8a81fa9fc",
+          "bytes": 140
+        },
+        {
+          "path": "record3d-79e6f446/libs/win/libusbmuxd/COPYING",
+          "archive_member": "record3d-79e6f44697150a4f036034af8fec903d11ac6f00/libs/win/libusbmuxd/COPYING",
+          "sha256": "e237fa56668030e928551ddd60f05df5fe957f75eab874bbd017e085ed722e7c",
+          "bytes": 26434
+        },
+        {
+          "path": "record3d-79e6f446/libs/win/libusbmuxd/libs/libplist/libcnary/COPYING",
+          "archive_member": "record3d-79e6f44697150a4f036034af8fec903d11ac6f00/libs/win/libusbmuxd/libs/libplist/libcnary/COPYING",
+          "sha256": "e237fa56668030e928551ddd60f05df5fe957f75eab874bbd017e085ed722e7c",
+          "bytes": 26434
+        },
+        {
+          "path": "record3d-79e6f446/libs/win/lzfse-lzfse-1.0/LICENSE",
+          "archive_member": "record3d-79e6f44697150a4f036034af8fec903d11ac6f00/libs/win/lzfse-lzfse-1.0/LICENSE",
+          "sha256": "2a20082c2219edbbdb2e862a0566ba4f762a564ade7c04b09250ae4464bc4b32",
+          "bytes": 1514
+        }
+      ],
+      "review_note": "The audited DexUMI software pinned Git commit 79e6f44697150a4f036034af8fec903d11ac6f00, not the previously audited PyPI artifact with the same 1.4.1 version. Its CMake files compile LZFSE, libusbmuxd, libplist/libcnary and pybind11; the delivered license/author notices and selected source notices are retained without building it.",
+      "current_lock_source": {
+        "registry": "https://pypi.org/simple"
+      },
+      "current_lock_note": "The repository-root uv.lock installs the PyPI record3d 1.4.1 wheel instead of this Git commit. The wheel's dist-info LICENSE is byte-identical to the retained LICENSE; the native-component notices from the same source tree are kept."
+    }
+  ],
+  "removed_after_import": [
+    {
+      "name": "av",
+      "version": "12.3.0",
+      "now": "av 19.0.2, the version the UMI lock already used",
+      "license_directory_removed": "av-12.3.0"
+    },
+    {
+      "name": "fsspec",
+      "version": "2026.3.0",
+      "now": "fsspec version shared with the UMI lock",
+      "license_directory_removed": "fsspec-2026.3.0"
+    },
+    {
+      "name": "gtts",
+      "version": "2.5.4",
+      "now": "no longer a dependency (voice cues removed)",
+      "license_directory_removed": "gtts-2.5.4"
+    },
+    {
+      "name": "idna",
+      "version": "3.13",
+      "now": "idna version shared with the UMI lock",
+      "license_directory_removed": "idna-3.13"
+    },
+    {
+      "name": "imageio",
+      "version": "2.37.3",
+      "now": "Removed with the optional browser hand viewer; absent from the repository-root uv.lock.",
+      "license_directory_removed": "imageio-2.37.3"
+    },
+    {
+      "name": "markdown-it-py",
+      "version": "4.0.0",
+      "now": "Removed with the optional browser hand viewer; absent from the repository-root uv.lock.",
+      "license_directory_removed": "markdown-it-py-4.0.0"
+    },
+    {
+      "name": "mdurl",
+      "version": "0.1.2",
+      "now": "Removed with the optional browser hand viewer; absent from the repository-root uv.lock.",
+      "license_directory_removed": "mdurl-0.1.2"
+    },
+    {
+      "name": "msgspec",
+      "version": "0.21.1",
+      "now": "Removed with the optional browser hand viewer; absent from the repository-root uv.lock.",
+      "license_directory_removed": "msgspec-0.21.1"
+    },
+    {
+      "name": "rich",
+      "version": "14.3.4",
+      "now": "Removed with the optional browser hand viewer; absent from the repository-root uv.lock.",
+      "license_directory_removed": "rich-14.3.4"
+    },
+    {
+      "name": "viser",
+      "version": "1.0.26",
+      "now": "Removed with the optional browser hand viewer; absent from the repository-root uv.lock.",
+      "license_directory_removed": "viser-1.0.26"
+    },
+    {
+      "name": "websockets",
+      "version": "16.0",
+      "now": "Removed with the optional browser hand viewer; absent from the repository-root uv.lock.",
+      "license_directory_removed": "websockets-16.0"
+    },
+    {
+      "name": "zstandard",
+      "version": "0.25.0",
+      "now": "Removed with the optional browser hand viewer; absent from the repository-root uv.lock.",
+      "license_directory_removed": "zstandard-0.25.0"
+    }
+  ],
+  "current_pyproject": {
+    "path": "UMIverse_software/dexumi/data_collection_scripts/pyproject.toml",
+    "sha256": "b6140cce02d40b20ea8c2888f91155abdf732b666dfe3dcbd7fe91a09c0feef0"
+  }
+}

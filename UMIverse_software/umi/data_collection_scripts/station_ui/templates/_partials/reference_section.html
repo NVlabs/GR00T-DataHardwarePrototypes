@@ -1,0 +1,25 @@
+{# Select the world-frame reference from recorded cameras. Blank uses the assembler's
+   automatic choice. Keep native select submission and refresh choices out of band
+   when optional cameras change. #}
+{% if reference %}
+<section class="section" id="reference-section" {% if oob %}hx-swap-oob="true"{% endif %}>
+  <div class="section__header">
+    <h2>Reference camera</h2>
+    <span class="muted">world frame</span>
+  </div>
+  <div class="card stack">
+    <div class="field">
+      <label class="field__label" for="{{ reference.field }}">Anchor the world frame on</label>
+      <select class="input" id="{{ reference.field }}" name="{{ reference.field }}"
+              {% if not can_edit %}disabled aria-disabled="true"{% endif %}>
+        {% for option in reference.options %}
+          <option value="{{ option.value }}"{% if option.selected %} selected{% endif %}>{{ option.label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <p class="muted">
+      Automatic anchors on {{ reference.auto_label }}.
+    </p>
+  </div>
+</section>
+{% endif %}

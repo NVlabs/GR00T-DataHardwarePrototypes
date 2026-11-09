@@ -1,0 +1,196 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[codz]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+/MANIFEST
+
+# PyInstaller outputs
+
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py.cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+.pybuilder/
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# PDM local state
+
+.pdm-python
+.pdm-build/
+
+# Pixi environment
+
+.pixi
+
+# PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.envrc
+# Local environment files that hold secrets.
+*/prod/.env.prod
+*/dev/.env.local
+.venv
+.local-libs/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# Ruff stuff:
+.ruff_cache/
+
+# PyPI configuration file
+.pypirc
+
+# Cursor local configuration
+
+.cursorignore
+.cursorindexingignore
+
+# Marimo
+marimo/_static/
+marimo/_lsp/
+__marimo__/
+
+/data/
+data_local/
+local_data/
+notebook/
+
+.vscode/
+wandb/
+outputs/
+*tar
+
+# QC tool session progress files (local only)
+qc_ui/data/*.json
+
+# Git worktrees
+.worktrees/
+
+# CI test data
+ci_test_data/
+
+# Active recording configs generated from the templates by the Station Console.
+config/data_recording/generated/
+
+# Active data-check configs generated from the baselines by the Station Console.
+config/data_check/generated/
+
+# Recorded example data and plots
+examples/hand/orange/compliance/data/
+
+# Data collection output (recordings, aligned sessions, reports)
+output/
+# This station's device registry (see umi/utils/device_registry.py)
+config/devices.json
+# This station's task registry (see umi/common/tasks/task_registry_store.py)
+config/tasks.json
+# Gripper calibrations written by the Station Console and umi_gripper_example.py.
+# They belong to the station; each recording keeps its own copy.
+config/umi_gripper/*.yaml
+
+# macOS Finder metadata
+.DS_Store

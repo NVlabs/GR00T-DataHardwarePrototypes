@@ -1,0 +1,28 @@
+{# Each preset card is a normal form; derive visible content from its descriptor so
+   selection works without JavaScript. #}
+<form class="preset-card-form" method="post" action="/setup/preset">
+  <input type="hidden" name="preset_id" value="{{ preset.id }}">
+
+  <button type="submit" class="preset-card"
+          aria-pressed="{{ 'true' if preset.id == selected else 'false' }}"
+          {% if not can_edit %}disabled aria-disabled="true"{% endif %}>
+    <span class="preset-card__title">
+
+      <span class="preset-card__radio" aria-hidden="true"></span>
+      {{ preset.label }}
+      {% if preset.id == selected %}
+
+        <span class="preset-card__state">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 13 L9 17 L19 7"></path>
+          </svg>
+          Selected
+        </span>
+      {% endif %}
+    </span>
+
+    <span class="preset-card__desc">
+      <span class="pill">{{ preset.operation_mode }}</span>
+    </span>
+  </button>
+</form>

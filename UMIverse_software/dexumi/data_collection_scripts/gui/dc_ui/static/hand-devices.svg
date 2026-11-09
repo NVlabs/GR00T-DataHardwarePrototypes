@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 310" fill="none">
+  <title>DexUMI hand and connected cameras</title>
+  <desc>Simplified wearable finger linkages, an iPhone in its cradle and a single-lens OAK-1W. Dashed lines indicate device association rather than exact mounting positions.</desc>
+  <!-- Geometry abstracted from GEAR_DexUMI assembly step24 and the iPhone
+       cradle, secondary camera bracket and OAK-1W BOM reference images. -->
+  <defs>
+    <g id="finger" stroke="#3F6B0C" stroke-width="1.6" stroke-linejoin="round">
+      <path d="M-7 0V-27Q-7-34 0-34Q7-34 7-27V0" fill="#F3F4EE"/>
+      <path d="M-5-28H5M-5-3H5"/>
+      <path d="M-5 0L-7 27L-5 52H5L7 27L5 0Z" fill="#EDF4E5"/>
+      <path d="M-2 4L-3 27L-2 47M2 4L3 27L2 47"/>
+      <rect x="-8" y="48" width="16" height="13" rx="2" fill="#DCE6D1"/>
+      <circle r="4" fill="#FFFFFF"/><circle cy="27" r="4" fill="#FFFFFF"/>
+      <circle cy="54" r="3" fill="#FFFFFF"/>
+    </g>
+  </defs>
+  <!-- Soft hand silhouette provides orientation, without anatomical detail. -->
+  <path d="M48 296L49 242L36 205L17 144Q13 131 22 129Q29 127 33 139L43 164L35 91Q34 79 43 78Q52 78 53 90L61 147L58 67Q58 56 66 56Q74 56 75 67L80 144L83 75Q84 63 93 64Q101 65 100 77L97 150L110 178L128 161Q135 153 142 159Q148 166 140 174L118 206L105 241L103 296" fill="#F3F4EE" stroke="#A4B292" stroke-width="1.4"/>
+  <!-- Four parallel hinged linkages and a separate thumb linkage. -->
+  <use href="#finger" transform="translate(32 137) rotate(-16)"/>
+  <use href="#finger" transform="translate(52 107) rotate(-6)"/>
+  <use href="#finger" transform="translate(77 100) rotate(3)"/>
+  <use href="#finger" transform="translate(101 115) rotate(13)"/>
+  <use href="#finger" transform="translate(132 179) rotate(42) scale(.85)"/>
+  <g stroke="#3F6B0C" stroke-width="1.7" stroke-linejoin="round">
+    <path d="M39 202L43 181L68 166L96 177L96 199L72 211Z" fill="#DCE6D1"/>
+    <path d="M47 203L53 246M92 201L87 246M56 207L61 243M83 207L79 243"/>
+    <rect x="59" y="212" width="20" height="31" rx="2" fill="#EDF4E5"/>
+    <rect x="45" y="244" width="49" height="21" rx="3" fill="#DCE6D1"/>
+    <path d="M48 265V295M89 265V295M46 273H91"/>
+    <circle cx="50" cy="191" r="4" fill="#FFFFFF"/>
+    <circle cx="72" cy="183" r="4" fill="#FFFFFF"/>
+    <circle cx="90" cy="190" r="4" fill="#FFFFFF"/>
+    <circle cx="56" cy="254" r="3" fill="#FFFFFF"/>
+    <circle cx="83" cy="254" r="3" fill="#FFFFFF"/>
+  </g>
+  <!-- A separate phone cradle and square single-lens camera: no implied
+       wristband or stereo-camera geometry. -->
+  <g stroke="#1B1F1A" stroke-width="1.6" stroke-linejoin="round">
+    <rect x="165" y="61" width="57" height="104" rx="8" fill="#F3F4EE"/>
+    <rect x="171" y="67" width="24" height="28" rx="6" fill="#E3E6E1"/>
+    <g fill="#5B625A"><circle cx="178" cy="75" r="4"/><circle cx="188" cy="84" r="4"/><circle cx="178" cy="87" r="4"/></g>
+    <path d="M161 124H168V161H219V124H226V170H161Z" fill="#DCE6D1"/>
+    <path d="M185 170V179H202V170"/>
+    <!-- Offset secondary-camera bracket, represented separately. -->
+    <path d="M154 265H173V247H183V239H167V257H154Z" fill="#E3E6E1"/>
+    <rect x="172" y="206" width="48" height="42" rx="6" fill="#5B625A"/>
+    <path d="M177 206V201M184 206V201M191 206V201M198 206V201M205 206V201M212 206V201M177 248V253M184 248V253M191 248V253M198 248V253M205 248V253M212 248V253"/>
+    <rect x="180" y="213" width="32" height="25" rx="3" fill="#1B1F1A"/>
+    <circle cx="196" cy="225" r="8" fill="#E3E6E1"/>
+    <circle cx="196" cy="225" r="4" fill="#1B1F1A"/>
+  </g>
+  <g stroke="#8BD62A" stroke-width="1.5" stroke-dasharray="4 4">
+    <path d="M99 194L145 181L161 151"/>
+    <path d="M94 254L135 269L172 231"/>
+  </g>
+  <g fill="#8BD62A" stroke="#FFFFFF" stroke-width="1.5">
+    <circle cx="99" cy="194" r="4"/><circle cx="161" cy="151" r="4"/>
+    <circle cx="94" cy="254" r="4"/><circle cx="172" cy="231" r="4"/>
+  </g>
+</svg>

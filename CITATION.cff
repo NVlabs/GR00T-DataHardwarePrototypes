@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: >-
+  These hardware designs were developed for, and validated in, GR00T 2.
+  If you use them, please cite the GR00T 2 paper.
+title: GR00T Data Hardware Prototypes
+authors:
+  - name: NVIDIA
+repository-code: https://github.com/NVlabs/GR00T-DataHardwarePrototypes
+url: https://research.nvidia.com/labs/gear/hardware-prototypes/
+preferred-citation:
+  type: article
+  title: "GR00T 2: Scaling Robot Foundation Models for Generalization, Dexterity, and Adaptation"
+  authors:
+    - name: NVIDIA
+  year: 2026
+  url: https://research.nvidia.com/labs/gear/gr00t-2/

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>{% block title %}{{ page_title|default("Station") }} — UMI Station{% endblock %}</title>
+  <!-- Serve styles locally so offline stations do not depend on external font hosts. -->
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body{% if workflow %} class="page--configuration page--workflow"{% elif active == '/config' %} class="page--configuration"{% endif %}>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <div class="shell">
+
+    <header class="appbar">
+      <div class="container appbar__inner">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span class="appbar__title">GEAR UMI <small>Data Collection</small></span>
+
+        <span class="appbar__identity">
+          <span class="num">{{ station.id }}</span>
+        </span>
+        {# Keep the log accessible in both healthy and failed states; emphasize error
+           count only when needed. #}
+        {% if error_count %}
+          <a class="appbar__errors" href="/log">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9"></circle>
+              <path d="M9 9 L15 15 M15 9 L9 15"></path>
+            </svg>
+            {{ error_count }} error{{ "" if error_count == 1 else "s" }}
+          </a>
+        {% else %}
+          <a class="appbar__log" href="/log" title="What this console has logged">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 4h11l3 3v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"></path>
+              <path d="M8 10h8M8 14h8M8 18h5"></path>
+            </svg>
+            Log
+          </a>
+        {% endif %}
+        <span class="topbar__meta">{% block topbar_meta %}{% endblock %}</span>
+      </div>
+    </header>
+
+    {# Derive navigation numbering and completion from the server's current workflow
+       state. #}
+    <div class="tabbar">
+      <nav class="container nav" aria-label="Workflow">
+        {% if workflow %}
+          <span class="workflow-nav-label">WORKFLOW</span>
+          {% for section in workflow_sections %}
+            <a class="nav__link" href="#{{ section.id }}" data-workflow-link="{{ section.id }}">
+              <span class="nav__step">{{ "%02d"|format(loop.index) }}</span>
+              {{ section.label }}
+              {% if section.href in nav_done %}<span class="nav__done"><span aria-hidden="true">✓</span><span class="visually-hidden">complete</span></span>{% endif %}
+            </a>
+          {% endfor %}
+        {% else %}
+        {# Sequential navigation allows completed steps and the next incomplete step.
+           Record enforces readiness at launch; Audit remains available
+           independently. #}
+        {% for item in nav_items %}
+          {% set gated = item.href in nav_gated %}
+          {% if item.enabled and not (gated and item.href not in nav_open) %}
+            <a class="nav__link" href="{{ item.href }}"
+               {% if item.href == active %}aria-current="page"{% endif %}>
+              <span class="nav__step">{% if active == '/config' %}{{ "%02d"|format(loop.index) }}{% else %}{{ loop.index }} ·{% endif %}</span>
+              {{ item.label }}
+              {% if item.href in nav_done %}
+
+                <span class="nav__done">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M5 13 L9 17 L19 7"></path>
+                  </svg>
+                  <span class="visually-hidden">complete</span>
+                </span>
+              {% endif %}
+            </a>
+          {% else %}
+            <span class="nav__link nav__link--disabled" aria-disabled="true">
+              <span class="nav__step">{% if active == '/config' %}{{ "%02d"|format(loop.index) }}{% else %}{{ loop.index }} ·{% endif %}</span>
+              {{ item.label }}
+            </span>
+          {% endif %}
+        {% endfor %}
+        {% endif %}
+      </nav>
+    </div>
+
+    <main class="main container" id="main" tabindex="-1">
+      {# Keep the alert region mounted before injecting errors so announcements work.
+         tabindex=-1 permits programmatic focus without adding a tab stop. #}
+      <div id="crash-slot" aria-live="assertive" tabindex="-1"></div>
+
+      {# Render global blockers outside page-specific banner overrides. #}
+      {% include "_partials/step_blocker_banner.html" %}
+
+      {% if not workflow %}{% include "_partials/lock_banner.html" %}{% endif %}
+
+      {% include "_partials/day_roll_banner.html" %}
+
+      {% block banner %}{% endblock %}
+
+      <div class="page-header">
+        <h1 id="page-heading">{% block heading %}{{ page_title|default("Station") }}{% endblock %}</h1>
+        {% block page_meta %}{% endblock %}
+        <p class="page-header__sub">{% block subheading %}{% endblock %}</p>
+      </div>
+
+
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <!-- Use the local htmx 2.0.10 asset for offline operation. Native forms remain
+     functional if it cannot load. sha256
+     71ea67185bfa8c98c39d31717c6fce5d852370fcdfd129db4543774d3145c0de; verify with
+     sha256sum station_ui/static/htmx.min.js. -->
+  <script src="/static/htmx.min.js" defer></script>
+  <script src="/static/crash.js" defer></script>
+  {# Load shared ANSI rendering before inline stream readers; plain-text fallback
+     remains available. #}
+  <script src="/static/ansi.js" defer></script>
+  {# Preserve expanded log details across polling swaps. #}
+  <script src="/static/details_state.js" defer></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,46 @@
+# One Python environment for the GEAR UMI and GEAR DexUMI data-collection software
+# and the GEAR Neck control software.
+#
+# From this folder, the repository root:
+#
+#   uv sync              # install every project into ./.venv
+#   uv run umi_dc        # start the UMI station console in the browser
+#   uv run dexumi_dc     # start the DexUMI data-collection GUI in the browser
+#   uv sync --package gear-neck   # install only the GEAR Neck tools
+#
+# Each project keeps its dependencies in its own pyproject.toml. This file joins
+# them in a uv workspace, so they resolve into one uv.lock and install into one
+# .venv. Run `uv sync` here and not inside a project folder: there it removes
+# the packages that only the other projects need.
+
+[tool.uv.workspace]
+members = [
+    "UMIverse_software/umi/data_collection_scripts",
+    "UMIverse_software/dexumi/data_collection_scripts",
+    # The GEAR Neck control software and its neck_* commands.
+    "GEAR_Neck/files/software/neck_control",
+    # The umi_dc and dexumi_dc commands.
+    "tools/data_collection",
+]
+
+[tool.uv]
+# Every dependency group of every member: the station packages (`data_collection`,
+# DexUMI's `ik` and `dc_ui`) and UMI's lint and test tools (`dev`).
+default-groups = "all"
+# Use the system Python. Changing this makes uv switch to its own managed
+# interpreter, which rebuilds the venv on every station and invalidates CI caches.
+python-preference = "system"
+# uv reads these settings only from the workspace root, so the UMI project's
+# override lives here.
+override-dependencies = [
+    "tyro>=1.0.6",
+]
+# DexUMI's Pinocchio (`ik` group, pin 3.7.x) leaves these native libraries
+# unbounded. Hold them at the versions pin 3.7.0 runs with in the upstream
+# DexUMI pipeline, whose license texts are retained in LICENSES/DexUMI/.
+constraint-dependencies = [
+    "cmeel==0.59.0",
+    "cmeel-tinyxml2==10.0.0",
+    "cmeel-urdfdom==4.0.1",
+    "cmeel-zlib==1.3.1",
+]

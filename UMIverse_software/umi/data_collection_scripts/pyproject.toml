@@ -1,0 +1,145 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+
+[project]
+name = "umi"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "click<8.2.0",
+    "depthai>=3.2.1",
+    "opencv-python>=4.12.0.88",
+    # Detect the primary monitor for preview sizing; desktop-wide bounds can
+    # span multiple monitors.
+
+
+    "screeninfo>=0.8.1",
+    "pyserial>=3.5",
+    "pyzmq>=27.1.0",
+    "scipy>=1.16.3",
+    # Pins the BLAS thread pool during intrinsics calibration solves.
+    "threadpoolctl>=3.6.0",
+    "zarr>=3.1.5",
+    "matplotlib>=3.10.8",
+    "ray==2.48.0",
+    "tyro>=1.0.6",
+    "tqdm>=4.67.1",
+    "PyYAML>=6.0",
+    # Config assembly imports ruamel.yaml at server startup, so include it
+    # in base dependencies.
+
+
+
+    "ruamel.yaml>=0.18",
+    # Station web UI. python-multipart is imported at route-definition time by
+    # any FastAPI Form(...) route, so without it the app does not start at all.
+    "fastapi>=0.128.0",
+    "uvicorn>=0.40.0",
+    "jinja2>=3.1.0",
+    "python-multipart>=0.0.9",
+]
+
+
+[dependency-groups]
+dev = [
+    "ipdb",
+    "ipykernel>=7.1.0",
+    "isort>=7.0.0",
+    "pre-commit>=4.0.0",
+    "pytest>=9.0.2",
+    "pytest-xdist>=3.8.0",
+    "ruff>=0.14.10",
+    "httpx>=0.28.1",
+    "uvicorn>=0.40.0",
+    "fastapi>=0.128.0",
+]
+
+data_collection = [
+    "ruamel.yaml>=0.18",
+    # Use the prebuilt Python 3.12 Record3D wheel to avoid compiler dependencies
+    # on collection stations.
+
+
+
+    "record3d>=1.4.1",
+    # Include monitor detection in the station dependency group.
+
+
+    "screeninfo>=0.8.1",
+    # Station web UI — a station installs this group and nothing else, so these
+    # must be declared here and not merely reached transitively via another group.
+    "fastapi>=0.128.0",
+    "uvicorn>=0.40.0",
+    "jinja2>=3.1.0",
+    "python-multipart>=0.0.9",
+    # Install LeRobot conversion dependencies on the station for offline use.
+    # Keep them consistent with the converter's PEP 723 script metadata.
+
+
+
+
+    "av",
+    "numpy",
+    "pandas",
+    "pyarrow",
+    # Upgrade torch and torchcodec together for binary compatibility. Use CPU
+    # wheels on Linux because conversion does not require CUDA.
+
+
+    "torch==2.14.*",
+    "torchcodec==0.17.*",
+]
+
+# The root uv workspace shares the UMI/DexUMI environment and owns Python
+# preference/dependency overrides; package indexes remain here.
+
+
+
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu", marker = "sys_platform == 'linux'" }
+torchcodec = { index = "pytorch-cpu", marker = "sys_platform == 'linux'" }
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+exclude = [
+    "examples",
+]
+force-exclude = true
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]
+
+# First-party packages for ruff's import sorting (I001), so local packages such
+# as station_ui are grouped after third-party imports.
+[tool.ruff.lint.isort]
+known-first-party = [
+    "real_scripts",
+    "station_ui",
+    "tests",
+    "umi",
+]
+
+[tool.isort]
+profile = "black"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# Report only the 25 slowest tests; a duration line for every test buries the
+# failures at the end of the log.
+addopts = ["--durations=25"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]

@@ -1,0 +1,63 @@
+{# Auto-scan without submitting form fields. Poll only while discovery runs, and
+   refresh device options out of band without replacing inputs or unsaved values.
+   Without JavaScript, Refresh remains a normal form submit. #}
+<span class="scan-strip row" id="config-scan" role="status"
+  {% if scan_auto and can_edit %}
+    hx-post="/config/devices/scan"
+    hx-trigger="load"
+    hx-params="none"
+    hx-target="#config-scan"
+    hx-swap="outerHTML"
+  {% elif scan_running %}
+    hx-get="/config/devices/status"
+    hx-trigger="load delay:2s"
+    hx-target="#config-scan"
+    hx-swap="outerHTML"
+  {% endif %}>
+
+  {# Refresh this control with the scan so it unlocks only when inventory is ready. #}
+  <button class="btn btn--primary" type="button" data-identify-open
+          {% if not can_edit or scan_running or scan_count is none %}disabled aria-disabled="true"{% endif %}>Identify Cameras</button>
+
+  {% if scan_failure or scan_error or scan_running or scan_count is none %}
+  <span class="badge {% if scan_failure or scan_error %}badge--error{% elif scan_running %}badge--warn{% endif %}">
+    <span class="badge__icon" aria-hidden="true">
+      {% if scan_failure or scan_error %}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M6 6 L18 18"></path><path d="M18 6 L6 18"></path>
+        </svg>
+      {% elif scan_running %}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+          <path d="M12 4 L22 20 L2 20 Z"></path>
+        </svg>
+      {% else %}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M5 12 L19 12"></path>
+        </svg>
+      {% endif %}
+    </span>
+
+    {% if scan_error %}Refused
+    {% elif scan_failure %}Refresh failed
+    {% elif scan_running %}Refreshing
+    {% else %}Not refreshed yet{% endif %}
+  </span>
+  {% endif %}
+
+
+  {% if scan_error %}
+    <span class="scan-strip__note field__warn">{{ scan_error }}</span>
+  {% elif scan_failure %}
+    <span class="scan-strip__note field__warn">{{ scan_failure }} — type device names by hand.</span>
+  {% endif %}
+
+  <button class="btn btn--accent" type="submit" formaction="/config/devices/scan"
+          {% if not can_edit or scan_running %}disabled aria-disabled="true"{% endif %}>
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M20 11a8 8 0 1 0-2.3 6"></path>
+      <path d="M20 4 L20 11 L13 11"></path>
+    </svg>
+    {% if scan_running %}Refreshing…{% else %}Refresh devices{% endif %}
+  </button>
+
+</span>

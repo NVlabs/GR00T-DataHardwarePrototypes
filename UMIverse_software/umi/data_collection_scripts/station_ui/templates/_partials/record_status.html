@@ -1,0 +1,332 @@
+{# Render all recording states server-side for normal navigation and HTMX updates. #}
+<div class="section" id="record-status">
+  {% if config_update %}
+    <div class="banner banner--ok" role="status">{{ config_update.notice }}</div>
+    {% if config_update.warnings %}
+      <div class="banner banner--warn" role="status">
+        Saved, but some cameras have not been checked.
+        {{ config_update.warned_devices|join(", ") }} — the default picture size was used.
+        Refresh devices, then start the action again.
+      </div>
+    {% endif %}
+    {# Refresh session identity after saves without replacing unsaved configuration
+       inputs. #}
+    <output class="path mono" id="session-folder" aria-labelledby="folder-label" hx-swap-oob="outerHTML">{{ config_update.folder }}</output>
+    <output class="path mono" id="session_uid" aria-labelledby="uid-label" hx-swap-oob="outerHTML">{{ config_update.uid }}</output>
+  {% endif %}
+  {% include "_partials/record_session.html" %}
+  {# Keep Start refusals inside the swapped recording card and announce them as
+     alerts. #}
+  {% if error %}
+    <div class="banner banner--error" role="alert">
+      <span class="banner__icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M9 9 L15 15"></path><path d="M15 9 L9 15"></path>
+        </svg>
+      </span>
+      <div><b>Recording did not start.</b> {{ error }}</div>
+    </div>
+  {% endif %}
+  <div class="section__header">
+    <h2>Recording</h2>
+
+    <span class="badge{% if status.tone %} badge--{{ status.tone }}{% endif %}">
+      {% if status.icon == "recording" %}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <circle cx="12" cy="12" r="7"></circle>
+        </svg>
+      {% elif status.icon == "stopped" %}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 13 L9 17 L19 7"></path>
+        </svg>
+      {% elif status.icon == "failed" %}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M9 9 L15 15"></path>
+          <path d="M15 9 L9 15"></path>
+        </svg>
+      {% elif status.icon == "pending" %}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M12 7 L12 12 L15 14"></path>
+        </svg>
+      {% else %}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="7"></circle>
+        </svg>
+      {% endif %}
+      {{ status.label }}
+    </span>
+  </div>
+
+  {% if error %}
+    <div class="banner banner--error" role="alert">
+      <span class="banner__icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M9 9 L15 15"></path>
+          <path d="M15 9 L9 15"></path>
+        </svg>
+      </span>
+      <div>{{ error }}</div>
+    </div>
+  {% endif %}
+
+  {% if status.detail %}
+    <p class="muted">{{ status.detail }}</p>
+  {% endif %}
+
+  <div class="card stack">
+    {# Base recording liveness on the process group, not a local job object: adoption
+       and surviving workers can outlive it. #}
+    {# Poll autonomous process-group transitions only when no job SSE stream is
+       active. Keep this watcher outside forms so it cannot inherit hx-confirm. Stop
+       rendering it when state is stable. #}
+    {% if needs_watch %}
+      <div id="record-watch" hx-get="/record" hx-trigger="every 1s"
+           hx-select="#record-status" hx-target="#record-status"
+           hx-swap="outerHTML"></div>
+    {% endif %}
+    {# Keep Start, Stop and Force stop in fixed slots so a repeat click cannot land
+       on a different action after a status swap. Separate Force stop as recovery. #}
+    {# Keep the current Start blocker and its aria-describedby target inside the
+       swapped card. Place changing explanatory content where it cannot move a
+       different action under a click. #}
+    {% if can_edit and not guard %}
+      {% if recording_live %}
+        <p class="muted" id="record-why">
+          A recording is in progress. Stop it before starting another.
+        </p>
+      {% elif just_stopped %}
+        <p class="muted" id="record-why">
+          The previous recording has ended — check the output below before
+          starting another.
+        </p>
+      {% elif blocked %}
+        <p class="muted" id="record-why">
+          <b>{{ blocked.step }} is not done.</b> {{ blocked.message }}
+          <a href="{{ {'/': '#setup', '/config': '#configuration', '/calibration': '#calibration'}.get(blocked.href, blocked.href) }}">{{ blocked.action }}</a>
+        </p>
+      {% endif %}
+    {% endif %}
+
+    <div class="row record-actions">
+      {# Use a real form for no-JavaScript launch. Server readiness is authoritative;
+         browser confirmation is supplementary. The external calibration field joins
+         the form through the native form attribute. #}
+      {% if review_items and not recording_live %}
+        <div class="record-review" id="record-review" role="status">
+          <h3>Before you start</h3>
+          <ul class="record-review__list">
+            {% for item in review_items %}
+              <li class="record-review__item record-review__item--{{ item.level }}">
+                <strong>{{ item.section }}:</strong> {{ item.message }}
+                <a href="{{ item.href }}">{{ item.action }}</a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% elif not recording_live and not guard %}
+        <p class="muted" id="record-review">Everything is ready.</p>
+      {% endif %}
+      {% if config and not guard and not review_items %}
+        <p class="{{ 'field__warn' if warn_only_checks else 'muted' }}" id="record-check-policy">
+          {% if warn_only_checks %}
+            <strong>Warn only:</strong> {{ warn_only_checks|join(', ') }}. These checks will not stop a recording that is missing this data, and LeRobot conversion can fail on it. Enforce them under Recording checks in Configuration, then press Start again.
+          {% else %}
+            Recording checks: all enforced.
+          {% endif %}
+        </p>
+      {% endif %}
+      {% if can_edit and not guard %}
+        <form id="record-start" method="post" action="/record/start"
+              hx-post="/record/start"
+              hx-target="#record-status"
+              hx-swap="outerHTML"
+              hx-confirm="{{ confirmation }}" data-confirm-base="{{ confirmation }}">
+          {# Expose disabled state and its reason accessibly, then revalidate on
+             POST. A short post-exit cooldown prevents accidental restarts. Countdown
+             polling must stay outside this form to avoid inheriting hx-confirm. #}
+          <button class="btn btn--primary" type="submit" form="configuration-form"
+                  formaction="/record/start" hx-post="/record/start"
+                  hx-target="#record-status" hx-swap="outerHTML"
+                  hx-confirm="{{ confirmation }}" data-confirm-base="{{ confirmation }}"
+                  {% if recording_live or just_stopped or blocked %}
+                  disabled aria-disabled="true"
+                  aria-describedby="record-why"
+                  {% endif %}>
+            Start recording{% if just_stopped %} ({{ start_ready_in }}s){% endif %}
+          </button>
+        </form>
+      {% endif %}
+
+      {# Read-only tabs can see active recorder controls but cannot operate them.
+         Per-episode keys remain in the station's native preview. #}
+      {% if not guard and (can_edit or recording_live) %}
+        <form method="post" action="/record/stop"
+              hx-post="/record/stop"
+              hx-target="#record-status"
+              hx-swap="outerHTML"
+              hx-confirm="{{ stop_confirmation }}">
+          <button class="btn btn--danger" type="submit"
+                  {% if not can_edit or not recording_live or stopping_for is not none %}disabled aria-disabled="true"{% endif %}>
+            Stop recording
+          </button>
+        </form>
+      {% endif %}
+
+      <form class="record-actions__last" method="post" action="/record/pkill"
+            hx-post="/record/pkill"
+            hx-target="#record-status"
+            hx-swap="outerHTML"
+            hx-confirm="Force kill record_data? This sends SIGKILL by process name and clears the recording lock. Any in-progress alignments will be lost.">
+        <button class="btn btn--danger" type="submit">
+          Force kill
+        </button>
+      </form>
+    </div>
+
+    {% if recording_live %}
+      {# Keep changing keyboard guidance below action buttons so it cannot move their
+         targets; hide it during shutdown. #}
+      {% if stopping_for is none %}
+        <p class="muted">
+          Start, save and discard episodes with <kbd>s</kbd>, <kbd>w</kbd> and
+          <kbd>a</kbd> in the recorder window.
+        </p>
+      {% endif %}
+      {# Explain surviving workers and offer recovery while the process group still
+         locks the rig. #}
+      {% if stragglers %}
+        <div class="banner banner--warn" role="status">
+          <span class="banner__icon" aria-hidden="true">!</span>
+          <div>
+            <b>The recorder has exited, but {{ stragglers|length }} of its
+            process(es) are still running.</b>
+            They still hold the cameras, so this station is not free yet. This
+            usually clears itself within a few seconds.
+            <span class="mono">{{ stragglers|map(attribute="pid")|join(", ") }}</span>
+            {# When only orphaned descendants remain, ordinary Stop has no leader to
+               signal. Offer explicit force cleanup without waiting for a nonexistent
+               drain. #}
+            <form method="post" action="/record/force-stop"
+                  hx-post="/record/force-stop"
+                  hx-target="#record-status"
+                  hx-swap="outerHTML"
+                  hx-confirm="Force stop the leftover processes? Nothing is recording; this kills what the recorder left behind.">
+              <button class="btn btn--danger" type="submit"
+                      {% if not can_edit %}disabled aria-disabled="true"{% endif %}>
+                Force stop leftovers
+              </button>
+            </form>
+          </div>
+        </div>
+      {% endif %}
+      {% if stopping_for is not none %}
+        {# Display shutdown phase and output age beside the Force stop countdown.
+           Healthy alignment can be silent for minutes; the countdown alone cannot
+           establish a hang. #}
+        {# Poll this shutdown block without replacing the recording card or
+           restarting its EventSource. Remove the poller when draining ends; the
+           stream reload supplies final state. #}
+        <div class="stopping" role="status" id="stopping"
+             hx-get="/record" hx-trigger="every 1s"
+             hx-select="#stopping" hx-target="#stopping" hx-swap="outerHTML">
+          <p class="stopping__line">
+            Stopping for {{ stopping_for|round|int }}s
+            {%- if last_output_age is not none %} —
+            {{ last_output_age }}s since the last output{% endif %}.
+          </p>
+          {# Distinguish hardware teardown from alignment drain. Report sustained
+             kernel blocking ahead of either because signals cannot complete until
+             the kernel call returns. #}
+          {% if kernel_blocked %}
+            <p class="banner banner--error" role="alert">
+              <b>The recorder is blocked on a device.</b> It has been stuck in
+              the kernel for {{ blocked_for|round|int }}s, which is what a
+              disconnected camera or USB link looks like. Force stop cannot
+              release it — no signal can. This station needs a reboot.
+            </p>
+          {% elif drain_started %}
+            <p class="muted">
+              Cameras and grippers are released. Queued alignments are finishing —
+              a large episode can be silent for several minutes; this is normal.
+            </p>
+          {% elif shutdown_phase %}
+            <p class="muted">
+              Closing cameras and grippers. This is usually quick; if it stays
+              here, a camera has probably disconnected.
+            </p>
+          {% else %}
+            {# When no phase marker is available, show only known shutdown state. #}
+            <p class="muted">
+              Waiting for the recorder to finish shutting down.
+            </p>
+          {% endif %}
+          <form method="post" action="/record/force-stop"
+                hx-post="/record/force-stop"
+                hx-target="#record-status"
+                hx-swap="outerHTML"
+                hx-confirm="Force stop? Queued alignments will not finish.">
+            <button id="force-stop" class="btn btn--danger" type="submit"
+                    {% if not force_ready or not can_edit %}disabled aria-disabled="true"{% endif %}>
+              Force stop{% if not force_ready %} ({{ force_remaining }}s){% endif %}
+            </button>
+          </form>
+        </div>
+      {% endif %}
+    {% endif %}
+
+    {% if guard %}
+      <p class="muted">{{ guard }}</p>
+    {% endif %}
+
+  </div>
+
+  <h3 id="record-output">Recorder output</h3>
+  {# Render the log server-side with aria-live off; per-frame progress redraws must
+     not be announced continuously. #}
+  {# An adopted recorder has no captured pipe from its former console; explain
+     unavailable output rather than displaying a misleading empty log. #}
+  {% if recording_live and not job %}
+    <p class="muted">
+      Not available for this recording. It was adopted after a console restart,
+      and its output went to the process that started it.
+    </p>
+  {% endif %}
+  <pre class="job-log" id="record-log" role="log" aria-labelledby="record-output"
+       aria-live="off">{% for line in log_lines %}{{ line|ansi }}
+{% endfor %}</pre>
+
+  {% if job and not job.finished %}
+    <script>
+      /* Enhance the rendered snapshot with native EventSource; no JavaScript still
+         leaves a readable server-side log. */
+      (function () {
+        if (window.__recordStream) { window.__recordStream.close(); }
+        var log = document.getElementById("record-log");
+        var source = new EventSource("/record/stream/{{ job.id }}");
+        window.__recordStream = source;
+        /* Clear the rendered buffer on stream open because replay begins at line
+           zero, including reconnects. */
+        source.onopen = function () {
+          if (log) { log.textContent = ""; }
+        };
+        source.onmessage = function (event) {
+          if (!log) { return; }
+          var atBottom = log.scrollTop + log.clientHeight >= log.scrollHeight - 4;
+          window.appendLogLine(log, event.data);
+          if (atBottom) { log.scrollTop = log.scrollHeight; }
+        };
+        source.addEventListener("end", function () {
+          source.close();
+          window.__recordStream = null;
+          /* Reload on completion so final status and exit code remain
+             server-derived. */
+          if (window.refreshWorkflowStatus) window.refreshWorkflowStatus(); else window.location.reload();
+        });
+      })();
+    </script>
+  {% endif %}
+</div>

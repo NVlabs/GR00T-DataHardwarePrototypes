@@ -1,0 +1,1266 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/* Station UI: GEAR_UMI documentation styling.
+ * Presentation only; statuses retain their icons and words.
+ */
+
+:root {
+  --color-bg: #FFFFFF; --color-surface: #F3F4EE;
+  --color-surface-alt: #FFFFFF; --color-border: #E3E6E1;
+  --color-primary: #8BD62A;
+  --color-text: #1B1F1A; --color-text-2: #5B625A; --color-text-3: #5B625A;
+  --color-code: #3F6B0C; --color-focus: #3F6B0C;
+  --color-header: #151D16; --color-header-text: #E2ECDA;
+  --color-header-error: #FFB1A8;
+  --status-ok: #3F6D20; --status-warn: #805700; --status-error: #AD3028;
+  --status-info: #3F6B0C;
+  --tint-ok: #EDF4E5; --tint-warn: #FFF4D9;
+  --tint-error: #FFF0ED; --tint-info: #EDF4E9;
+  --space-1: 4px; --space-2: 8px; --space-3: 12px;
+  --space-4: 16px; --space-6: 24px; --space-8: 32px;
+  --radius: 3px; --radius-lg: 4px;
+  --dur-fast: 150ms; --dur: 200ms; --ease: cubic-bezier(.2,0,.2,1);
+  --font-ui: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────────── */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-ui);
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+h1, h2, h3 { margin: 0; font-weight: 600; line-height: 1.3; letter-spacing: -.025em; }
+h1 { font-size: 3.2rem; line-height: 1.1; letter-spacing: -.04em; font-weight: 700; }
+h2 { font-size: 1.6rem; letter-spacing: -.02em; }
+h3 { font-size: 1.2rem; }
+
+a { color: var(--color-code); }
+
+/* Use monospace accent styling for identifiers that operators may copy or compare. */
+code, kbd, pre, .mono { font-family: var(--font-mono); color: var(--color-code); }
+
+/* Live values must not reflow as they tick. */
+.num, .device-row__value, .job-log { font-variant-numeric: tabular-nums; }
+
+/* Focus rings are never removed. */
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius);
+}
+
+/* ── Skip link ────────────────────────────────────────────────────────────── */
+
+.skip-link {
+  position: absolute;
+  left: var(--space-2);
+  top: -100px;
+  z-index: 100;
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  text-decoration: none;
+}
+.skip-link:focus { top: var(--space-2); }
+
+/* ── Shell ────────────────────────────────────────────────────────────────── */
+
+.shell { display: flex; flex-direction: column; min-height: 100vh; }
+
+/* Bound content width for readable forms while keeping header bands full-width. */
+.container {
+  width: 100%;
+  max-width: 1180px;
+  margin-inline: auto;
+  padding-inline: var(--space-6);
+}
+
+
+.appbar {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+/* Keep the header compact so workflow controls remain visible on short monitors. */
+.appbar__inner {
+  display: flex;
+  min-height: 52px;
+  align-items: center;
+  gap: var(--space-3);
+  padding-block: var(--space-2);
+}
+
+.appbar__title {
+  color: var(--color-header-text);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: .3px;
+}
+/* Station identity is metadata, distinct from status badges. */
+.appbar__identity {
+  margin-left: auto;
+  padding: 3px var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface-alt);
+  color: var(--color-text-2);
+  font-size: 12px;
+}
+
+.brand { display: flex; align-items: center; gap: var(--space-2); font-weight: 600; }
+.brand__mark { color: var(--color-primary); display: flex; }
+
+.topbar__meta { color: var(--color-text-3); font-size: 12px; }
+/* Hide the unused flex slot so its gap does not displace the identity strip. */
+.topbar__meta:empty { display: none; }
+
+
+.tabbar { background: var(--color-surface-alt); border-bottom: 1px solid var(--color-border); }
+
+/* Derive equal-width navigation columns from the step list instead of a fixed step
+   count. */
+.nav {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 0;
+}
+
+.nav__link {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+
+  border-right: 1px solid var(--color-border);
+  border-bottom: 3px solid transparent;
+  color: var(--color-text-2);
+  font-size: 13px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.nav__link:last-child { border-right: 0; }
+.nav__link:hover { background: var(--color-surface); color: var(--color-text); }
+.nav__link[aria-current="page"] {
+  background: var(--color-bg);
+  color: var(--color-text);
+  border-bottom-color: var(--color-primary);
+}
+/* Use tabular digits so step numbers do not shift during updates. */
+.nav__step { color: var(--color-text-3); font-variant-numeric: tabular-nums; }
+/* Pair the completion glyph with accessible text; color alone must not convey
+   progress. */
+.nav__done { display: flex; align-items: center; }
+
+/* Use aria-disabled and contrast-tested text tokens for unavailable steps. Opacity
+   would reduce text contrast below the measured threshold. */
+.nav__link--disabled {
+  color: var(--color-text-3);
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+
+.main { flex: 1; padding-block: var(--space-6); }
+
+/* Stack title and subtitle to avoid overflowing narrow content widths. */
+.page-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-bottom: var(--space-4);
+}
+.page-header__sub { margin: 0; color: var(--color-text-2); max-width: 76ch; }
+
+/* ── Card / section ───────────────────────────────────────────────────────── */
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+}
+
+.section { margin-bottom: var(--space-6); }
+.section__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+.section__action { margin-left: auto; }
+
+/* ── Preset card ──────────────────────────────────────────────────────────── */
+
+/* The form is the grid item; stretch its button to keep card heights aligned. */
+/* Use two columns to keep preset cards readable at station-monitor widths. */
+.preset-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 900px; }
+.preset-card-form { margin: 0; height: 100%; }
+
+.preset-card {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  color: var(--color-text);
+  font: inherit;
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+.preset-card { height: 100%; }
+.preset-card:hover { transform: translateY(-2px); border-color: var(--color-text-3); }
+.preset-card[aria-pressed="true"] { border-color: var(--color-primary); }
+
+/* Keep controls visible but disabled in non-owning tabs; do not reduce text opacity. */
+.preset-card:disabled {
+  background: var(--color-surface);
+  color: var(--color-text-3);
+  cursor: not-allowed;
+}
+.preset-card:disabled:hover { transform: none; border-color: var(--color-border); }
+
+.preset-card__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: var(--space-2);
+}
+/* The radio glyph is decorative; aria-pressed and the Selected label expose state. */
+.preset-card__radio {
+  flex: none;
+  width: 16px; height: 16px;
+  border: 2px solid var(--color-text-3);
+  border-radius: 50%;
+}
+.preset-card[aria-pressed="true"] .preset-card__radio {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  box-shadow: inset 0 0 0 3px var(--color-surface);
+}
+.preset-card__desc { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+
+/* Expose selection through both a glyph and text. */
+.preset-card__state {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-left: var(--space-2);
+  font-weight: 400;
+}
+
+/* ── Pill (metadata label) ────────────────────────────────────────────────── */
+
+/* Pills label metadata. Status badges carry a glyph and text; keep the two visually
+   distinct. */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px var(--space-2);
+  border: 1px solid var(--color-code);
+  border-radius: 11px;
+  background: var(--color-surface-alt);
+  color: var(--color-code);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* ── Device row ───────────────────────────────────────────────────────────── */
+
+.device-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.device-row:last-child { border-bottom: none; }
+.device-row__name { font-weight: 500; }
+.device-row__value { color: var(--color-text-2); margin-left: auto; }
+
+.device-row .field { flex: 1; margin-bottom: 0; }
+.device-row__action { margin-left: auto; align-self: flex-end; }
+
+/* ── Badge (status) ───────────────────────────────────────────────────────── */
+
+/* Pair every status color with an icon and readable text. */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface-alt);
+  color: var(--color-text-2);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.badge__icon { display: flex; }
+
+.badge--ok { color: var(--status-ok); border-color: var(--status-ok); background: var(--tint-ok); }
+.badge--warn { color: var(--status-warn); border-color: var(--status-warn); background: var(--tint-warn); }
+.badge--error { color: var(--status-error); border-color: var(--status-error); background: var(--tint-error); }
+
+/* ── Banner ───────────────────────────────────────────────────────────────── */
+
+.banner {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-left-width: 3px;
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+.banner__icon { display: flex; flex: none; }
+/* Combine warning tint, icon and text so resolution/fov warnings remain noticeable
+   without relying on color alone. */
+.banner--warn { border-left-color: var(--status-warn); background: var(--tint-warn); }
+.banner--warn .banner__icon { color: var(--status-warn); }
+.banner--error { border-left-color: var(--status-error); background: var(--tint-error); }
+.banner--error .banner__icon { color: var(--status-error); }
+.banner--ok { border-left-color: var(--status-ok); background: var(--tint-ok); }
+.banner--ok .banner__icon { color: var(--status-ok); }
+.banner--info { border-left-color: var(--status-info); background: var(--tint-info); }
+.banner__action { margin-left: auto; }
+
+.banner__text--lg { font-size: 18px; font-weight: 700; }
+
+/* ── Buttons ──────────────────────────────────────────────────────────────── */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+/* Lighten the hover border without darkening the label's background below its tested
+   contrast. */
+.btn:hover { background: var(--color-surface-alt); border-color: var(--color-text-3); }
+
+
+.btn--primary {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-text);
+  font-weight: 600;
+}
+/* Use color-mix rather than opacity so hover styling does not reduce label contrast. */
+.btn--primary:hover {
+  background: color-mix(in srgb, var(--color-primary), var(--color-text) 10%);
+}
+
+.btn--danger { border-color: var(--status-error); color: var(--status-error); }
+
+/* Distinguish device refresh with an icon and outline while reserving primary
+   styling for Apply. */
+.btn--accent {
+  border-color: var(--color-code);
+  border-width: 2px;
+  color: var(--color-code);
+  font-weight: 600;
+}
+
+/* Use disabled color tokens rather than opacity to retain text contrast. */
+.btn:disabled, .btn[aria-disabled="true"] {
+  background: var(--color-surface-alt);
+  color: var(--color-text-3);
+  cursor: not-allowed;
+}
+
+
+.btn[aria-busy="true"] { cursor: progress; }
+
+/* ── Forms ────────────────────────────────────────────────────────────────── */
+
+/* Keep visible labels; placeholders are not labels. */
+.field { display: flex; flex-direction: column; gap: var(--space-1); margin-bottom: var(--space-4); }
+.field__label { color: var(--color-text-2); font-size: 12px; }
+
+.field__error {
+  color: var(--status-error);
+  background: var(--tint-error);
+  border-left: 2px solid var(--status-error);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: var(--space-1) var(--space-2);
+  font-size: 12px;
+}
+/* Distinguish nonblocking field warnings from validation errors with an icon and
+   text. */
+.field__warn { color: var(--status-warn); font-size: 12px; }
+
+.input, .select {
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  color: var(--color-text);
+  font: inherit;
+  min-width: 0;
+}
+.input[aria-invalid="true"] { border-color: var(--status-error); }
+
+/* Preserve contrast for read-only and disabled controls. */
+.input[readonly], .select:disabled { color: var(--color-text-3); cursor: not-allowed; }
+
+/* Reserve input padding for the overlaid dropdown button so long identifiers cannot
+   run beneath it. */
+.combo { position: relative; display: flex; }
+.combo .input { flex: 1; padding-right: calc(var(--space-3) + 20px); }
+.combo__toggle {
+  position: absolute;
+  right: 1px; top: 1px; bottom: 1px;
+  width: calc(var(--space-3) + 18px);
+  display: flex; align-items: center; justify-content: center;
+  background: none;
+  border: 0;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  color: var(--color-text-2);
+  cursor: pointer;
+}
+.combo__toggle:hover { color: var(--color-text); background: var(--color-surface); }
+.combo--open .combo__toggle svg { transform: rotate(180deg); }
+
+
+.combo__list {
+  position: absolute;
+  top: calc(100% + 2px); left: 0; right: 0;
+  z-index: 20;
+  max-height: 260px;
+  overflow-y: auto;
+  margin: 0;
+  padding: var(--space-1);
+  list-style: none;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 12px rgb(23 32 24 / 12%);
+}
+.combo__option {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.combo__option:hover,
+.combo__option[aria-selected="true"] { background: var(--color-surface-alt); }
+.combo__value { font-family: var(--font-mono); color: var(--color-text); }
+
+.combo__note { color: var(--color-text-3); font-size: 12px; }
+.combo__empty { padding: var(--space-2) var(--space-3); color: var(--color-text-3); font-size: 12px; }
+/* Distinguish a proposed new task from existing registry choices. */
+.combo__option--new {
+  flex-direction: row;
+  align-items: baseline;
+  gap: var(--space-2);
+  background: var(--tint-info);
+  border-left: 2px solid var(--status-info);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  margin-bottom: var(--space-1);
+}
+
+.combo__option--new:hover,
+.combo__option--new[aria-selected="true"] {
+  background: var(--tint-info);
+  box-shadow: inset 0 0 0 1px var(--status-info);
+}
+.combo__action { font-weight: 600; white-space: nowrap; }
+
+/* Reserve one message line so empty and connected device cards stay aligned. */
+.field__foot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-height: 16px;
+}
+
+
+.field__hint { color: var(--color-text-3); font-size: 12px; }
+
+/* Emphasize successful manual probes as well as failures. */
+.field__hint--ok { color: var(--status-ok); font-size: 14px; font-weight: 600; }
+
+
+.path {
+  display: block;
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  color: var(--color-code);
+  word-break: break-all;
+}
+
+/* Keep each checkbox and label in one accessible click target. */
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+  color: var(--color-text-2);
+}
+
+/* ── Calibration plot ─────────────────────────────────────────────────────── */
+
+/* Fit saved calibration plots to their card without changing aspect ratio. */
+.cal-plot {
+  display: block;
+  width: 100%;
+  max-width: 720px;
+  height: auto;
+  margin-top: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface-alt);
+}
+
+
+.job-details > summary {
+  cursor: pointer;
+  color: var(--color-text-2);
+  font-size: 13px;
+  padding: var(--space-1) 0;
+}
+.job-details > summary:hover { color: var(--color-text); }
+
+/* ── Job log ──────────────────────────────────────────────────────────────── */
+
+.job-log {
+  /* Scale log height with the viewport, retaining a 320 px readability minimum. */
+  max-height: max(320px, 55vh);
+  overflow-y: auto;
+  padding: var(--space-3);
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  color: var(--color-text-2);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  white-space: pre-wrap;
+}
+
+/* Match server/client ANSI classes. Test colors against the log surface and keep
+   subprocess colors distinct from console status semantics. */
+.ansi-r { color: #AD3028; }
+.ansi-g { color: #3F6D20; }
+.ansi-y { color: #805700; }
+.ansi-bl { color: #246499; }
+.ansi-m { color: #77428C; }
+.ansi-c { color: #217367; }
+.ansi-w { color: var(--color-text); }
+.ansi-k { color: var(--color-text-3); }
+.ansi-b { font-weight: 600; }
+
+
+/* ── Audit ────────────────────────────────────────────────────────────────── */
+
+/* Use shared components so audit-page colors remain covered by contrast checks. */
+.session-list { list-style: none; }
+.session-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.session-row:last-child { border-bottom: none; }
+.session-row__name { font-family: var(--font-mono); font-weight: 500; }
+.session-row__action { margin-left: auto; }
+
+.session-row__warnings { flex-basis: 100%; }
+
+.error-list { margin: var(--space-2) 0 var(--space-2) var(--space-4); }
+
+/* ── Utilities ────────────────────────────────────────────────────────────── */
+
+/* Markers need a bright background, white quiet zone and sharp module edges for
+   camera decoding. Scale them large enough for fisheye views while leaving room for
+   prompts and results. */
+.check__qr {
+  display: block;
+  margin: var(--space-4) auto;
+  width: min(56vh, 100%);
+  height: auto;
+  background: #FFFFFF;
+  padding: var(--space-3);
+  border-radius: var(--radius);
+  /* Use the current side's accent around its marker, with a default outside a side
+     panel. */
+  box-shadow: 0 0 0 3px var(--side-accent, var(--color-primary));
+  image-rendering: pixelated;
+}
+
+/* Use consistent left/right/head/bottom accents, separate from success/warning/error
+   colors. */
+.check--left   { --side-accent: #246499; }
+.check--right  { --side-accent: #8B4C12; }
+.check--head   { --side-accent: #77428C; }
+.check--bottom { --side-accent: #217367; }
+
+.check__prompt { text-align: center; font-size: 1.05rem; }
+
+/* Make camera-opening progress visible to discourage duplicate starts during slow
+   exclusive OAK initialization. */
+.check__waiting {
+  background: var(--tint-warn);
+  border: 1px solid var(--status-warn);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+.check__waiting-line {
+  margin: 0;
+  color: var(--status-warn);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+.check__waiting .check__starting {
+  text-align: center;
+  margin: var(--space-2) 0 0;
+
+  color: var(--color-text);
+}
+
+.check__side {
+  display: inline-block;
+  font-size: 1.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.15;
+  padding: 0.05em 0.4em;
+  border-radius: var(--radius);
+
+  color: var(--color-bg);
+  background: var(--side-accent, var(--color-primary));
+}
+
+/* Pair the current-side accent with an Aiming label so active rows are identifiable
+   without color. */
+.device-row--current {
+  border-left: 4px solid var(--side-accent, var(--color-primary));
+  padding-left: var(--space-3);
+  background: var(--color-surface-alt);
+}
+.device-row__aim {
+  margin-left: var(--space-2);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--side-accent, var(--color-primary));
+}
+
+/* Display motion relative to the child-reported threshold, with a numeric millimeter
+   reading and a non-primary accent. */
+.disp-bar {
+  height: 8px;
+  border-radius: var(--radius);
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+.disp-bar__fill {
+  height: 100%;
+  background: var(--status-warn);
+  transition: width var(--dur-fast) var(--ease);
+}
+/* Untracked pucks have no displacement to draw; the adjacent status badge carries
+   the failure. */
+.disp-bar__fill--ok { background: var(--status-ok); }
+
+
+.stack { display: flex; flex-direction: column; gap: var(--space-4); }
+.row { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+
+/* Keep Start/Stop positions stable and separate Force stop as a recovery action to
+   reduce accidental clicks. */
+.record-actions__last { margin-left: auto; }
+@media (max-width: 40rem) {
+  .record-actions__last { margin-left: 0; }
+}
+.grid { display: grid; gap: var(--space-4); }
+/* Use fixed field columns so controls do not move when content changes. */
+.grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.muted { color: var(--color-text-2); }
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ── Configuration: per-arm device groups ─────────────────────────────────── */
+
+/* Keep left/right device groups in corresponding columns; stack in that order on
+   narrow screens. */
+
+.arm-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch; grid-auto-rows: 1fr; }
+/* Stack arm columns before identifier fields become too narrow to read. */
+@media (max-width: 880px) {
+  .arm-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Use real headings so arm groups remain navigable to assistive technology. */
+.card__title {
+  margin: 0;
+  font-size: 13px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--color-text-2);
+}
+
+
+.arm-grid .field { margin-bottom: 0; }
+
+
+.scan-strip { display: inline-flex; align-items: center; gap: var(--space-2); }
+.scan-strip__note { max-width: 42ch; }
+
+/* Keep discovered-device rows horizontally scrollable without overflowing the page. */
+.device-summary {
+  margin-bottom: var(--space-6);
+  text-align: center;
+}
+.device-summary .card__title { margin-bottom: var(--space-3); }
+.device-summary__status { margin: 0; }
+.device-summary__note { margin: 0 auto var(--space-4); max-width: 72ch; }
+.device-summary__scroll {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+.device-summary__table { width: 100%; border-collapse: collapse; }
+.device-summary__table th,
+.device-summary__table td {
+  padding: var(--space-3) var(--space-4);
+  text-align: center;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--color-border);
+}
+.device-summary__table th + th,
+.device-summary__table td + td { border-left: 1px solid var(--color-border); }
+.device-summary__table tbody tr:last-child td { border-bottom: 0; }
+
+.device-summary__table thead th {
+  background: var(--color-surface-alt);
+  color: var(--color-text-2);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.device-summary__id {
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+.device-summary__id:hover { text-decoration-style: solid; }
+
+
+.preview-dialog {
+  width: min(1240px, calc(100vw - 32px));
+  max-height: calc(100vh - 32px);
+  padding: var(--space-4);
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+.preview-dialog::backdrop { background: rgb(0 0 0 / 60%); }
+.preview-dialog__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+.preview-dialog__title { margin: 0; font-size: 16px; }
+.preview-dialog__header .btn { margin-left: auto; }
+.preview-dialog__status { margin: 0 0 var(--space-3); }
+.preview-dialog__image {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100vh - 220px);
+  margin: 0 auto;
+  border-radius: var(--radius);
+}
+/* Honor the hidden attribute despite explicit display styling. */
+.preview-dialog__image[hidden] { display: none; }
+.preview-dialog__note { margin: var(--space-3) 0 0; font-size: 12px; }
+
+/* ── Configuration ─────────────────────────────────────────────────────── */
+
+/* Refresh assignment figures without replacing controls or unsaved field values. */
+.arm-grid--diagrams { grid-template-columns: minmax(0, 1fr); }
+.config-arm { min-width: 0; }
+.config-arm__fields { display: grid; gap: var(--space-3); min-width: 0; }
+.config-arm--diagram { gap: var(--space-2); padding: var(--space-3) var(--space-4); }
+.config-arm--diagram > .card__title { font: 11px var(--font-mono); color: var(--color-text); letter-spacing: .06em; }
+.config-arm--diagram .config-arm__content {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(280px, 1.45fr) minmax(150px, .55fr);
+  gap: var(--space-4);
+  align-items: center;
+}
+.config-arm--diagram .gripper-diagram,
+.config-arm--diagram .gripper-diagram__content { display: contents; }
+.gripper-diagram__drawing { display: block; grid-column: 1; grid-row: 1; width: 100%; height: 205px; }
+.gripper-diagram__body { fill: var(--color-surface-alt); stroke: var(--color-text-3); stroke-width: 2; stroke-linejoin: round; }
+.gripper-diagram__part { fill: var(--color-surface-alt); stroke: var(--color-code); stroke-width: 2; }
+.gripper-diagram__part text { fill: var(--color-code); stroke: none; font: 16px var(--font-ui); }
+.gripper-diagram__screen, .gripper-diagram__lens { fill: var(--color-surface-alt); }
+.gripper-diagram__note { fill: var(--color-text-2); font: 13px var(--font-ui); }
+.gripper-diagram__part.is-mismatch { fill: var(--tint-error); stroke: var(--status-error); stroke-width: 3; }
+.gripper-diagram__part.is-mismatch text { fill: var(--status-error); font-weight: 600; }
+/* Keep renderer bindings in the SVG and editable labels beside their inputs. */
+.gripper-diagram__assignments { display: none; }
+.config-arm--diagram .config-arm__fields { grid-column: 2; grid-row: 1; gap: 3px; }
+.config-arm--diagram .field { display: grid; grid-template-columns: 124px minmax(0, 1fr); gap: 2px var(--space-2); align-items: center; }
+.config-arm--diagram .field__label { display: flex; align-items: center; gap: var(--space-3); margin: 0; }
+.config-device-number { display: grid; place-items: center; width: 25px; height: 25px; flex: 0 0 25px; border: 1.5px solid var(--color-code); border-radius: 50%; background: var(--color-surface-alt); color: var(--color-code); font-size: 13px; }
+.config-arm--diagram .combo { grid-column: 2; }
+.config-arm--diagram .input { padding-block: 5px; font-size: 12px; }
+.config-arm--diagram .field__foot { grid-column: 2; min-height: 0; gap: 2px; }
+.config-arm--diagram .field__hint { font-size: 11px; line-height: 14px; }
+.config-arm--diagram .field__foot:not(:has(*)) { display: none; }
+.gripper-diagram__status { grid-column: 3; grid-row: 1; margin: 0; padding-left: var(--space-4); border-left: 1px solid var(--color-border); font-size: 12px; color: var(--color-text-2); overflow-wrap: anywhere; }
+.gripper-diagram[data-pairing-state="mismatch"] .gripper-diagram__status { padding: var(--space-2); border-left: 3px solid var(--status-error); color: var(--status-error); background: var(--tint-error); }
+.gripper-diagram[data-pairing-state="matched"] .gripper-diagram__status { color: var(--status-ok); }
+.gripper-diagram[data-pairing-state="matched"] .gripper-diagram__status::before { content: "✓"; display: inline-grid; place-items: center; width: 23px; height: 23px; margin-right: var(--space-2); border-radius: 50%; color: var(--color-bg); background: var(--status-ok); }
+.input.input--pairing-mismatch { border-color: var(--status-error); }
+
+/* ── Optional camera card ─────────────────────────────────────────────────── */
+
+/* Stack optional-camera fields within their card without changing shared summary-row
+   layout. */
+.device-row--card {
+  flex-direction: column;
+  align-items: stretch;
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.device-row--card:last-child { border-bottom: 1px solid var(--color-border); }
+
+.device-row__head { display: flex; align-items: center; gap: var(--space-3); }
+.device-row--card .device-row__action { align-self: center; }
+
+
+.device-row__fields {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+
+/* ── Motion ───────────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── Remove confirmation, inside the row it is about ──────────────────────── */
+
+/* Use the existing warning-banner contrast tokens; card gap supplies spacing. */
+.device-row__confirm {
+  margin: 0;
+}
+
+
+/* Configuration labels */
+
+/* Hide empty subtitles so flex gaps do not reserve blank space. */
+.page-header__sub:empty { display: none; }
+
+
+.task-status { display: flex; flex-direction: column; gap: var(--space-1); }
+
+.task-status__new { margin: var(--space-2) 0 0; }
+
+
+/* ── Crash / station log ──────────────────────────────────────────────────── */
+
+
+#crash-slot:empty { display: none; }
+
+/* Increase identifier legibility for spoken/copied error IDs. Use code styling
+   rather than severity colors. */
+.error-id {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  letter-spacing: .06em;
+  color: var(--color-code);
+}
+
+/* Wrap tracebacks to keep failure expressions and caret markers visible without
+   horizontal scrolling. */
+.crash-trace { max-height: 60vh; overflow-wrap: anywhere; }
+
+/* Show the exception summary above the complete, unchanged traceback. */
+.crash-summary {
+  padding: var(--space-2) var(--space-3);
+  border-left: 2px solid var(--status-error);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: var(--tint-error);
+  color: var(--status-error);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+
+.log-entry { padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); }
+.log-entry:last-child { border-bottom: none; }
+.log-entry__head { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+.log-entry__time { color: var(--color-text-2); font-variant-numeric: tabular-nums; }
+.log-entry__badge { margin-left: auto; flex: none; }
+
+/* Use native details/summary controls for keyboard-accessible error disclosure. */
+.log-entry__more { margin-top: var(--space-3); }
+.log-entry__more > summary { cursor: pointer; color: var(--color-text-2); font-size: 12px; }
+
+/* Expose error state through text as well as an audited contrast pair. */
+.appbar__errors {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--status-error);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+
+.appbar__log {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-text-3);
+  font-size: 12px;
+  text-decoration: none;
+}
+.appbar__log:hover,
+.appbar__log:focus-visible { color: var(--color-text); }
+
+/* Make shutdown progress and the forthcoming Force stop action visible while the
+   recorder drains. */
+.stopping {
+  background: var(--tint-warn);
+  border: 1px solid var(--status-warn);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  margin-top: var(--space-4);
+}
+.stopping__line {
+  margin: 0 0 var(--space-2);
+  color: var(--status-warn);
+  font-weight: 700;
+}
+
+/* ── Shared GEAR_UMI documentation shell ────────────────────────────────── */
+.shell {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  grid-template-areas: "header header" "sidebar main";
+  max-width: 1400px;
+  margin-inline: auto;
+}
+.appbar { grid-area: header; background: var(--color-bg); }
+.appbar__inner { max-width: none; min-height: 90px; padding: 20px 40px; flex-wrap: wrap; }
+.appbar__title { display: flex; align-items: center; gap: 16px; color: var(--color-text); font-size: 2rem; font-weight: 800; letter-spacing: -.04em; line-height: 1.2; }
+.appbar__title small { border-left: 1px solid var(--color-border); padding-left: 16px; color: var(--color-text-2); font: .8rem/1.2 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
+.brand__mark { display: block; flex: 0 0 28px; width: 28px; height: 36px; background: var(--color-primary); border-radius: 2px; }
+.appbar__identity { padding: 0; border: 0; background: var(--color-bg); color: var(--color-text-2); font: .8rem var(--font-mono); }
+.appbar .appbar__log, .topbar__meta { color: var(--color-text-2); }
+.appbar .appbar__errors { color: var(--status-error); }
+.tabbar { grid-area: sidebar; position: sticky; top: 0; align-self: start; height: 100dvh; overflow-y: auto; padding: 28px 24px; border-right: 1px solid var(--color-border); border-bottom: 0; background: var(--color-bg); }
+.nav { display: flex; flex-direction: column; max-width: none; padding: 0; gap: 10px; }
+.nav__link { position: relative; justify-content: flex-start; padding: 10px 12px; border: 0; font-size: .95rem; font-weight: 500; white-space: normal; }
+.nav__link[aria-current="page"] { background: var(--color-bg); font-weight: 700; }
+.nav__link[aria-current="page"]::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 10px; width: 3px; background: var(--color-primary); border-radius: 2px; }
+.nav__step { min-width: 22px; color: var(--color-code); font: 700 .75rem/1.4 var(--font-mono); }
+.nav__done { margin-left: auto; color: var(--status-ok); }
+.main { grid-area: main; min-width: 0; max-width: 1100px; padding: 24px 48px 80px; }
+.page-header { gap: 12px; margin-bottom: 32px; }
+.card { background: var(--color-bg); padding: 24px; }
+.section { margin-bottom: 32px; }
+.section__header { flex-wrap: wrap; margin-bottom: 16px; }
+.preset-card { padding: 28px; background: var(--color-bg); }
+.preset-card:hover { transform: none; border-color: var(--color-code); }
+.preset-card[aria-pressed="true"] { border-color: var(--color-code); background: var(--color-surface); }
+.preset-card__title { flex-wrap: wrap; font-size: 1.1rem; gap: 12px; }
+.preset-card__state { color: var(--status-ok); font-size: .85rem; }
+.preset-card__radio { width: 20px; height: 20px; }
+.preset-card[aria-pressed="true"] .preset-card__radio { border-color: var(--color-code); background: var(--color-code); }
+.pill { border-color: var(--color-border); border-radius: 3px; color: var(--color-text-2); }
+.banner { padding: 20px 24px; border-width: 0 0 0 4px; }
+.btn { background: var(--color-bg); }
+.btn--primary { background: var(--color-primary); }
+.job-log { background: var(--color-surface); }
+
+.gripper-diagram {
+  --color-surface-alt: #FFFFFF;
+  --color-text-3: #626D5C;
+  --color-code: #345B3D;
+  --color-text-2: #566253;
+  --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+}
+
+.gripper-diagram__drawing { background: #F3F6EE; }
+
+.config-preset { padding-left: var(--space-4); border-left: 1px solid var(--color-border); color: var(--color-text-2); font: 11px var(--font-mono); }
+.config-session__heading { display: flex; }
+.config-session__card { display: grid; grid-template-columns: minmax(0, 1fr) auto; padding: 0; border: 0; background: var(--color-bg); gap: var(--space-2) var(--space-4); }
+.config-session { margin-bottom: var(--space-3); }
+.config-session__fields { grid-column: 1 / -1; gap: var(--space-6); align-items: start; }
+.config-session__fields > .field { display: grid; grid-template-columns: 65px minmax(0, 1fr); align-items: center; align-self: start; gap: var(--space-1) var(--space-3); margin: 0; }
+.config-session__fields .combo, .config-session__fields .input, .config-session__fields .task-status, .config-session__fields .field__error { grid-column: 2; }
+.config-session__fields .task-status { min-width: 0; }
+.config-session__path { grid-column: 1 / -1; display: grid; grid-template-columns: 170px minmax(0, 1fr); align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-4); margin: var(--space-2) 0 0; border: 1px solid var(--color-border); border-radius: var(--radius); background: var(--color-surface); }
+.config-session__path-label { display: grid; gap: var(--space-1); font-size: 11px; }
+.config-session__path-label .field__label { font: 11px var(--font-mono); color: var(--color-text); text-transform: uppercase; letter-spacing: .08em; }
+.config-session__path .path { font-size: 11px; }
+.config-session__details { display: flex; flex-wrap: wrap; gap: var(--space-4); min-width: 0; align-items: center; }
+.config-session__details .field { flex-direction: row; gap: var(--space-2); align-items: center; margin: 0; }
+.config-session__details .path { padding: 0; border: 0; font-size: 11px; }
+.config-session__details .field__label { font-size: 11px; }
+.config-session__actions .btn { padding: 4px var(--space-2); font-size: 11px; }
+.config-devices > .section__header > h2 { font-size: 1.6rem; letter-spacing: -.02em; }
+.page--configuration .device-summary { padding: 0; text-align: left; margin-bottom: var(--space-3); background: var(--color-bg); border: 0; }
+.page--configuration .device-summary .card__title { color: var(--color-text); font: 600 14px var(--font-ui); text-transform: none; letter-spacing: 0; margin-bottom: var(--space-2); }
+.page--configuration .device-summary__note { margin: 0 0 var(--space-2); max-width: none; font-size: 11px; }
+.page--configuration .device-summary__table th, .page--configuration .device-summary__table td { padding: 6px var(--space-3); text-align: left; font-size: 12px; }
+.page--configuration .device-summary__table th { background: var(--color-surface); }
+.page--configuration .device-summary__table td { background: var(--color-bg); }
+.page--configuration .btn--accent { border-width: 1px; font-weight: 400; }
+
+@media (max-width: 1200px) {
+  .config-arm--diagram .config-arm__content { grid-template-columns: minmax(150px, .7fr) minmax(260px, 1.3fr); }
+  .gripper-diagram__status { grid-column: 1 / -1; grid-row: 2; padding: var(--space-2) 0 0; border-left: 0; border-top: 1px solid var(--color-border); }
+}
+@media (max-width: 800px) {
+  .config-session__fields { grid-template-columns: minmax(0, 1fr); gap: var(--space-3); }
+  .config-session__path { grid-template-columns: minmax(0, 1fr); gap: var(--space-2); padding: var(--space-2); }
+  .config-session__path-label { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .config-session__actions { grid-column: 1 / -1; }
+}
+@media (max-width: 560px) {
+  .config-arm--diagram .config-arm__content { grid-template-columns: minmax(0, 1fr); }
+  .gripper-diagram__drawing { grid-column: 1; grid-row: 1; height: 200px; }
+  .config-arm--diagram .config-arm__fields { grid-column: 1; grid-row: 2; }
+  .gripper-diagram__status { grid-column: 1; grid-row: 3; }
+  .config-arm--diagram .field { grid-template-columns: 118px minmax(0, 1fr); }
+  .config-preset { padding-left: 0; border: 0; width: 100%; }
+}
+
+
+.config-session { margin-bottom: 32px; }
+.config-session__fields > .field { grid-template-columns: minmax(0, 1fr); }
+.config-session__fields .combo, .config-session__fields .input,
+.config-session__fields .task-status, .config-session__fields .field__error { grid-column: 1; }
+.config-session__path .path, .config-session__details .path,
+.config-session__details .field__label, .config-session__actions .btn { font-size: .8rem; }
+.config-session__path-label { font-size: .75rem; }
+.config-session__path-label .field__label { font: 600 .8rem var(--font-ui); text-transform: none; letter-spacing: 0; }
+.config-arm--diagram > .card__title { font: 600 1rem var(--font-ui); letter-spacing: 0; }
+.config-arm--diagram .input { font-size: .8rem; }
+.config-arm--diagram .field__hint { font-size: .75rem; line-height: 1.5; }
+.page--configuration .device-summary__note { font-size: .8rem; }
+.page--configuration .device-summary__table th,
+.page--configuration .device-summary__table td { font-size: .8rem; }
+
+@media (max-width: 1200px) {
+  .shell { grid-template-columns: 220px minmax(0, 1fr); }
+  .main { padding-inline: 28px; }
+  .appbar__inner { padding-inline: 28px; }
+}
+@media (max-width: 800px) {
+  .shell { display: flex; }
+  .appbar__inner { padding: 16px 24px; gap: 12px; }
+  .appbar__title { font-size: 1.6rem; }
+  .appbar__title small { font-size: .65rem; }
+  .tabbar { position: static; height: auto; padding: 8px 16px; border-right: 0; border-bottom: 1px solid var(--color-border); }
+  .nav { flex-direction: row; overflow-x: auto; gap: 12px; }
+  .nav__link { flex: 0 0 auto; padding: 10px 4px; border-bottom: 3px solid transparent; white-space: nowrap; }
+  .nav__link[aria-current="page"] { border-bottom-color: var(--color-primary); }
+  .nav__link[aria-current="page"]::before { display: none; }
+  .main { padding: 24px 24px 48px; }
+  h1 { font-size: 2.3rem; }
+  .card, .preset-card { padding: 16px; }
+  .section__action { flex-wrap: wrap; }
+}
+@media (max-width: 560px) {
+  .appbar__title small { display: none; }
+  .appbar__identity { font-size: .7rem; }
+  .preset-grid { grid-template-columns: minmax(0, 1fr); }
+  .config-session__fields > .field { grid-template-columns: minmax(0, 1fr); }
+  .config-session__details { grid-column: 1 / -1; }
+  .device-row { flex-wrap: wrap; }
+  .device-row__value { overflow-wrap: anywhere; min-width: 0; }
+}
+
+/* Constrain long session identifiers to the content width. */
+.session-list { padding-left: 0; }
+.session-row__name { min-width: 0; overflow-wrap: anywhere; }
+.device-summary { overflow-x: auto; }
+@media (max-width: 800px) {
+  .tabbar { width: 100%; min-width: 0; }
+  .nav { min-width: 0; }
+}
+
+
+.calibration-guidance { margin-bottom: var(--space-6); padding: var(--space-4); background: var(--color-surface); border-left: 4px solid var(--color-code); }
+.calibration-guidance ol { margin: var(--space-2) 0 0; padding-left: var(--space-6); }
+.calibration-eyebrow { display: block; color: var(--color-text-2); font: .8rem var(--font-mono); margin-bottom: var(--space-2); }
+.calibration-camera-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: var(--space-6); align-items: start; }
+.calibration-camera-layout .check__qr { width: 100%; max-width: 480px; }
+.calibration-camera-preview, .calibration-tracker-chart { margin: 0 0 var(--space-4); min-width: 0; padding: var(--space-4); border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-bg); }
+.calibration-camera-preview figcaption, .calibration-tracker-chart figcaption { font-weight: 600; margin-bottom: var(--space-3); }
+.calibration-camera-preview img { display: block; width: 100%; height: auto; }
+.calibration-camera-preview img[hidden] { display: none; }
+.calibration-camera-preview p { font-size: .85rem; }
+.calibration-tracker { margin-block: var(--space-4); padding-block: var(--space-4); border-top: 1px solid var(--color-border); }
+.calibration-tracker .check__side { color: var(--color-text); }
+.calibration-complete { color: var(--status-ok); margin-block: var(--space-4); }
+.calibration-complete a { display: inline-block; margin-left: var(--space-2); }
+.calibration-tracker-chart svg { display: block; width: 100%; max-height: 300px; }
+.calibration-tracker-chart svg text { fill: var(--color-text-2); font: 12px var(--font-ui); }
+.calibration-chart-axis { fill: none; stroke: var(--color-border); }
+.calibration-chart-move { fill: none; stroke: var(--color-text-2); stroke-dasharray: 6 4; }
+.calibration-chart-still { fill: none; stroke: var(--color-text-2); stroke-dasharray: 2 4; }
+.calibration-chart-trace { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.calibration-chart-trace--primary { stroke: var(--color-code); }
+.calibration-chart-trace--secondary { stroke: var(--color-text-2); stroke-dasharray: 7 3; }
+.calibration-chart-legend { display: flex; flex-wrap: wrap; gap: var(--space-3); color: var(--color-text-2); font-size: .8rem; }
+.calibration-chart-key::before { content: ""; display: inline-block; vertical-align: middle; width: 20px; margin-right: var(--space-2); border-top: 2px solid var(--color-code); }
+.calibration-chart-key--secondary::before { border-top-color: var(--color-text-2); border-top-style: dashed; }
+@media (max-width: 800px) {
+  .calibration-camera-layout { grid-template-columns: minmax(0, 1fr); }
+}
+
+
+html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+.page--workflow .workflow-nav-label { padding: 0 12px; margin-bottom: 12px; color: var(--color-text-2); font: 11px var(--font-mono); letter-spacing: .08em; }
+.page--workflow .workflow-section { padding-bottom: 32px; margin-bottom: 32px; border-bottom: 1px solid var(--color-border); scroll-margin-top: 24px; }
+.workflow-section__heading { margin-bottom: 24px; }
+.workflow-section__heading h2 { font-size: 1.6rem; }
+.workflow-step { margin: 0 0 4px; font: 11px var(--font-mono); color: var(--color-code); letter-spacing: .08em; }
+.page--workflow .page-header { margin-bottom: 32px; }
+.page--workflow .section { margin-bottom: 24px; }
+.page--workflow #preset-heading { font-size: 1.1rem; }
+.page--workflow .arm-grid--diagrams { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.page--workflow .config-arm { padding: 20px; }
+.page--workflow .config-arm > .card__title { font: 600 1.1rem var(--font-ui); letter-spacing: 0; text-transform: none; }
+.page--workflow .config-arm--diagram .config-arm__content { grid-template-columns: minmax(95px, .7fr) minmax(0, 1.3fr); gap: 12px; }
+.page--workflow .config-arm--diagram .config-arm__fields { grid-column: 2; grid-row: 1; min-width: 0; }
+.page--workflow .gripper-diagram__status { grid-column: 1 / -1; grid-row: 2; padding: 12px 0 0; border-left: 0; border-top: 1px solid var(--color-border); }
+.calibration-grippers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.calibration-gripper { min-width: 0; padding: 20px; }
+.calibration-gripper > .device-row { flex-wrap: wrap; }
+.workflow-footer { color: var(--color-text-2); font-size: 12px; }
+.identify-dialog { width: min(1200px, calc(100vw - 48px)); max-height: calc(100dvh - 48px); padding: 28px; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-bg); color: var(--color-text); }
+.identify-dialog::backdrop { background: rgb(20 25 18 / .55); }
+.identify-heading, .identify-actions { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.identify-heading h2 { font-size: 1.8rem; }
+.identify-progress { display: flex; gap: 12px; list-style: none; padding: 0; margin: 20px 0; flex-wrap: wrap; }
+.identify-progress li { flex: 1 1 200px; min-width: 0; }
+.identify-side { display: block; width: 100%; padding: 14px 16px; border: 1px solid var(--color-border); border-radius: 3px; text-align: left; font: inherit; color: inherit; background: var(--color-bg); cursor: pointer; }
+.identify-side strong, .identify-side span { display: block; }
+.identify-side span { margin-top: 4px; font-size: 13px; }
+.identify-side[aria-current="step"] { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.identify-side.identified { border-color: var(--status-ok); background: var(--tint-ok); }
+.identify-side:disabled { cursor: default; }
+.identify-stage { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(240px, 1fr); gap: 24px; margin: 24px 0; align-items: start; }
+.identify-cameras { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; list-style: none; padding: 0; margin: 0; }
+.identify-camera { min-width: 0; padding: 12px; border: 1px solid var(--color-border); border-radius: 3px; font-size: 12px; overflow-wrap: anywhere; }
+.identify-camera img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: contain; background: var(--color-surface); margin-bottom: 8px; }
+.identify-camera.sees { border-color: var(--status-ok); background: var(--tint-ok); }
+.identify-camera.error { border-color: var(--status-error); }
+.identify-camera strong, .identify-camera span { display: block; }
+.identify-board { margin: 0; text-align: center; }
+.identify-board img { display: block; width: 100%; background: white; }
+.identify-board figcaption { margin-top: 12px; font-size: 13px; }
+.identify-actions { position: sticky; bottom: -28px; background: var(--color-bg); padding: 16px 0; border-top: 1px solid var(--color-border); flex-wrap: wrap; }
+.identify-status { min-height: 1.7em; }
+@media (max-width: 1100px) {
+  .page--workflow .config-arm--diagram .config-arm__content { grid-template-columns: minmax(0, 1fr); }
+  .page--workflow .config-arm--diagram .config-arm__fields { grid-column: 1; grid-row: 2; }
+  .page--workflow .gripper-diagram__status { grid-row: 3; }
+}
+@media (max-width: 800px) {
+  .page--workflow .arm-grid--diagrams, .calibration-grippers { grid-template-columns: minmax(0, 1fr); }
+  .page--workflow .workflow-nav-label { display: none; }
+  .identify-stage { grid-template-columns: minmax(0, 1fr); }
+  .identify-board { max-width: 360px; margin-inline: auto; }
+  .identify-dialog { width: calc(100vw - 24px); padding: 16px; }
+  .identify-actions { bottom: -16px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+.page--workflow .nav__link[aria-current="step"] { font-weight: 700; background: var(--color-surface); }
+.page--workflow .nav__link[aria-current="step"]::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 10px; width: 3px; background: var(--color-primary); border-radius: 2px; }
+
+.page--workflow [hidden] { display: none !important; }
+.identify-camera img { max-height: 120px; }
+.identify-board { position: sticky; top: 0; }
+@media (max-width: 800px) { .identify-board { position: static; grid-row: 1; max-width: 260px; } }
+
+.recording-checks { margin-top: 24px; }
+.recording-checks > summary { cursor: pointer; font-weight: 600; }
+.recording-checks__count { margin-left: 10px; font-size: 0.85em; font-weight: 400; }
+.recording-checks__groups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: 16px; }
+.recording-checks__row { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 10px; align-items: start; padding: 8px 0; cursor: pointer; }
+.recording-checks__row input { width: auto; margin: 4px 0 0; accent-color: var(--color-primary); }
+.recording-checks__row small { display: block; margin-top: 3px; }
+@media (max-width: 760px) { .recording-checks__groups { grid-template-columns: 1fr; } }
+.record-review { margin: 12px 0; padding: 12px 16px; border: 1px solid var(--status-warn); border-radius: 4px; }
+.record-review h3 { margin: 0 0 8px; font-size: 14px; }
+.record-review__list { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+.record-review__item--block::marker { color: var(--status-error, #c0392b); }
+.record-review__item--warn::marker { color: var(--status-warn); }
+.record-review__item a { margin-left: 8px; white-space: nowrap; }

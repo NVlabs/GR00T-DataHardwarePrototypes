@@ -1,0 +1,59 @@
+<figure id="gripper-diagram-{{ diagram.arm }}" class="gripper-diagram" {% if diagram_oob %}hx-swap-oob="true"{% endif %} data-gripper-diagram="{{ diagram.arm }}" data-pairing-state="{{ diagram.state }}">
+  <div class="gripper-diagram__content">
+  <svg class="gripper-diagram__drawing" viewBox="90 0 260 280" aria-hidden="true">
+    {# Front schematic: phone behind the top OAK camera, flexure fingers
+       on the rail, handle below, and a separate bottom USB camera. #}
+    <g class="gripper-diagram__body">
+      <path d="M196 75 H244 L258 138 H182 Z"/>
+      <path d="M144 151 L120 197 L143 231 L170 178 M296 151 L320 197 L297 231 L270 178" fill="none" stroke-width="9"/>
+      <rect x="134" y="142" width="172" height="22" rx="5"/>
+      <path d="M164 166 L184 203 H256 L276 166" fill="none" stroke-width="7"/>
+      <path d="M120 197 L100 211 L105 248 L139 231 M320 197 L340 211 L335 248 L301 231"/>
+      <path d="M205 200 H235 L239 261 Q220 273 201 261 Z"/>
+      <path d="M246 212 H281 Q305 212 305 233 Q305 253 278 253 H240" fill="none" stroke-width="6"/>
+    </g>
+    {% if diagram.has_phone %}
+    <g class="gripper-diagram__part {% if 'tracking' in diagram.affected %}is-mismatch{% endif %}" data-gripper-part="tracking">
+      <rect x="141" y="17" width="158" height="66" rx="8"/>
+      <rect class="gripper-diagram__screen" x="151" y="25" width="138" height="50" rx="3"/>
+      <circle cx="157" cy="34" r="3"/>
+      <circle class="gripper-diagram__pin" cx="318" cy="49" r="13"/>
+      <text x="318" y="54" text-anchor="middle">1</text>
+    </g>
+    {% else %}
+    <text class="gripper-diagram__note" x="220" y="51" text-anchor="middle">Vive tracking · no phone</text>
+    {% endif %}
+    <g class="gripper-diagram__part {% if 'umi' in diagram.affected %}is-mismatch{% endif %}" data-gripper-part="umi">
+      <rect x="199" y="98" width="42" height="37" rx="5"/>
+      <circle class="gripper-diagram__lens" cx="220" cy="116" r="11"/>
+      <circle cx="220" cy="116" r="4"/>
+      <circle class="gripper-diagram__pin" cx="173" cy="116" r="13"/>
+      <text x="173" y="121" text-anchor="middle">2</text>
+    </g>
+    <g class="gripper-diagram__part" data-gripper-part="trigger">
+      <rect x="202" y="177" width="36" height="28" rx="5"/>
+      <circle class="gripper-diagram__lens" cx="220" cy="191" r="9"/>
+      <circle class="gripper-diagram__pin" cx="264" cy="191" r="13"/>
+      <text x="264" y="196" text-anchor="middle">3</text>
+    </g>
+    <g class="gripper-diagram__part {% if 'gripper' in diagram.affected %}is-mismatch{% endif %}" data-gripper-part="gripper">
+      <rect x="209" y="223" width="22" height="24" rx="3"/>
+      <circle class="gripper-diagram__pin" cx="179" cy="240" r="13"/>
+      <text x="179" y="245" text-anchor="middle">4</text>
+    </g>
+  </svg>
+  <div class="gripper-diagram__assignments">
+  {% for part in diagram.parts %}
+    <a class="gripper-diagram__assignment {% if part.role in diagram.affected %}is-mismatch{% endif %}"
+       href="#{{ part.field }}" data-gripper-selection="{{ part.role }}"
+       data-field="{{ part.field }}" data-kind="{{ part.kind }}">
+      <span class="gripper-diagram__number">{{ part.number }}</span>
+      <span><span class="gripper-diagram__label">{{ part.label }}</span>
+        <span class="mono gripper-diagram__value" data-gripper-value>{{ part.value or "Not selected" }}</span></span>
+      <span class="gripper-diagram__flag" data-gripper-flag {% if part.role not in diagram.affected %}hidden{% endif %}>! Mismatch</span>
+    </a>
+  {% endfor %}
+  </div>
+  </div>
+  <p class="gripper-diagram__status" id="pairing-{{ diagram.arm }}" data-gripper-status role="status" aria-live="polite" aria-atomic="true" aria-label="{{ diagram.message }}">{% if diagram.state == 'mismatch' %}⚠ {% endif %}{{ 'Pairing verified' if diagram.state == 'matched' else diagram.message }}</p>
+</figure>

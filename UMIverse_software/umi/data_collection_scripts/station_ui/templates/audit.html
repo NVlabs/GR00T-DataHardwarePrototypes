@@ -1,0 +1,170 @@
+{% extends "section.html" if embedded else "base.html" %}
+{% import "_partials/audit_status.html" as status %}
+
+{% block subheading %}{% endblock %}
+
+{% block banner %}
+  {% if not can_edit %}
+    {% if not embedded %}{% include "_partials/rig_banner.html" %}{% endif %}
+  {% elif error %}
+    <div class="banner banner--error" role="alert">
+      <span class="banner__icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M9 9 L15 15"></path>
+          <path d="M15 9 L9 15"></path>
+        </svg>
+      </span>
+      <div>{{ error }}</div>
+    </div>
+  {% endif %}
+  {% if confirm %}
+    {# Confirm destructive actions with a second POST so the guard works without
+       JavaScript. #}
+    <div class="banner banner--warn" role="alert">
+      <span class="banner__icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.3 4.2 2.6 18a2 2 0 0 0 1.7 3h15.4a2 2 0 0 0 1.7-3L13.7 4.2a2 2 0 0 0-3.4 0Z"></path>
+          <path d="M12 9 L12 13"></path>
+          <path d="M12 17 L12.01 17"></path>
+        </svg>
+      </span>
+      <div><b>Confirm.</b> {{ confirm.message }}</div>
+      <form class="banner__action" method="post" action="{{ confirm.action }}">
+        <input type="hidden" name="session_folder" value="{{ confirm.session_folder }}">
+        <input type="hidden" name="confirm" value="yes">
+        <button class="btn btn--danger" type="submit">{{ confirm.label }}</button>
+      </form>
+    </div>
+  {% endif %}
+  {% if notice %}
+    <div class="banner" role="status">
+      <span class="banner__icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12 L10 17 L19 7"></path>
+        </svg>
+      </span>
+      <div>{{ notice }}</div>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+{% if active_audit %}
+  {{ render_section({"template": "audit_job.html", "context": active_audit}) }}
+{% endif %}
+<section class="section" id="sessions" aria-label="Recorded sessions">
+  <div class="section__header">
+    <form class="section__action" method="get" action="/audit#audit"
+          hx-get="/audit" hx-select="#sessions" hx-target="#sessions"
+          hx-swap="outerHTML" hx-disabled-elt="find button">
+      <button class="btn" type="submit" aria-label="Refresh sessions">Refresh</button>
+    </form>
+  </div>
+  <div class="card">
+    {% if sessions %}
+      <ul class="session-list">
+        {% for session in sessions %}
+          <li class="session-row">
+            <span class="session-row__name">{{ session.name }}</span>
+            <span class="num muted">{{ session.episodes }} episodes</span>
+            {% if session.active %}
+              <span title="The console is recording into this session; its episodes may still be in the alignment queue.">{{ status.badge("clock", "Recording", "") }}</span>
+            {% endif %}
+            {% if session.finalized %}
+              {% if session.missing_alignment %}
+                {{ status.badge("warn", session.aligned ~ " of " ~ session.finalized ~ " aligned", "warn") }}
+              {% else %}
+                {{ status.badge("check", "All aligned", "ok") }}
+              {% endif %}
+            {% endif %}
+            {% if session.warnings %}
+              {{ status.badge("warn", session.warnings|length ~ (" warning" if session.warnings|length == 1 else " warnings"), "warn") }}
+            {% endif %}
+            {% if session.closed %}
+              <span title="Finished: no more episodes can be recorded into this session.">{{ status.badge("check", "Closed", "") }}</span>
+            {% endif %}
+            {% if session.lerobot %}
+              <span title="{{ session.lerobot | join(', ') }}">{{ status.badge("check", "LeRobot format", "ok") }}</span>
+            {% endif %}
+            <span class="session-row__action row">
+              <form method="post" action="/audit/health-check">
+                <input type="hidden" name="session_folder" value="{{ session.path }}">
+                <input type="hidden" name="dry_run" value="on">
+                <button class="btn" type="submit">Check</button>
+              </form>
+              {# Do not process the active session while its aligner may still write
+                 episodes. #}
+              {% if session.missing_alignment and not session.active %}
+                <form method="post" action="/audit/health-check">
+                  <input type="hidden" name="session_folder" value="{{ session.path }}">
+                  <button class="btn" type="submit">Re-align</button>
+                </form>
+              {% endif %}
+              {# Require recording to stop before closing the active session; closure
+                 precedes conversion. #}
+              {% if session.active and session.episodes %}
+                {% if recording_live %}
+                  <span class="btn" aria-disabled="true" aria-describedby="session-blocked-{{ loop.index }}">Finish and close session</span>
+                {% else %}
+                  <form method="post" action="/audit/session/close">
+                    <input type="hidden" name="session_folder" value="{{ session.path }}">
+                    <button class="btn" type="submit">Finish and close session</button>
+                  </form>
+                {% endif %}
+              {% endif %}
+              {# Convert only a closed session with aligned output. Existing datasets
+                 are never overwritten. #}
+              {% if session.aligned and not session.missing_alignment and not session.lerobot %}
+                {% if session.active %}
+                  <span class="btn" aria-disabled="true" aria-describedby="session-blocked-{{ loop.index }}">Convert to LeRobot</span>
+                {% else %}
+                  <form method="post" action="/audit/lerobot">
+                    <input type="hidden" name="session_folder" value="{{ session.path }}">
+                    <button class="btn" type="submit">Convert to LeRobot</button>
+                  </form>
+                {% endif %}
+              {% endif %}
+            </span>
+            {% if session.active and recording_live %}
+              <p class="muted" id="session-blocked-{{ loop.index }}">A recording is running into this session. Stop it, then finish and close the session to convert it to LeRobot.</p>
+            {% elif session.active and session.aligned and not session.lerobot %}
+              <p class="muted" id="session-blocked-{{ loop.index }}">Finish and close this session to convert it to LeRobot.</p>
+            {% endif %}
+            {% if session.warnings %}
+              {# Data-check warnings do not fail episodes. Repeated offsets can
+                 indicate rig latency configuration rather than operator error. #}
+              <details class="job-details session-row__warnings">
+                <summary>Show the warnings</summary>
+                <ul class="error-list">
+                  {% for episode, warning in session.warnings %}
+                    <li><span class="mono">{{ episode }}</span> — {{ warning }}</li>
+                  {% endfor %}
+                </ul>
+              </details>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="muted">No sessions yet.</p>
+    {% endif %}
+  </div>
+</section>
+
+{% if jobs %}
+<section class="section">
+  <div class="section__header"><h2 id="recent">Recent checks and conversions</h2></div>
+  <div class="card">
+    {% for job in jobs %}
+      <div class="device-row">
+        <span class="device-row__name">
+          <a href="/audit/jobs/{{ job.id }}">{{ job.label or job.id }}</a>
+        </span>
+        <span class="device-row__value">{{ status.job_state(job) }}</span>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

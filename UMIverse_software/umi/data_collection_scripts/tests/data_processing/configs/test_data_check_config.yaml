@@ -1,0 +1,38 @@
+# Data-check test settings without video decoding or hardware-dependent checks.
+
+
+
+# Timestamp validation thresholds
+timestamp:
+  enabled: true
+  fps_deviation_pct: 10.0
+  coverage_threshold: 0.95
+  max_missing_frames: 4.0
+  frame_drop_window_s: 1.0
+  frame_drop_min_fps_ratio: 0.7
+
+# Gripper sensor validation thresholds
+gripper:
+  enabled: true
+  movement_threshold_mm: 10.0
+  jump_threshold_mm_per_s: 2000.0
+  range_min_mm: -2.0
+  range_max_mm: 85.0
+
+# iPhone tracking validation thresholds
+tracking:
+  enabled: true
+  pose_movement_threshold_m: 0.01
+  pose_downsample: 10
+  consecutive_min_movement_m: 0.0005
+  consecutive_required_ratio: 0.80
+  multi_tracking_consecutive_required_ratio: 0.15
+  pose_jump_threshold_m_per_s: 4.5
+
+# Video resolution validation
+video_resolution:
+  enabled: true
+
+# Device name consistency
+device_name_consistency:
+  enabled: true

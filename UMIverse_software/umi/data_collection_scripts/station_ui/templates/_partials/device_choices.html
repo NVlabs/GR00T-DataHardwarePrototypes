@@ -1,0 +1,13 @@
+{# Keep datalists separate from inputs so discovery can replace every choice list
+   without discarding edits. Enable out-of-band swaps only for fragment responses. #}
+<span id="device-choices" {% if oob %}hx-swap-oob="true"{% endif %}>
+  {% for list in device_lists %}
+    {# Mark lists while scanning so the dropdown distinguishes pending results from
+       no connected devices. #}
+    <datalist id="{{ list.id }}"{% if list.scanning %} data-scanning="true"{% endif %}>
+      {% for choice in list.choices %}
+        <option value="{{ choice.value }}"{% if choice.note %} label="{{ choice.note }}"{% endif %}></option>
+      {% endfor %}
+    </datalist>
+  {% endfor %}
+</span>

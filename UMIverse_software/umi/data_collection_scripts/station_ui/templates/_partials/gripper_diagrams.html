@@ -1,0 +1,11 @@
+{# Refresh ownership diagrams while preserving unsaved inputs and keyboard focus. #}
+<div id="gripper-diagrams" {% if oob %}hx-swap-oob="true"{% endif %}>
+  {% if gripper_diagrams %}
+    <script type="application/json" data-gripper-evidence>{{ gripper_pairing_evidence | tojson }}</script>
+  {% endif %}
+</div>
+{% if oob %}
+  {% for diagram in gripper_diagrams %}
+    {% with diagram_oob = True %}{% include "_partials/gripper_diagram.html" %}{% endwith %}
+  {% endfor %}
+{% endif %}

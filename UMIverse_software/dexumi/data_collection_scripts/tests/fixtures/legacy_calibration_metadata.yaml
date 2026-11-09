@@ -1,0 +1,6 @@
+# Metadata present in previously saved station calibrations.
+calibration_method: calibration_tool_v4
+calibration_tool_angles: [0.0]
+device_serial: TEST-BOARD
+stop_joint_angles: [0.0]
+hand_config: removed-model.yaml

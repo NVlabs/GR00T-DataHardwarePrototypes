@@ -1,0 +1,66 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["umi", "gui", "real_scripts"]
+
+[project]
+name = "dexumi-data-collection"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "click<8.2.0",
+    "depthai>=3.2.1",
+    "numcodecs>=0.16.5",
+    "numpy>=2.0",
+    "opencv-python>=4.12.0.88",
+    "pyserial>=3.5",
+    "PyYAML>=6.0",
+    "ray==2.48.0",
+    "scipy>=1.16.3",
+    "zarr>=3.1.5",
+]
+
+[dependency-groups]
+# Pinocchio: X Hand kinematics for the tactile robot-action conversion
+# (real_scripts/dexumi_pipeline/convert_to_robot_action.py).
+ik = ["pin>=3.7.0,<3.8"]
+data_collection = [
+    {include-group = "ik"},
+    "fastapi>=0.128.0",
+    "uvicorn>=0.40.0",
+    # Use the prebuilt Python 3.12 Record3D wheel to avoid compilation on stations.
+
+
+    "record3d>=1.4.1",
+    # LeRobot conversion (real_scripts/data_processing/lerobot_conversion/).
+    "av",
+    "pandas",
+    "pyarrow",
+    # torchcodec is built against one torch release: upgrade the two together.
+    "torch==2.14.*",
+    "torchcodec==0.17.*",
+]
+dc_ui = [{include-group = "data_collection"}]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu", marker = "sys_platform == 'linux'" }
+torchcodec = { index = "pytorch-cpu", marker = "sys_platform == 'linux'" }
+
+# This project shares the repository-root uv workspace and Python preference.
+
+
+[tool.uv]
+# Do not install this project as a package: its umi and real_scripts names
+# collide with UMI in the shared environment. Launchers select this checkout
+# through PYTHONPATH.
+
+
+
+package = false

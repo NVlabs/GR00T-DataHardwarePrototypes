@@ -1,0 +1,25 @@
+{# Replace the complete task-status element so its ID remains available for
+   subsequent swaps. #}
+<div class="task-status" id="task-status">
+  {# Distinguish empty, registered and new task names from an unreadable registry.
+     Lookup failure must not mislabel a task as new. #}
+  <span class="{{ 'field__warn' if task.state == 'unreadable' else 'field__hint' }}"
+        id="task-hint">
+    {{ task.message }}
+  </span>
+
+  {# Show the new-task description with its name. Submit the whole form on refresh so
+     typed text survives the swap. #}
+  {% if task.state == 'new' %}
+    <div class="field task-status__new">
+      <label class="field__label" for="task_description">Task description (optional)</label>
+      <input class="input" id="task_description" name="task_description" type="text"
+             value="{{ task.new_description }}" {% if not can_edit %}readonly{% endif %}
+             placeholder="Optional, e.g. Put the cup on the plate. Left blank, it is recorded as Unknown"
+             {% if errors.get('task_description') %}aria-invalid="true" aria-describedby="{{ error_ids['task_description'] }}"{% endif %}>
+      {% if errors.get('task_description') %}
+        <span class="field__error" id="{{ error_ids['task_description'] }}">{{ errors['task_description'] }}</span>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>

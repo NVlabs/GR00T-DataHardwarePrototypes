@@ -1,0 +1,159 @@
+# X Hand, RIGHT: the robot hand the right DexUMI exoskeleton mirrors.
+# The tactile robot-action conversion
+# (real_scripts/dexumi_pipeline/convert_to_robot_action.py) builds a kinematics
+# + tactile model from this file to map the recorded fingertip forces onto the
+# hand's joints (tau = B^T J^T f). A glove calibration names it with its
+# `hand_config` key. Only the model keys the conversion reads are kept here;
+# the live hand-control settings (serial port, gains, compliance) are not part
+# of this software.
+
+# The measured right-hand kinematics/tactile model is production geometry.
+simulation_only: false
+geometry_verified: true
+
+# Which of the two recorded tactile measurement points the conversion uses
+# when the run does not choose one: first | second | mean.
+tactile_use_point: mean
+
+# ---------------------------------------------------------------------------
+# Hand description: URDF, finger wiring, underactuation. Keys mirror the
+# kinematics dataclasses (HandKinematicsDescription / FingerDescription /
+# AuxiliaryJointDescription) exactly. Tactile sensor mounting lives in the
+# `tactile:` block below.
+# ---------------------------------------------------------------------------
+
+# Per-finger wiring. actuated_joint_indices are [abduction?, base, tip]
+# indices into the 16-vector of hand joints (thumb has no abduction; its three
+# joints are base/mid/tip). actuated_joint_names list the URDF names of those
+# joints in the same order. coupling (coupled fingers only) describes the
+# passive dip joint that follows the driving joint via a cubic (rad -> rad,
+# highest-degree-first, from the vendor's underactuation table; index and
+# ring share coefficients; mid's c0 = +0.0875 means its dip sits slightly
+# flexed at zero command).
+kinematics:
+  urdf_path: umi/assets/urdf/xhand/xhand_right/urdf/xhand_right.urdf
+  fingers:
+    thumb:
+      actuated_joint_indices: [0, 1, 2]
+      actuated_joint_names:
+        - right_hand_thumb_mcp0_joint
+        - right_hand_thumb_mcp1_joint
+        - right_hand_thumb_pip_joint
+      fingertip_frame: right_hand_thumb_top_link
+    index:
+      actuated_joint_indices: [3, 4, 5]
+      actuated_joint_names:
+        - right_hand_index_mcp0_joint
+        - right_hand_index_mcp1_joint
+        - right_hand_index_pip_joint
+      fingertip_frame: right_hand_index_top_link
+      coupling:
+        coupled_joint_name: right_hand_index_dip_joint
+        driving_joint_name: right_hand_index_pip_joint
+        coefficients: [1.5161, -1.3369, 0.9180, -0.0347]
+    mid:
+      actuated_joint_indices: [6, 7, 8]
+      actuated_joint_names:
+        - right_hand_mid_mcp0_joint
+        - right_hand_mid_mcp1_joint
+        - right_hand_mid_pip_joint
+      fingertip_frame: right_hand_mid_top_link
+      coupling:
+        coupled_joint_name: right_hand_mid_dip_joint
+        driving_joint_name: right_hand_mid_pip_joint
+        coefficients: [0.6404, -1.1723, 1.6261, 0.0875]
+    ring:
+      actuated_joint_indices: [9, 10, 11]
+      actuated_joint_names:
+        - right_hand_ring_mcp0_joint
+        - right_hand_ring_mcp1_joint
+        - right_hand_ring_pip_joint
+      fingertip_frame: right_hand_ring_top_link
+      coupling:
+        coupled_joint_name: right_hand_ring_dip_joint
+        driving_joint_name: right_hand_ring_pip_joint
+        coefficients: [1.5161, -1.3369, 0.9180, -0.0347]
+    pinky:
+      actuated_joint_indices: [12, 13, 14]
+      actuated_joint_names:
+        - right_hand_pinky_mcp0_joint
+        - right_hand_pinky_mcp1_joint
+        - right_hand_pinky_pip_joint
+      fingertip_frame: right_hand_pinky_top_link
+      coupling:
+        coupled_joint_name: right_hand_pinky_dip_joint
+        driving_joint_name: right_hand_pinky_pip_joint
+        coefficients: [1.5114, -1.3585, 0.7957, -0.0342]
+  # Actuated joints outside any finger chain. Hardware joint 15 (palm) exists
+  # in the URDF (right_hand_ltspalm_joint) and the pinky chain passes through
+  # it (the other fingers attach directly to the base link), so a pinky
+  # fingertip force puts torque on it via Bᵀ·Jᵀ·f. With
+  # transmit_fingertip_torque false that row is zeroed, so the palm joint's
+  # torque is 0 (flip it on to let the palm joint participate).
+  auxiliary_joints:
+    - actuated_joint_index: 15
+      urdf_joint_name: right_hand_ltspalm_joint
+      transmit_fingertip_torque: false
+
+# Tactile sensor description: measurement spec + mounting. Keys mirror
+# TactileSensorSpec exactly: block-level keys are defaults shared by every
+# sensor; each fingers.<name> entry contributes its sensor_id and may
+# override any default (the finger names must exist in kinematics.fingers
+# above). Conversion tuning like EMA/deadband does NOT belong here — it lives
+# in config/dexumi/robot_action.yaml.
+tactile:
+  # Per-sensor measurement: 1 (pad-normal scalar) | 3 (force) | 6 (wrench).
+  measurement_dim: 3
+  # The sensors report raw xyz counts in MILLINEWTONS; readings are scaled
+  # by this factor (N per count) so calibrated forces are in Newtons.
+  force_unit_scale: 0.001
+  # Per-axis ±1 polarity correction applied to every RAW sensor reading, so
+  # pressing reads POSITIVE on the normal axis for all consumers. If a press
+  # reads negative on the pad-normal axis, set the normal component here to
+  # -1 — do NOT fix polarity via R_fingertip_sensor, which is a pure mounting
+  # rotation and would flip the press direction the Jacobian math computes
+  # instead.
+  # Lateral polarities, hardware-recalibrated 2026-07-31 (the finger must
+  # yield IN the push direction on every axis).
+  axis_signs: [1, 1, 1]
+  # Sensor axis that carries the pad-normal force (x | y | z).
+  normal_axis: z
+  # Sensor mounting rotation, T_A_B convention: R_fingertip_sensor is the
+  # sensor frame's orientation in the fingertip_frame, i.e. it maps
+  # (polarity-corrected) sensor-frame force vectors into the fingertip frame
+  # (v_fingertip = R_fingertip_sensor @ v_sensor). For the four FINGERS the
+  # tip frame's z runs ALONG the finger and the pad normal is +x (a +x tip
+  # force yields positive flexion torques; a z force passes through the
+  # joint axes and yields ~zero torque). The sensor convention is z = pad
+  # normal, so this maps sensor z -> tip x (tip_y = -sensor_y,
+  # tip_z = sensor_x). A finger whose tip frame uses a different convention
+  # overrides this in its fingers.<name> entry (the thumb does).
+  R_fingertip_sensor:
+    - [0, 0, 1]
+    - [0, -1, 0]
+    - [1, 0, 0]
+  # sensor_id order 33..37 = thumb..pinky, matching the glove templates'
+  # tactile_sensor_ids.
+  fingers:
+    thumb:
+      sensor_id: 33
+      # The thumb's tip frame does NOT share the other fingers' convention:
+      # its pad normal is tip +z (a +z force gives the flexion torque pattern
+      # on mcp1/pip and ~zero on mcp0; tip +x torques ONLY the mcp0
+      # opposition joint). Sensor z = pad normal, so a z-preserving rotation
+      # maps it correctly. Hardware-verified 2026-07-30: mounted at -90°
+      # about sensor z — 180° from the LEFT thumb's +90°. Polarity
+      # recalibrated 2026-07-31: both lateral channels inverted.
+      axis_signs: [-1, -1, 1]
+      R_fingertip_sensor:
+        - [0, 1, 0]
+        - [-1, 0, 0]
+        - [0, 0, 1]
+    index:
+      sensor_id: 34
+    mid:
+      sensor_id: 35
+    ring:
+      sensor_id: 36
+    pinky:
+      sensor_id: 37

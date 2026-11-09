@@ -1,0 +1,6 @@
+{# Return optional sections with their new datalists out of band so added inputs
+   immediately have choices. #}
+{% include section_template %}
+{% with oob = True %}{% include "_partials/device_choices.html" %}{% endwith %}
+{# Refresh world-reference choices when optional head cameras change. #}
+{% with oob = True %}{% include "_partials/reference_section.html" %}{% endwith %}

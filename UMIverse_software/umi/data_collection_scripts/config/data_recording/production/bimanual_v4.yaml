@@ -1,0 +1,222 @@
+# Bimanual V4 with iPhone poses. Per arm: OAK wrist camera on CAM_B, upright
+# USB trigger camera, iPhone and V4 flexure gripper (15 mm pinion, about
+# 148 degrees travel). CAM_A is absent; CAM_C is a phantom caused by a shared
+# I2C bus and must not be configured. The USB trigger supplies about 25 FPS
+# with default exposure. Add optional head/bottom cameras per session.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Meta
+meta:
+  operator_name: Enter Name Here
+  task_name: Enter Task Name Here
+  task_description: Description
+  use_head_mount: false
+
+# General recording settings
+recording:
+  record_fps: 30
+  stream_fps: 45
+  verbose: false
+  video_encoder: ffmpeg_h264
+  video_frame_type: RGBCameraFrame
+  numeric_frame_type: GripperFrame
+
+# Video sources. List left before right to preserve UI/preview order.
+# Dataset identity uses source names, not list positions.
+
+
+
+
+
+video_sources:
+  # OAK-SoM baseboard: the wrist camera only. The header explains why only CAM_B
+  # is used.
+  - type: oak_device
+    oak_device_name: "oak-left-wrist"  # Set by the Station Console
+    fps: 30
+    ae_max_exposure_us: 22222  # 1/45 s, the exposure limit of a 45 fps capture
+    latency: 0.08
+    streams:
+      - name: left_umi_camera
+        socket: CAM_B
+        resolution: [640, 400]
+
+  - type: oak_device
+    oak_device_name: "oak-right-wrist"  # Set by the Station Console
+    fps: 30
+    ae_max_exposure_us: 22222  # 1/45 s, the exposure limit of a 45 fps capture
+    latency: 0.08
+    streams:
+      - name: right_umi_camera
+        socket: CAM_B
+        resolution: [640, 400]
+
+  # Upright IMX179 MJPG USB trigger cameras. Assembly replaces camera_index
+  # with the discovered V4L2 index. Resolution is used by data checks; latency
+  # by alignment. The latency estimate comes from a different USB trigger
+  # module and must be measured for this hardware before precise synchronization.
+
+
+
+
+  - type: uvc_camera
+    name: left_trigger_camera
+    record_fps: 25
+    stream_fps: 30
+    frame_type: RGBCameraFrame
+    latency: 0.0917
+    params:
+      camera_index: 0
+      camera_resolution: [1280, 720]
+      fps: 30
+      pixel_format: MJPG
+
+  - type: uvc_camera
+    name: right_trigger_camera
+    record_fps: 25
+    stream_fps: 30
+    frame_type: RGBCameraFrame
+    latency: 0.0917
+    params:
+      camera_index: 0
+      camera_resolution: [1280, 720]
+      fps: 30
+      pixel_format: MJPG
+
+  # iPhone — tracking camera with 6-DOF pose
+  - type: iphone_camera
+    name: left_tracking_camera
+    record_fps: 30
+    stream_fps: 90  # above Record3D's 60 Hz, so frames are stamped on arrival
+    frame_type: RGBCameraFrame
+    latency: 0.125  # 0.13 - 5 ms: a 90 Hz poll stamps ~5 ms sooner than 45 Hz
+    params:
+      iphone_device_name: "iphone-left-tracking"  # Set by the Station Console
+      camera_resolution: [180, 240]
+
+  - type: iphone_camera
+    name: right_tracking_camera
+    record_fps: 30
+    stream_fps: 90  # above Record3D's 60 Hz, so frames are stamped on arrival
+    frame_type: RGBCameraFrame
+    latency: 0.125  # 0.13 - 5 ms: a 90 Hz poll stamps ~5 ms sooner than 45 Hz
+    params:
+      iphone_device_name: "iphone-right-tracking"  # Set by the Station Console
+      camera_resolution: [180, 240]
+
+# Identifies the world-frame camera for the camera.relative_calibration check.
+reference_camera: right_tracking_camera
+
+# Recompute camera-relative transforms at the configured refresh interval
+# and reuse cached calibration between those episodes.
+
+
+pre_episode_checks:
+  - name: umi_device.uart_connected
+  - name: camera.relative_calibration
+    params:
+      reference_camera: right_tracking_camera
+      cameras: [right_tracking_camera, left_tracking_camera]
+      run_every_n_episodes: 1
+      marker:
+        mode: charuco
+        squares_x: 14
+        squares_y: 9
+        square_length: 0.04       # 40mm
+        marker_length: 0.03       # 30mm
+        aruco_dict: "DICT_5X5_1000"
+        min_markers: 24
+      align_t_mm: 3.0
+      align_r_deg: 0.5
+      align_stable_required: 4
+      loop_timeout_sec: 30.0
+
+# List left before right to match video order. gripper_generation must
+# match the calibration and selects V4 geometry/open-travel checks. The
+# 45 ms latency estimate assumes matching RP2040 encoder firmware and has
+# not been independently measured for this V4 build.
+
+
+
+
+
+
+
+
+
+
+
+numeric_sources:
+  - type: umi_gripper
+    name: left_umi_gripper
+    uart_device_name: "UMI-V4-0001"
+    reader_baudrate: 1000000
+    record_fps: 30
+    stream_fps: 45
+    frame_type: GripperFrame
+    latency: 0.045
+    params:
+      config_file: "config/umi_gripper/left_umi_gripper_config.yaml"
+      gripper_generation: v4
+      gear_radius: 15.0
+
+  - type: umi_gripper
+    name: right_umi_gripper
+    uart_device_name: "UMI-V4-0002"
+    reader_baudrate: 1000000
+    record_fps: 30
+    stream_fps: 45
+    frame_type: GripperFrame
+    latency: 0.045
+    params:
+      config_file: "config/umi_gripper/right_umi_gripper_config.yaml"
+      gripper_generation: v4
+      gear_radius: 15.0
+
+# Background alignment settings (runs in a daemon process during collection)
+alignment:
+  enabled: true
+  index_sources: "right_umi_camera"  # tried in order; first match wins
+  uniform_fps: 30      # aligned rows are an even 1/30 s apart
+  copy_videos: true    # copy mp4s into aligned output
+  aligned_dir: null  # default: output/aligned/{task}/{session}
+  align_timeout: 300
+
+# Visualization settings
+visualization:
+  enabled: true
+  fps: 30
+  window_name: "V4 flexure gripper + iPhone Recording"
+  show_fps: true
+  show_episode_id: true
+  layout: grid
+  overlay_numeric: true
+  overlay_position: [10, 60]
+  # Launch maximized, whatever the composite's aspect ratio.
+  window_fraction: 1.0
+  # Operator panels (instruction and placement grid) go in a full-height
+  # column to the right of the grid; with no panel content, "cells" is used.
+  filler_position: side
+  # Sized against the grid height so the composite still fills a 16:9 screen.
+  side_panel_width: 1280
+  # One column per arm (left/right token in the camera name); head_* appends
+  # last. grid_columns is only the fallback for a rig that is not two-sided.
+  grid_fill: sides
+  grid_columns: 2

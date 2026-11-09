@@ -1,0 +1,18 @@
+# macOS Finder metadata
+.DS_Store
+
+# The data-collection environment that `uv sync` creates (see pyproject.toml)
+.venv/
+__pycache__/
+
+# Generated output at the repository root: recordings, aligned sessions, reports and scratch
+# images. Each data-collection pipeline also ignores its own output/ and local_data/ folders.
+/output/
+/local_data/
+
+# Tool caches and recordings under any software tree. The per-project .gitignore files
+# already cover these; keeping them here too means a new tree cannot ship them by accident.
+output/
+local_data/
+.pytest_cache/
+.ruff_cache/

@@ -1,0 +1,64 @@
+# Data Recording Configuration
+# Composable data sources for video and numeric recording
+
+# General recording settings
+recording:
+  # Default fps settings (can be overridden per source)
+  record_fps: 30
+  stream_fps: 60
+  verbose: false
+  # Video encoder for .mp4 files: opencv_mp4v (fast) or ffmpeg_h264 (smaller files)
+  video_encoder: ffmpeg_h264
+  # Frame type for video sources
+  # Options: RGBCameraFrame (no depth), RGBDCameraFrame (with depth)
+  video_frame_type: RGBCameraFrame
+  # Frame type for numeric sources
+  # Options: NumericFrame
+  numeric_frame_type: NumericFrame
+
+# Video sources may override frame rate/type and capture-to-receive latency
+# in seconds. Supported camera types are selected by recording_utils.
+
+
+
+
+
+video_sources:
+  - type: uvc_camera
+    name: main_camera
+    latency: 0.0  # uvc_camera sensor latency (seconds) - measure for your camera
+    params:
+      camera_index: 0
+      camera_resolution: [1280, 800]
+      fps: 30
+      pixel_format: MJPG
+
+# Numeric sources implement the sensor streaming interface. Source-level
+# frame rate/type and capture-to-receive latency in seconds override defaults.
+
+
+
+
+
+numeric_sources: []
+
+# Visualization settings
+visualization:
+  enabled: true
+  fps: 30  # Main loop rate (Hz)
+  window_name: "Data Recording"
+  show_fps: true
+  show_episode_id: true
+  # Resize the preview to the monitor while preserving aspect. Set resizable
+  # false for a fixed frame-sized window.
+
+
+  resizable: true
+  # Layout: how to arrange video feeds
+  # Options: horizontal, vertical, grid, overlay
+  layout: horizontal
+  # Numeric data overlay on video
+  overlay_numeric: true
+  overlay_position: [10, 60]  # x, y offset for numeric text
+  # Overlay mode settings (only used when layout: overlay)
+  overlay_alpha: 0.5  # Default transparency for overlay mode (0.0-1.0)

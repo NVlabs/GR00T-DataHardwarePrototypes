@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% import "_partials/crash_entry.html" as entries %}
+
+{# Wrap the shared error banner in the full navigation shell for normal page loads
+   and native form failures. #}
+
+{% block heading %}{{ crash.page_label }}{% endblock %}
+{% block subheading %}{% endblock %}
+
+{% block banner %}
+  {% include "_partials/crash_banner.html" %}
+{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="card stack">
+    {{ entries.crash_entry(crash, open=True) }}
+
+    <div class="row">
+      <a class="btn" href="{{ crash.page_href }}">Back to {{ crash.page_label }}</a>
+      <a class="btn" href="/log">Station log</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

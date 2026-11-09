@@ -1,0 +1,86 @@
+# Ray upload exclusions: one glob per line; # begins a comment.
+
+# Video and archive files
+*.mp4
+*.avi
+*.mov
+*.zip
+*.tar
+*.tar.gz
+*.gz
+
+# Data directories (be specific — avoid broad **/data/** which also catches umi/common/data/)
+output/**
+local_data*
+**/local_data/**
+**/recordings/**
+**/datasets/**
+
+# Git directory (contains large pack files)
+.git/**
+**/.git/**
+
+# Virtual environments (also match nested ones)
+.venv/**
+venv/**
+**/.venv/**
+**/venv/**
+**/__pycache__/**
+**/*.pyc
+**/*.pyo
+
+# Build and cache directories
+**/build/**
+**/dist/**
+**/.cache/**
+**/.ruff_cache/**
+**/.pytest_cache/**
+**/.mypy_cache/**
+**/outputs/**
+outputs/*
+
+# Large model files
+**/*.ckpt
+**/*.pth
+**/*.pt
+**/*.h5
+**/*.hdf5
+**/*.bin
+**/*.safetensors
+
+# Logs and temporary files
+**/*.log
+**/logs/**
+**/tmp/**
+**/temp/**
+
+# ── Large binary files ──
+*.mp4
+*.avi
+*.mov
+*.zip
+*.tar
+*.tar.gz
+*.gz
+*.ckpt
+*.pth
+*.pt
+*.h5
+*.hdf5
+*.bin
+*.safetensors
+*.stl
+*.STL
+*.dae
+*.glb
+*.so
+*.so.*
+*.deb
+**/*.deb
+
+# Core dump files
+core
+core.*
+*.core
+vgcore.*
+

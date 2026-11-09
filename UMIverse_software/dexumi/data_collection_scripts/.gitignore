@@ -1,0 +1,20 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+output/
+local_data/
+build/
+dist/
+*.egg-info/
+
+# A calibration replaced from the GUI keeps its previous file here
+config/dexumi_exoskeleton/*.bak
+.cache/
+config/dexumi_exoskeleton/library/
+
+# Each station's own glove calibrations; a glove's first calibration starts
+# from its design template in config/dexumi_exoskeleton/templates/
+config/dexumi_exoskeleton/DEXUMI-Left.yaml
+config/dexumi_exoskeleton/DEXUMI-Right.yaml

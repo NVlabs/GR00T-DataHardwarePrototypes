@@ -1,0 +1,22 @@
+<dialog id="camera-identify-dialog" class="identify-dialog" aria-labelledby="identify-title" aria-describedby="identify-instructions">
+  <div class="identify-heading">
+    <div><p class="workflow-step" id="identify-step">CAMERA IDENTIFICATION</p><h2 id="identify-title">Identify Cameras</h2></div>
+    <div class="row">
+      <button class="btn" type="button" id="identify-refresh">Refresh Devices</button>
+      <button class="btn" type="button" data-identify-close>Close</button>
+    </div>
+  </div>
+  <ol class="identify-progress" id="identify-progress" aria-label="Camera identification progress" aria-live="polite"></ol>
+  <p id="identify-instructions">Wait for the cameras to open, then aim this gripper’s cameras at the marker. Point the other gripper’s cameras away. Once their previews show the marker, click Scan left.</p>
+  <p class="identify-status" id="identify-status" role="status" aria-live="polite" hidden></p>
+  <div class="identify-stage">
+    <div><h3>Detected devices</h3><ul class="identify-cameras" id="identify-cameras" aria-label="Detected cameras and live previews"></ul></div>
+    <figure class="identify-board"><img id="identify-marker" alt="Camera identification marker"><figcaption id="identify-marker-label"></figcaption></figure>
+  </div>
+  <div class="identify-actions">
+    <button class="btn" type="button" id="identify-back" disabled>Back</button>
+    <button class="btn btn--primary" type="button" id="identify-scan" disabled>Scan left</button>
+    <button class="btn" type="button" id="identify-next" disabled>Next: right →</button>
+    <button class="btn" type="button" data-identify-close>Close</button>
+  </div>
+</dialog>

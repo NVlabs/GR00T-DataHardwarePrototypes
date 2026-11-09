@@ -1,0 +1,25 @@
+<figure class="calibration-tracker-chart">
+  <figcaption>Movement over time — {{ arm|title }} tracker check</figcaption>
+  <svg viewBox="0 0 640 220" role="img" aria-label="Live tracker movement in millimeters. Move threshold {{ chart.move_mm }} millimeters; still threshold {{ chart.still_mm }} millimeters.">
+    <text x="8" y="20">mm</text>
+    <text x="8" y="40">{{ chart.max_mm }}</text>
+    <text x="30" y="180">0</text>
+    <path class="calibration-chart-axis" d="M52 32V176H612"/>
+    <path class="calibration-chart-move" d="M52 {{ chart.move_y }}H612"/>
+    <path class="calibration-chart-still" d="M52 {{ chart.still_y }}H612"/>
+    {% for trace in chart.traces %}
+      {% set tone = loop.cycle('primary', 'secondary') %}
+      {% for points in trace.paths %}
+        <polyline class="calibration-chart-trace calibration-chart-trace--{{ tone }}" points="{{ points }}"/>
+      {% endfor %}
+    {% endfor %}
+    <text x="52" y="204">{{ chart.start }} s</text>
+    <text x="612" y="204" text-anchor="end">{{ chart.end }} s</text>
+  </svg>
+  <div class="calibration-chart-legend">
+    {% for trace in chart.traces %}
+      <span class="calibration-chart-key calibration-chart-key--{{ loop.cycle('primary', 'secondary') }}">{{ trace.arm|title }}</span>
+    {% endfor %}
+    <span>Move ≥ {{ chart.move_mm }} mm · Keep other tracker ≤ {{ chart.still_mm }} mm</span>
+  </div>
+</figure>

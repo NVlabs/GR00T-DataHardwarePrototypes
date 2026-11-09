@@ -1,0 +1,47 @@
+# GEAR Neck settings: drive ids, mounting directions, gains, limits and the CAN link.
+#
+# Every command and Neck() read this file by default. To keep several necks, copy
+# it and pass the copy with --config (Neck(config=...) in Python). Unknown or
+# missing keys are rejected, so a misspelled setting fails loudly.
+#
+# Joint angles and positive directions, from the head's own point of view:
+#   yaw    turns the head right
+#   roll   tilts the head right (right ear down)
+#   pitch  nods the head down
+# The neck is an orthogonal gimbal, yaw then roll then pitch from the torso, so
+# these joint angles are also the camera's yaw, roll and pitch.
+
+# One entry per joint, in the order of the kinematic chain from the torso.
+#   id, can_id  the drive takes frames on its ID (register 7) and replies on its
+#               CAN_ID (register 14); each CAN_ID is one above its ID, as the
+#               manual advises. Drives leave the factory on ID 1 and CAN_ID 0.
+#   reversed    the drive turns against the joint's positive direction, as
+#               mounted; every position, velocity and torque to and from it is
+#               negated
+#   kp, kd      MIT stiffness (Nm/rad) and damping (Nm*s/rad). Raise kp for a
+#               stiffer joint that tracks closer; add kd if it overshoots or
+#               buzzes. Each drive clamps them to its own MIT ranges.
+#   min_deg, max_deg  joint limits; commands outside them are clamped
+joints:
+  - {name: yaw, id: 50, can_id: 51, reversed: true, kp: 2, kd: 0.05, min_deg: -90, max_deg: 90}
+  - {name: roll, id: 52, can_id: 53, reversed: false, kp: 2, kd: 0.05, min_deg: -40, max_deg: 40}
+  # The camera nods further down than up.
+  - {name: pitch, id: 54, can_id: 55, reversed: false, kp: 2, kd: 0.05, min_deg: -60, max_deg: 80}
+
+# How fast a commanded move ramps the setpoint of each joint.
+max_speed_deg_s: 60
+control_rate_hz: 200
+# Torque goes off when a drive leaves its setpoints unanswered this long.
+feedback_timeout_s: 0.1
+
+can:
+  # socketcan uses socketcan_channel, which scripts/setup_can.sh brings up;
+  # slcan talks to the USB-CAN adapter's serial port directly, with no root.
+  # --interface overrides it.
+  interface: socketcan
+  socketcan_channel: can_neck
+  # The adapter's serial port for slcan; null finds it by adapter_usb_id.
+  slcan_port: null
+  bitrate: 1000000
+  # USB vendor and product id of the Jhoinrch RH-02 (CANable slcan firmware).
+  adapter_usb_id: [0x16d0, 0x117e]

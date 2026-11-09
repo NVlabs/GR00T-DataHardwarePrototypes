@@ -1,0 +1,1860 @@
+{
+  "data_dir": "local_data/raw/plane_assembly_v11/2026-04-29_umi37L_umi34R_plane_assembly_v11",
+  "config": {
+    "record_fps": 45,
+    "stream_fps": 60
+  },
+  "check_config": {
+    "timestamp": {
+      "fps_deviation_pct": 10.0,
+      "coverage_threshold": 0.95,
+      "max_missing_frames": 4.0,
+      "frame_drop_window_s": 1.0,
+      "frame_drop_min_fps_ratio": 0.7,
+      "enabled": true
+    },
+    "gripper": {
+      "movement_threshold_mm": 10.0,
+      "jump_threshold_mm": 50.0,
+      "range_min_mm": -2.0,
+      "range_max_mm": 85.0,
+      "enabled": true
+    },
+    "tracking": {
+      "pose_movement_threshold_m": 0.01,
+      "pose_downsample": 10,
+      "consecutive_min_movement_m": 0.0005,
+      "consecutive_required_ratio": 0.8,
+      "multi_tracking_consecutive_required_ratio": 0.15,
+      "pose_jump_threshold_m": 0.15,
+      "enabled": true
+    },
+    "arm_steady_before_close": {
+      "enabled": true,
+      "hold_duration_s": 0.3,
+      "steady_threshold_m": 0.05,
+      "close_threshold_mm": 3.0,
+      "window_frames": 5,
+      "min_gap_frames": 90,
+      "stable_threshold_mm": 2.0,
+      "gripper_initial_distance_range": [
+        55.0,
+        85.0
+      ]
+    },
+    "device_name_consistency": {
+      "optional_devices": [
+        "head_tracking_camera",
+        "head_umi_camera",
+        "left_trigger_camera",
+        "right_trigger_camera"
+      ],
+      "left_video_sources": [
+        "left_tracking_camera",
+        "left_umi_camera"
+      ],
+      "right_video_sources": [
+        "right_tracking_camera",
+        "right_umi_camera"
+      ],
+      "left_numeric_sources": [
+        "left_umi_gripper"
+      ],
+      "right_numeric_sources": [
+        "right_umi_gripper"
+      ],
+      "enabled": true
+    },
+    "duration": {
+      "default": {
+        "min_duration_s": 190.0,
+        "max_duration_s": 225.0
+      },
+      "plane_assembly_v11": {
+        "min_duration_s": 190.0,
+        "max_duration_s": 225.0
+      },
+      "enabled": true
+    },
+    "latency": {
+      "expected_gripper_latency": 0.084,
+      "enabled": true
+    },
+    "idle": {
+      "max_idle_duration_s": 5.0,
+      "tracking_movement_threshold_m": 0.002,
+      "gripper_movement_threshold_mm": 1.0,
+      "total_displacement_threshold_m": 0.01,
+      "gripper_total_displacement_threshold_mm": 2.0,
+      "enabled": true
+    },
+    "video_resolution": {
+      "enabled": true
+    }
+  },
+  "episodes": {
+    "episode_0": {
+      "timestamp_checks": {
+        "fps": {
+          "left_tracking_camera": {
+            "avg_fps": 30.01,
+            "expected_fps": 30,
+            "deviation_pct": 0.02,
+            "passed": true
+          },
+          "left_umi_camera": {
+            "avg_fps": 45.0,
+            "expected_fps": 45,
+            "deviation_pct": 0.01,
+            "passed": true
+          },
+          "right_umi_camera": {
+            "avg_fps": 45.0,
+            "expected_fps": 45,
+            "deviation_pct": 0.01,
+            "passed": true
+          },
+          "left_trigger_camera": {
+            "avg_fps": 25.0,
+            "expected_fps": 25,
+            "deviation_pct": 0.01,
+            "passed": true
+          },
+          "right_trigger_camera": {
+            "avg_fps": 25.01,
+            "expected_fps": 25,
+            "deviation_pct": 0.02,
+            "passed": true
+          },
+          "right_tracking_camera": {
+            "avg_fps": 30.01,
+            "expected_fps": 30,
+            "deviation_pct": 0.02,
+            "passed": true
+          },
+          "left_umi_gripper": {
+            "avg_fps": 45.0,
+            "expected_fps": 45,
+            "deviation_pct": 0.01,
+            "passed": true
+          },
+          "head_tracking_camera": {
+            "avg_fps": 30.0,
+            "expected_fps": 30,
+            "deviation_pct": 0.01,
+            "passed": true
+          },
+          "right_umi_gripper": {
+            "avg_fps": 45.0,
+            "expected_fps": 45,
+            "deviation_pct": 0.0,
+            "passed": true
+          }
+        },
+        "monotonic": {
+          "left_tracking_camera": {
+            "monotonic": true,
+            "non_monotonic_indices": [],
+            "num_violations": 0
+          },
+          "left_umi_camera": {
+            "monotonic": true,
+            "non_monotonic_indices": [],
+            "num_violations": 0
+          },
+          "right_umi_camera": {
+            "monotonic": true,
+            "non_monotonic_indices": [],
+            "num_violations": 0
+          },
+          "left_trigger_camera": {
+            "monotonic": true,
+            "non_monotonic_indices": [],
+            "num_violations": 0
+          },
+          "right_trigger_camera": {
+            "monotonic": true,
+            "non_monotonic_indices": [],
+            "num_violations": 0
+          },
+          "right_tracking_camera": {
+            "monotonic": true,
+            "non_monotonic_indices": [],
+            "num_violations": 0
+          },
+          "left_umi_gripper": {
+            "monotonic": true,
+            "non_monotonic_indices": [],
+            "num_violations": 0
+          },
+          "head_tracking_camera": {
+            "monotonic": true,
+            "non_monotonic_indices": [],
+            "num_violations": 0
+          },
+          "right_umi_gripper": {
+            "monotonic": true,
+            "non_monotonic_indices": [],
+            "num_violations": 0
+          }
+        },
+        "frame_intervals": {
+          "left_tracking_camera": {
+            "passed": true,
+            "expected_dt": 0.033333,
+            "max_allowed_interval": 0.133333,
+            "max_missing_frames": 4.0,
+            "num_violations": 0,
+            "violation_frames": []
+          },
+          "left_umi_camera": {
+            "passed": true,
+            "expected_dt": 0.022222,
+            "max_allowed_interval": 0.088889,
+            "max_missing_frames": 4.0,
+            "num_violations": 0,
+            "violation_frames": []
+          },
+          "right_umi_camera": {
+            "passed": true,
+            "expected_dt": 0.022222,
+            "max_allowed_interval": 0.088889,
+            "max_missing_frames": 4.0,
+            "num_violations": 0,
+            "violation_frames": []
+          },
+          "left_trigger_camera": {
+            "passed": true,
+            "expected_dt": 0.04,
+            "max_allowed_interval": 0.16,
+            "max_missing_frames": 4.0,
+            "num_violations": 0,
+            "violation_frames": []
+          },
+          "right_trigger_camera": {
+            "passed": true,
+            "expected_dt": 0.04,
+            "max_allowed_interval": 0.16,
+            "max_missing_frames": 4.0,
+            "num_violations": 0,
+            "violation_frames": []
+          },
+          "right_tracking_camera": {
+            "passed": true,
+            "expected_dt": 0.033333,
+            "max_allowed_interval": 0.133333,
+            "max_missing_frames": 4.0,
+            "num_violations": 0,
+            "violation_frames": []
+          },
+          "left_umi_gripper": {
+            "passed": true,
+            "expected_dt": 0.022222,
+            "max_allowed_interval": 0.088889,
+            "max_missing_frames": 4.0,
+            "num_violations": 0,
+            "violation_frames": []
+          },
+          "head_tracking_camera": {
+            "passed": true,
+            "expected_dt": 0.033333,
+            "max_allowed_interval": 0.133333,
+            "max_missing_frames": 4.0,
+            "num_violations": 0,
+            "violation_frames": []
+          },
+          "right_umi_gripper": {
+            "passed": true,
+            "expected_dt": 0.022222,
+            "max_allowed_interval": 0.088889,
+            "max_missing_frames": 4.0,
+            "num_violations": 0,
+            "violation_frames": []
+          }
+        },
+        "sustained_frame_drop": {
+          "left_tracking_camera": {
+            "passed": true,
+            "window_s": 1.0,
+            "min_fps_ratio": 0.7,
+            "expected_fps": 30,
+            "num_violations": 0,
+            "violations": []
+          },
+          "left_umi_camera": {
+            "passed": true,
+            "window_s": 1.0,
+            "min_fps_ratio": 0.7,
+            "expected_fps": 45,
+            "num_violations": 0,
+            "violations": []
+          },
+          "right_umi_camera": {
+            "passed": true,
+            "window_s": 1.0,
+            "min_fps_ratio": 0.7,
+            "expected_fps": 45,
+            "num_violations": 0,
+            "violations": []
+          },
+          "left_trigger_camera": {
+            "passed": true,
+            "window_s": 1.0,
+            "min_fps_ratio": 0.7,
+            "expected_fps": 25,
+            "num_violations": 0,
+            "violations": []
+          },
+          "right_trigger_camera": {
+            "passed": true,
+            "window_s": 1.0,
+            "min_fps_ratio": 0.7,
+            "expected_fps": 25,
+            "num_violations": 0,
+            "violations": []
+          },
+          "right_tracking_camera": {
+            "passed": true,
+            "window_s": 1.0,
+            "min_fps_ratio": 0.7,
+            "expected_fps": 30,
+            "num_violations": 0,
+            "violations": []
+          },
+          "left_umi_gripper": {
+            "passed": true,
+            "window_s": 1.0,
+            "min_fps_ratio": 0.7,
+            "expected_fps": 45,
+            "num_violations": 0,
+            "violations": []
+          },
+          "head_tracking_camera": {
+            "passed": true,
+            "window_s": 1.0,
+            "min_fps_ratio": 0.7,
+            "expected_fps": 30,
+            "num_violations": 0,
+            "violations": []
+          },
+          "right_umi_gripper": {
+            "passed": true,
+            "window_s": 1.0,
+            "min_fps_ratio": 0.7,
+            "expected_fps": 45,
+            "num_violations": 0,
+            "violations": []
+          }
+        },
+        "coverage": {
+          "overlap_ratio": 0.9978,
+          "intersection_start": 433613.96193245,
+          "intersection_end": 433812.76945979,
+          "intersection_duration": 198.8075,
+          "ranges": {
+            "left_tracking_camera": {
+              "min": 433613.707203524,
+              "max": 433812.76945979,
+              "duration": 199.06225626601372
+            },
+            "left_umi_camera": {
+              "min": 433613.902418035,
+              "max": 433812.94951134,
+              "duration": 199.04709330498008
+            },
+            "right_umi_camera": {
+              "min": 433613.900262372,
+              "max": 433812.950476505,
+              "duration": 199.05021413299255
+            },
+            "left_trigger_camera": {
+              "min": 433613.941166733,
+              "max": 433812.930971521,
+              "duration": 198.98980478802696
+            },
+            "right_trigger_camera": {
+              "min": 433613.96193245,
+              "max": 433812.915809419,
+              "duration": 198.95387696899706
+            },
+            "right_tracking_camera": {
+              "min": 433613.704964231,
+              "max": 433812.770102594,
+              "duration": 199.06513836298836
+            },
+            "left_umi_gripper": {
+              "min": 433613.768472191,
+              "max": 433812.935150036,
+              "duration": 199.1666778450017
+            },
+            "head_tracking_camera": {
+              "min": 433613.85315328103,
+              "max": 433812.809223933,
+              "duration": 198.95607065199874
+            },
+            "right_umi_gripper": {
+              "min": 433613.770731428,
+              "max": 433812.920730925,
+              "duration": 199.14999949699268
+            }
+          },
+          "passed": true
+        }
+      },
+      "sensor_checks": {
+        "left_umi_gripper": {
+          "jumps": {
+            "has_jumps": false,
+            "jump_frames": [],
+            "num_jumps": 0,
+            "jump_threshold": 50.0
+          },
+          "movement": {
+            "moved": true,
+            "range_mm": 78.99,
+            "min_mm": 0.03,
+            "max_mm": 79.02
+          },
+          "range": {
+            "in_range": true,
+            "out_of_range_frames": [],
+            "num_out_of_range": 0,
+            "expected_range": [
+              -2.0,
+              85.0
+            ],
+            "fixable_indices": [],
+            "num_fixable": 0,
+            "num_remaining_fixable": 0
+          }
+        },
+        "right_umi_gripper": {
+          "jumps": {
+            "has_jumps": false,
+            "jump_frames": [],
+            "num_jumps": 0,
+            "jump_threshold": 50.0
+          },
+          "movement": {
+            "moved": true,
+            "range_mm": 79.99,
+            "min_mm": 0.05,
+            "max_mm": 80.04
+          },
+          "range": {
+            "in_range": true,
+            "out_of_range_frames": [],
+            "num_out_of_range": 0,
+            "expected_range": [
+              -2.0,
+              85.0
+            ],
+            "fixable_indices": [],
+            "num_fixable": 0,
+            "num_remaining_fixable": 0
+          }
+        }
+      },
+      "tracking_checks": {
+        "left_tracking_camera": {
+          "pose_movement": {
+            "has_movement": true,
+            "max_distance": 0.8036,
+            "threshold": 0.01,
+            "num_samples": 598,
+            "downsample_factor": 10
+          },
+          "pose_jumps": {
+            "has_jumps": false,
+            "jump_frames": [],
+            "num_jumps": 0,
+            "jump_threshold_m": 0.15
+          },
+          "consecutive_movement": {
+            "passed": false,
+            "movement_ratio": 0.7263,
+            "required_ratio": 0.8,
+            "min_movement_m": 0.0005,
+            "moving_frames": 4338,
+            "total_frames": 5973,
+            "avg_consecutive_dist_mm": 1.85,
+            "median_consecutive_dist_mm": 1.01
+          }
+        },
+        "right_tracking_camera": {
+          "pose_movement": {
+            "has_movement": true,
+            "max_distance": 0.6093,
+            "threshold": 0.01,
+            "num_samples": 598,
+            "downsample_factor": 10
+          },
+          "pose_jumps": {
+            "has_jumps": false,
+            "jump_frames": [],
+            "num_jumps": 0,
+            "jump_threshold_m": 0.15
+          },
+          "consecutive_movement": {
+            "passed": false,
+            "movement_ratio": 0.6851,
+            "required_ratio": 0.8,
+            "min_movement_m": 0.0005,
+            "moving_frames": 4092,
+            "total_frames": 5973,
+            "avg_consecutive_dist_mm": 1.68,
+            "median_consecutive_dist_mm": 0.96
+          }
+        },
+        "head_tracking_camera": {
+          "pose_movement": {
+            "has_movement": true,
+            "max_distance": 0.3831,
+            "threshold": 0.01,
+            "num_samples": 597,
+            "downsample_factor": 10
+          },
+          "pose_jumps": {
+            "has_jumps": false,
+            "jump_frames": [],
+            "num_jumps": 0,
+            "jump_threshold_m": 0.15
+          },
+          "consecutive_movement": {
+            "passed": false,
+            "movement_ratio": 0.5639,
+            "required_ratio": 0.8,
+            "min_movement_m": 0.0005,
+            "moving_frames": 3366,
+            "total_frames": 5969,
+            "avg_consecutive_dist_mm": 0.86,
+            "median_consecutive_dist_mm": 0.58
+          }
+        }
+      },
+      "device_check": {
+        "passed": true,
+        "expected_devices": [
+          "left_tracking_camera",
+          "left_umi_camera",
+          "left_umi_gripper",
+          "right_tracking_camera",
+          "right_umi_camera",
+          "right_umi_gripper"
+        ],
+        "actual_devices": [
+          "head_tracking_camera",
+          "left_tracking_camera",
+          "left_trigger_camera",
+          "left_umi_camera",
+          "left_umi_gripper",
+          "right_tracking_camera",
+          "right_trigger_camera",
+          "right_umi_camera",
+          "right_umi_gripper"
+        ],
+        "missing_devices": [],
+        "extra_devices": [],
+        "video_sources_expected": [
+          "left_tracking_camera",
+          "left_umi_camera",
+          "right_tracking_camera",
+          "right_umi_camera"
+        ],
+        "numeric_sources_expected": [
+          "left_umi_gripper",
+          "right_umi_gripper"
+        ],
+        "issues": []
+      },
+      "resolution_checks": {
+        "left_tracking_camera": {
+          "passed": true,
+          "expected_resolution": [
+            180,
+            240
+          ],
+          "actual_resolution": [
+            180,
+            240
+          ],
+          "error": null
+        },
+        "right_tracking_camera": {
+          "passed": true,
+          "expected_resolution": [
+            180,
+            240
+          ],
+          "actual_resolution": [
+            180,
+            240
+          ],
+          "error": null
+        },
+        "left_umi_camera": {
+          "passed": true,
+          "expected_resolution": [
+            640,
+            400
+          ],
+          "actual_resolution": [
+            640,
+            400
+          ],
+          "error": null
+        },
+        "left_trigger_camera": {
+          "passed": true,
+          "expected_resolution": [
+            640,
+            480
+          ],
+          "actual_resolution": [
+            640,
+            480
+          ],
+          "error": null
+        },
+        "right_umi_camera": {
+          "passed": true,
+          "expected_resolution": [
+            640,
+            400
+          ],
+          "actual_resolution": [
+            640,
+            400
+          ],
+          "error": null
+        },
+        "right_trigger_camera": {
+          "passed": true,
+          "expected_resolution": [
+            640,
+            480
+          ],
+          "actual_resolution": [
+            640,
+            480
+          ],
+          "error": null
+        },
+        "head_tracking_camera": {
+          "passed": true,
+          "expected_resolution": [
+            720,
+            960
+          ],
+          "actual_resolution": [
+            720,
+            960
+          ],
+          "error": null
+        }
+      },
+      "passed": true,
+      "issues": [],
+      "numeric_value_checks": {},
+      "motion_alignment_checks": {},
+      "warnings": []
+    },
+    "episode_1": {
+      "timestamp_checks": {
+        "fps": {
+          "right_umi_camera": {
+            "avg_fps": 45.0,
+            "expected_fps": 45,
+            "deviation_pct": 0.01,
+            "passed": true
+          },
+          "left_tracking_camera": {
+            "avg_fps": 30.0,
+            "expected_fps": 30,
+            "deviation_pct": 0.02,
+            "passed": true
+          },
+          "left_umi_camera": {
+            "avg_fps": 45.0,
+            "expected_fps": 45,
+            "deviation_pct": 0.01,
+            "passed": true
+          },
+          "left_trigger_camera": {
+            "avg_fps": 25.0,
+            "expected_fps": 25,
+            "deviation_pct": 0.02,
+            "passed": true
+          },
+          "right_tracking_camera": {
+            "avg_fps": 30.01,
+            "expected_fps": 30,
+            "deviation_pct": 0.02,
+            "passed": true
+          },
+          "right_trigger_camera": {
+            "avg_fps": 25.0,
+            "expected_fps": 25,
+            "deviation_pct": 0.01,
+            "passed": true
+          },
+          "left_umi_gripper": {
+            "avg_fps": 45.0,
+            "expected_fps": 45,
+            "deviation_pct": 0.0,
+            "passed": true
+          },
+          "head_tracking_camera": {
+            "avg_fps": 30.0,
+            "expected_fps": 30,
+            "deviation_pct": 0.02,
+            "passed": true
+          },
+          "right_umi_gripper": {
+            "avg_fps": 45.0,
+            "expected_fps": 45,
+            "deviation_pct": 0.0,
+            "passed": true
+          }
+        },
+        "monotonic": {
+          "right_umi_camera": {
+            "monotonic": true,
+            "non_monotonic_indices": [],
+            "num_violations": 0
+          },
+          "left_tracking_camera": {
+            "monotonic": true,
+            "non_monotonic_indices": [],
+            "num_violations": 0
+          },
+          "left_umi_camera": {
+            "monotonic": true,
+            "non_monotonic_indices": [],
+            "num_violations": 0
+          },
+          "left_trigger_camera": {
+            "monotonic": true,
+            "non_monotonic_indices": [],
+            "num_violations": 0
+          },
+          "right_tracking_camera": {
+            "monotonic": true,
+            "non_monotonic_indices": [],
+            "num_violations": 0
+          },
+          "right_trigger_camera": {
+            "monotonic": true,
+            "non_monotonic_indices": [],
+            "num_violations": 0
+          },
+          "left_umi_gripper": {
+            "monotonic": true,
+            "non_monotonic_indices": [],
+            "num_violations": 0
+          },
+          "head_tracking_camera": {
+            "monotonic": true,
+            "non_monotonic_indices": [],
+            "num_violations": 0
+          },
+          "right_umi_gripper": {
+            "monotonic": true,
+            "non_monotonic_indices": [],
+            "num_violations": 0
+          }
+        },
+        "frame_intervals": {
+          "right_umi_camera": {
+            "passed": true,
+            "expected_dt": 0.022222,
+            "max_allowed_interval": 0.088889,
+            "max_missing_frames": 4.0,
+            "num_violations": 0,
+            "violation_frames": []
+          },
+          "left_tracking_camera": {
+            "passed": true,
+            "expected_dt": 0.033333,
+            "max_allowed_interval": 0.133333,
+            "max_missing_frames": 4.0,
+            "num_violations": 0,
+            "violation_frames": []
+          },
+          "left_umi_camera": {
+            "passed": true,
+            "expected_dt": 0.022222,
+            "max_allowed_interval": 0.088889,
+            "max_missing_frames": 4.0,
+            "num_violations": 0,
+            "violation_frames": []
+          },
+          "left_trigger_camera": {
+            "passed": true,
+            "expected_dt": 0.04,
+            "max_allowed_interval": 0.16,
+            "max_missing_frames": 4.0,
+            "num_violations": 0,
+            "violation_frames": []
+          },
+          "right_tracking_camera": {
+            "passed": true,
+            "expected_dt": 0.033333,
+            "max_allowed_interval": 0.133333,
+            "max_missing_frames": 4.0,
+            "num_violations": 0,
+            "violation_frames": []
+          },
+          "right_trigger_camera": {
+            "passed": true,
+            "expected_dt": 0.04,
+            "max_allowed_interval": 0.16,
+            "max_missing_frames": 4.0,
+            "num_violations": 0,
+            "violation_frames": []
+          },
+          "left_umi_gripper": {
+            "passed": true,
+            "expected_dt": 0.022222,
+            "max_allowed_interval": 0.088889,
+            "max_missing_frames": 4.0,
+            "num_violations": 0,
+            "violation_frames": []
+          },
+          "head_tracking_camera": {
+            "passed": true,
+            "expected_dt": 0.033333,
+            "max_allowed_interval": 0.133333,
+            "max_missing_frames": 4.0,
+            "num_violations": 0,
+            "violation_frames": []
+          },
+          "right_umi_gripper": {
+            "passed": true,
+            "expected_dt": 0.022222,
+            "max_allowed_interval": 0.088889,
+            "max_missing_frames": 4.0,
+            "num_violations": 0,
+            "violation_frames": []
+          }
+        },
+        "sustained_frame_drop": {
+          "right_umi_camera": {
+            "passed": true,
+            "window_s": 1.0,
+            "min_fps_ratio": 0.7,
+            "expected_fps": 45,
+            "num_violations": 0,
+            "violations": []
+          },
+          "left_tracking_camera": {
+            "passed": true,
+            "window_s": 1.0,
+            "min_fps_ratio": 0.7,
+            "expected_fps": 30,
+            "num_violations": 0,
+            "violations": []
+          },
+          "left_umi_camera": {
+            "passed": true,
+            "window_s": 1.0,
+            "min_fps_ratio": 0.7,
+            "expected_fps": 45,
+            "num_violations": 0,
+            "violations": []
+          },
+          "left_trigger_camera": {
+            "passed": true,
+            "window_s": 1.0,
+            "min_fps_ratio": 0.7,
+            "expected_fps": 25,
+            "num_violations": 0,
+            "violations": []
+          },
+          "right_tracking_camera": {
+            "passed": true,
+            "window_s": 1.0,
+            "min_fps_ratio": 0.7,
+            "expected_fps": 30,
+            "num_violations": 0,
+            "violations": []
+          },
+          "right_trigger_camera": {
+            "passed": true,
+            "window_s": 1.0,
+            "min_fps_ratio": 0.7,
+            "expected_fps": 25,
+            "num_violations": 0,
+            "violations": []
+          },
+          "left_umi_gripper": {
+            "passed": true,
+            "window_s": 1.0,
+            "min_fps_ratio": 0.7,
+            "expected_fps": 45,
+            "num_violations": 0,
+            "violations": []
+          },
+          "head_tracking_camera": {
+            "passed": true,
+            "window_s": 1.0,
+            "min_fps_ratio": 0.7,
+            "expected_fps": 30,
+            "num_violations": 0,
+            "violations": []
+          },
+          "right_umi_gripper": {
+            "passed": true,
+            "window_s": 1.0,
+            "min_fps_ratio": 0.7,
+            "expected_fps": 45,
+            "num_violations": 0,
+            "violations": []
+          }
+        },
+        "coverage": {
+          "overlap_ratio": 0.9979,
+          "intersection_start": 434680.884698657,
+          "intersection_end": 434879.369824499,
+          "intersection_duration": 198.4851,
+          "ranges": {
+            "right_umi_camera": {
+              "min": 434680.821659339,
+              "max": 434879.539802097,
+              "duration": 198.71814275800716
+            },
+            "left_tracking_camera": {
+              "min": 434680.639246214,
+              "max": 434879.372920423,
+              "duration": 198.73367420898285
+            },
+            "left_umi_camera": {
+              "min": 434680.819826201,
+              "max": 434879.53757528,
+              "duration": 198.7177490789909
+            },
+            "left_trigger_camera": {
+              "min": 434680.884698657,
+              "max": 434879.528413407,
+              "duration": 198.64371474995278
+            },
+            "right_tracking_camera": {
+              "min": 434680.63665795705,
+              "max": 434879.369824499,
+              "duration": 198.73316654196242
+            },
+            "right_trigger_camera": {
+              "min": 434680.873683944,
+              "max": 434879.543510229,
+              "duration": 198.66982628498226
+            },
+            "left_umi_gripper": {
+              "min": 434680.701803776,
+              "max": 434879.501955628,
+              "duration": 198.80015185195953
+            },
+            "head_tracking_camera": {
+              "min": 434680.79157242004,
+              "max": 434879.42794833303,
+              "duration": 198.63637591298902
+            },
+            "right_umi_gripper": {
+              "min": 434680.704242449,
+              "max": 434879.504022305,
+              "duration": 198.79977985599544
+            }
+          },
+          "passed": true
+        }
+      },
+      "sensor_checks": {
+        "left_umi_gripper": {
+          "jumps": {
+            "has_jumps": false,
+            "jump_frames": [],
+            "num_jumps": 0,
+            "jump_threshold": 50.0
+          },
+          "movement": {
+            "moved": true,
+            "range_mm": 79.15,
+            "min_mm": 0.0,
+            "max_mm": 79.15
+          },
+          "range": {
+            "in_range": true,
+            "out_of_range_frames": [],
+            "num_out_of_range": 0,
+            "expected_range": [
+              -2.0,
+              85.0
+            ],
+            "fixable_indices": [],
+            "num_fixable": 0,
+            "num_remaining_fixable": 0
+          }
+        },
+        "right_umi_gripper": {
+          "jumps": {
+            "has_jumps": false,
+            "jump_frames": [],
+            "num_jumps": 0,
+            "jump_threshold": 50.0
+          },
+          "movement": {
+            "moved": true,
+            "range_mm": 79.47,
+            "min_mm": 0.01,
+            "max_mm": 79.47
+          },
+          "range": {
+            "in_range": true,
+            "out_of_range_frames": [],
+            "num_out_of_range": 0,
+            "expected_range": [
+              -2.0,
+              85.0
+            ],
+            "fixable_indices": [],
+            "num_fixable": 0,
+            "num_remaining_fixable": 0
+          }
+        }
+      },
+      "tracking_checks": {
+        "left_tracking_camera": {
+          "pose_movement": {
+            "has_movement": true,
+            "max_distance": 0.7976,
+            "threshold": 0.01,
+            "num_samples": 597,
+            "downsample_factor": 10
+          },
+          "pose_jumps": {
+            "has_jumps": false,
+            "jump_frames": [],
+            "num_jumps": 0,
+            "jump_threshold_m": 0.15
+          },
+          "consecutive_movement": {
+            "passed": false,
+            "movement_ratio": 0.7075,
+            "required_ratio": 0.8,
+            "min_movement_m": 0.0005,
+            "moving_frames": 4219,
+            "total_frames": 5963,
+            "avg_consecutive_dist_mm": 2.0,
+            "median_consecutive_dist_mm": 1.01
+          }
+        },
+        "right_tracking_camera": {
+          "pose_movement": {
+            "has_movement": true,
+            "max_distance": 0.6376,
+            "threshold": 0.01,
+            "num_samples": 597,
+            "downsample_factor": 10
+          },
+          "pose_jumps": {
+            "has_jumps": false,
+            "jump_frames": [],
+            "num_jumps": 0,
+            "jump_threshold_m": 0.15
+          },
+          "consecutive_movement": {
+            "passed": false,
+            "movement_ratio": 0.6703,
+            "required_ratio": 0.8,
+            "min_movement_m": 0.0005,
+            "moving_frames": 3997,
+            "total_frames": 5963,
+            "avg_consecutive_dist_mm": 1.75,
+            "median_consecutive_dist_mm": 0.9
+          }
+        },
+        "head_tracking_camera": {
+          "pose_movement": {
+            "has_movement": true,
+            "max_distance": 0.4272,
+            "threshold": 0.01,
+            "num_samples": 597,
+            "downsample_factor": 10
+          },
+          "pose_jumps": {
+            "has_jumps": false,
+            "jump_frames": [],
+            "num_jumps": 0,
+            "jump_threshold_m": 0.15
+          },
+          "consecutive_movement": {
+            "passed": false,
+            "movement_ratio": 0.5626,
+            "required_ratio": 0.8,
+            "min_movement_m": 0.0005,
+            "moving_frames": 3353,
+            "total_frames": 5960,
+            "avg_consecutive_dist_mm": 1.0,
+            "median_consecutive_dist_mm": 0.58
+          }
+        }
+      },
+      "device_check": {
+        "passed": true,
+        "expected_devices": [
+          "left_tracking_camera",
+          "left_umi_camera",
+          "left_umi_gripper",
+          "right_tracking_camera",
+          "right_umi_camera",
+          "right_umi_gripper"
+        ],
+        "actual_devices": [
+          "head_tracking_camera",
+          "left_tracking_camera",
+          "left_trigger_camera",
+          "left_umi_camera",
+          "left_umi_gripper",
+          "right_tracking_camera",
+          "right_trigger_camera",
+          "right_umi_camera",
+          "right_umi_gripper"
+        ],
+        "missing_devices": [],
+        "extra_devices": [],
+        "video_sources_expected": [
+          "left_tracking_camera",
+          "left_umi_camera",
+          "right_tracking_camera",
+          "right_umi_camera"
+        ],
+        "numeric_sources_expected": [
+          "left_umi_gripper",
+          "right_umi_gripper"
+        ],
+        "issues": []
+      },
+      "resolution_checks": {
+        "left_tracking_camera": {
+          "passed": true,
+          "expected_resolution": [
+            180,
+            240
+          ],
+          "actual_resolution": [
+            180,
+            240
+          ],
+          "error": null
+        },
+        "right_tracking_camera": {
+          "passed": true,
+          "expected_resolution": [
+            180,
+            240
+          ],
+          "actual_resolution": [
+            180,
+            240
+          ],
+          "error": null
+        },
+        "left_umi_camera": {
+          "passed": true,
+          "expected_resolution": [
+            640,
+            400
+          ],
+          "actual_resolution": [
+            640,
+            400
+          ],
+          "error": null
+        },
+        "left_trigger_camera": {
+          "passed": true,
+          "expected_resolution": [
+            640,
+            480
+          ],
+          "actual_resolution": [
+            640,
+            480
+          ],
+          "error": null
+        },
+        "right_umi_camera": {
+          "passed": true,
+          "expected_resolution": [
+            640,
+            400
+          ],
+          "actual_resolution": [
+            640,
+            400
+          ],
+          "error": null
+        },
+        "right_trigger_camera": {
+          "passed": true,
+          "expected_resolution": [
+            640,
+            480
+          ],
+          "actual_resolution": [
+            640,
+            480
+          ],
+          "error": null
+        },
+        "head_tracking_camera": {
+          "passed": true,
+          "expected_resolution": [
+            720,
+            960
+          ],
+          "actual_resolution": [
+            720,
+            960
+          ],
+          "error": null
+        }
+      },
+      "passed": true,
+      "issues": [],
+      "numeric_value_checks": {},
+      "motion_alignment_checks": {},
+      "warnings": []
+    },
+    "episode_2": {
+      "timestamp_checks": {
+        "fps": {
+          "right_umi_camera": {
+            "avg_fps": 45.0,
+            "expected_fps": 45,
+            "deviation_pct": 0.01,
+            "passed": true
+          },
+          "left_trigger_camera": {
+            "avg_fps": 25.0,
+            "expected_fps": 25,
+            "deviation_pct": 0.02,
+            "passed": true
+          },
+          "left_tracking_camera": {
+            "avg_fps": 30.0,
+            "expected_fps": 30,
+            "deviation_pct": 0.01,
+            "passed": true
+          },
+          "left_umi_camera": {
+            "avg_fps": 45.0,
+            "expected_fps": 45,
+            "deviation_pct": 0.0,
+            "passed": true
+          },
+          "right_tracking_camera": {
+            "avg_fps": 30.0,
+            "expected_fps": 30,
+            "deviation_pct": 0.02,
+            "passed": true
+          },
+          "right_trigger_camera": {
+            "avg_fps": 25.0,
+            "expected_fps": 25,
+            "deviation_pct": 0.01,
+            "passed": true
+          },
+          "left_umi_gripper": {
+            "avg_fps": 45.0,
+            "expected_fps": 45,
+            "deviation_pct": 0.0,
+            "passed": true
+          },
+          "head_tracking_camera": {
+            "avg_fps": 30.0,
+            "expected_fps": 30,
+            "deviation_pct": 0.02,
+            "passed": true
+          },
+          "right_umi_gripper": {
+            "avg_fps": 45.0,
+            "expected_fps": 45,
+            "deviation_pct": 0.0,
+            "passed": true
+          }
+        },
+        "monotonic": {
+          "right_umi_camera": {
+            "monotonic": true,
+            "non_monotonic_indices": [],
+            "num_violations": 0
+          },
+          "left_trigger_camera": {
+            "monotonic": true,
+            "non_monotonic_indices": [],
+            "num_violations": 0
+          },
+          "left_tracking_camera": {
+            "monotonic": true,
+            "non_monotonic_indices": [],
+            "num_violations": 0
+          },
+          "left_umi_camera": {
+            "monotonic": true,
+            "non_monotonic_indices": [],
+            "num_violations": 0
+          },
+          "right_tracking_camera": {
+            "monotonic": true,
+            "non_monotonic_indices": [],
+            "num_violations": 0
+          },
+          "right_trigger_camera": {
+            "monotonic": true,
+            "non_monotonic_indices": [],
+            "num_violations": 0
+          },
+          "left_umi_gripper": {
+            "monotonic": true,
+            "non_monotonic_indices": [],
+            "num_violations": 0
+          },
+          "head_tracking_camera": {
+            "monotonic": true,
+            "non_monotonic_indices": [],
+            "num_violations": 0
+          },
+          "right_umi_gripper": {
+            "monotonic": true,
+            "non_monotonic_indices": [],
+            "num_violations": 0
+          }
+        },
+        "frame_intervals": {
+          "right_umi_camera": {
+            "passed": true,
+            "expected_dt": 0.022222,
+            "max_allowed_interval": 0.088889,
+            "max_missing_frames": 4.0,
+            "num_violations": 0,
+            "violation_frames": []
+          },
+          "left_trigger_camera": {
+            "passed": true,
+            "expected_dt": 0.04,
+            "max_allowed_interval": 0.16,
+            "max_missing_frames": 4.0,
+            "num_violations": 0,
+            "violation_frames": []
+          },
+          "left_tracking_camera": {
+            "passed": true,
+            "expected_dt": 0.033333,
+            "max_allowed_interval": 0.133333,
+            "max_missing_frames": 4.0,
+            "num_violations": 0,
+            "violation_frames": []
+          },
+          "left_umi_camera": {
+            "passed": true,
+            "expected_dt": 0.022222,
+            "max_allowed_interval": 0.088889,
+            "max_missing_frames": 4.0,
+            "num_violations": 0,
+            "violation_frames": []
+          },
+          "right_tracking_camera": {
+            "passed": true,
+            "expected_dt": 0.033333,
+            "max_allowed_interval": 0.133333,
+            "max_missing_frames": 4.0,
+            "num_violations": 0,
+            "violation_frames": []
+          },
+          "right_trigger_camera": {
+            "passed": true,
+            "expected_dt": 0.04,
+            "max_allowed_interval": 0.16,
+            "max_missing_frames": 4.0,
+            "num_violations": 0,
+            "violation_frames": []
+          },
+          "left_umi_gripper": {
+            "passed": true,
+            "expected_dt": 0.022222,
+            "max_allowed_interval": 0.088889,
+            "max_missing_frames": 4.0,
+            "num_violations": 0,
+            "violation_frames": []
+          },
+          "head_tracking_camera": {
+            "passed": true,
+            "expected_dt": 0.033333,
+            "max_allowed_interval": 0.133333,
+            "max_missing_frames": 4.0,
+            "num_violations": 0,
+            "violation_frames": []
+          },
+          "right_umi_gripper": {
+            "passed": true,
+            "expected_dt": 0.022222,
+            "max_allowed_interval": 0.088889,
+            "max_missing_frames": 4.0,
+            "num_violations": 0,
+            "violation_frames": []
+          }
+        },
+        "sustained_frame_drop": {
+          "right_umi_camera": {
+            "passed": true,
+            "window_s": 1.0,
+            "min_fps_ratio": 0.7,
+            "expected_fps": 45,
+            "num_violations": 0,
+            "violations": []
+          },
+          "left_trigger_camera": {
+            "passed": true,
+            "window_s": 1.0,
+            "min_fps_ratio": 0.7,
+            "expected_fps": 25,
+            "num_violations": 0,
+            "violations": []
+          },
+          "left_tracking_camera": {
+            "passed": true,
+            "window_s": 1.0,
+            "min_fps_ratio": 0.7,
+            "expected_fps": 30,
+            "num_violations": 0,
+            "violations": []
+          },
+          "left_umi_camera": {
+            "passed": true,
+            "window_s": 1.0,
+            "min_fps_ratio": 0.7,
+            "expected_fps": 45,
+            "num_violations": 0,
+            "violations": []
+          },
+          "right_tracking_camera": {
+            "passed": true,
+            "window_s": 1.0,
+            "min_fps_ratio": 0.7,
+            "expected_fps": 30,
+            "num_violations": 0,
+            "violations": []
+          },
+          "right_trigger_camera": {
+            "passed": true,
+            "window_s": 1.0,
+            "min_fps_ratio": 0.7,
+            "expected_fps": 25,
+            "num_violations": 0,
+            "violations": []
+          },
+          "left_umi_gripper": {
+            "passed": true,
+            "window_s": 1.0,
+            "min_fps_ratio": 0.7,
+            "expected_fps": 45,
+            "num_violations": 0,
+            "violations": []
+          },
+          "head_tracking_camera": {
+            "passed": true,
+            "window_s": 1.0,
+            "min_fps_ratio": 0.7,
+            "expected_fps": 30,
+            "num_violations": 0,
+            "violations": []
+          },
+          "right_umi_gripper": {
+            "passed": true,
+            "window_s": 1.0,
+            "min_fps_ratio": 0.7,
+            "expected_fps": 45,
+            "num_violations": 0,
+            "violations": []
+          }
+        },
+        "coverage": {
+          "overlap_ratio": 0.9976,
+          "intersection_start": 434972.790464969,
+          "intersection_end": 435165.502751303,
+          "intersection_duration": 192.7123,
+          "ranges": {
+            "right_umi_camera": {
+              "min": 434972.726256135,
+              "max": 435165.692511185,
+              "duration": 192.96625505003612
+            },
+            "left_trigger_camera": {
+              "min": 434972.781593196,
+              "max": 435165.671118251,
+              "duration": 192.8895250550122
+            },
+            "left_tracking_camera": {
+              "min": 434972.52473384904,
+              "max": 435165.502751303,
+              "duration": 192.97801745397737
+            },
+            "left_umi_camera": {
+              "min": 434972.721336581,
+              "max": 435165.692320416,
+              "duration": 192.97098383499542
+            },
+            "right_tracking_camera": {
+              "min": 434972.532314657,
+              "max": 435165.503142229,
+              "duration": 192.9708275719895
+            },
+            "right_trigger_camera": {
+              "min": 434972.790464969,
+              "max": 435165.684883816,
+              "duration": 192.89441884699045
+            },
+            "left_umi_gripper": {
+              "min": 434972.601864882,
+              "max": 435165.651905234,
+              "duration": 193.05004035198363
+            },
+            "head_tracking_camera": {
+              "min": 434972.69481572905,
+              "max": 435165.565415201,
+              "duration": 192.87059947196394
+            },
+            "right_umi_gripper": {
+              "min": 434972.604048706,
+              "max": 435165.620716577,
+              "duration": 193.0166678709793
+            }
+          },
+          "passed": true
+        }
+      },
+      "sensor_checks": {
+        "left_umi_gripper": {
+          "jumps": {
+            "has_jumps": false,
+            "jump_frames": [],
+            "num_jumps": 0,
+            "jump_threshold": 50.0
+          },
+          "movement": {
+            "moved": true,
+            "range_mm": 77.84,
+            "min_mm": 0.26,
+            "max_mm": 78.11
+          },
+          "range": {
+            "in_range": true,
+            "out_of_range_frames": [],
+            "num_out_of_range": 0,
+            "expected_range": [
+              -2.0,
+              85.0
+            ],
+            "fixable_indices": [],
+            "num_fixable": 0,
+            "num_remaining_fixable": 0
+          }
+        },
+        "right_umi_gripper": {
+          "jumps": {
+            "has_jumps": false,
+            "jump_frames": [],
+            "num_jumps": 0,
+            "jump_threshold": 50.0
+          },
+          "movement": {
+            "moved": true,
+            "range_mm": 79.65,
+            "min_mm": 0.01,
+            "max_mm": 79.66
+          },
+          "range": {
+            "in_range": true,
+            "out_of_range_frames": [],
+            "num_out_of_range": 0,
+            "expected_range": [
+              -2.0,
+              85.0
+            ],
+            "fixable_indices": [],
+            "num_fixable": 0,
+            "num_remaining_fixable": 0
+          }
+        }
+      },
+      "tracking_checks": {
+        "left_tracking_camera": {
+          "pose_movement": {
+            "has_movement": true,
+            "max_distance": 0.7061,
+            "threshold": 0.01,
+            "num_samples": 580,
+            "downsample_factor": 10
+          },
+          "pose_jumps": {
+            "has_jumps": false,
+            "jump_frames": [],
+            "num_jumps": 0,
+            "jump_threshold_m": 0.15
+          },
+          "consecutive_movement": {
+            "passed": false,
+            "movement_ratio": 0.7363,
+            "required_ratio": 0.8,
+            "min_movement_m": 0.0005,
+            "moving_frames": 4263,
+            "total_frames": 5790,
+            "avg_consecutive_dist_mm": 1.82,
+            "median_consecutive_dist_mm": 1.1
+          }
+        },
+        "right_tracking_camera": {
+          "pose_movement": {
+            "has_movement": true,
+            "max_distance": 0.6564,
+            "threshold": 0.01,
+            "num_samples": 580,
+            "downsample_factor": 10
+          },
+          "pose_jumps": {
+            "has_jumps": false,
+            "jump_frames": [],
+            "num_jumps": 0,
+            "jump_threshold_m": 0.15
+          },
+          "consecutive_movement": {
+            "passed": false,
+            "movement_ratio": 0.6879,
+            "required_ratio": 0.8,
+            "min_movement_m": 0.0005,
+            "moving_frames": 3983,
+            "total_frames": 5790,
+            "avg_consecutive_dist_mm": 1.93,
+            "median_consecutive_dist_mm": 0.99
+          }
+        },
+        "head_tracking_camera": {
+          "pose_movement": {
+            "has_movement": true,
+            "max_distance": 0.3474,
+            "threshold": 0.01,
+            "num_samples": 579,
+            "downsample_factor": 10
+          },
+          "pose_jumps": {
+            "has_jumps": false,
+            "jump_frames": [],
+            "num_jumps": 0,
+            "jump_threshold_m": 0.15
+          },
+          "consecutive_movement": {
+            "passed": false,
+            "movement_ratio": 0.5696,
+            "required_ratio": 0.8,
+            "min_movement_m": 0.0005,
+            "moving_frames": 3296,
+            "total_frames": 5787,
+            "avg_consecutive_dist_mm": 1.01,
+            "median_consecutive_dist_mm": 0.59
+          }
+        }
+      },
+      "device_check": {
+        "passed": true,
+        "expected_devices": [
+          "left_tracking_camera",
+          "left_umi_camera",
+          "left_umi_gripper",
+          "right_tracking_camera",
+          "right_umi_camera",
+          "right_umi_gripper"
+        ],
+        "actual_devices": [
+          "head_tracking_camera",
+          "left_tracking_camera",
+          "left_trigger_camera",
+          "left_umi_camera",
+          "left_umi_gripper",
+          "right_tracking_camera",
+          "right_trigger_camera",
+          "right_umi_camera",
+          "right_umi_gripper"
+        ],
+        "missing_devices": [],
+        "extra_devices": [],
+        "video_sources_expected": [
+          "left_tracking_camera",
+          "left_umi_camera",
+          "right_tracking_camera",
+          "right_umi_camera"
+        ],
+        "numeric_sources_expected": [
+          "left_umi_gripper",
+          "right_umi_gripper"
+        ],
+        "issues": []
+      },
+      "resolution_checks": {
+        "left_tracking_camera": {
+          "passed": true,
+          "expected_resolution": [
+            180,
+            240
+          ],
+          "actual_resolution": [
+            180,
+            240
+          ],
+          "error": null
+        },
+        "right_tracking_camera": {
+          "passed": true,
+          "expected_resolution": [
+            180,
+            240
+          ],
+          "actual_resolution": [
+            180,
+            240
+          ],
+          "error": null
+        },
+        "left_umi_camera": {
+          "passed": true,
+          "expected_resolution": [
+            640,
+            400
+          ],
+          "actual_resolution": [
+            640,
+            400
+          ],
+          "error": null
+        },
+        "left_trigger_camera": {
+          "passed": true,
+          "expected_resolution": [
+            640,
+            480
+          ],
+          "actual_resolution": [
+            640,
+            480
+          ],
+          "error": null
+        },
+        "right_umi_camera": {
+          "passed": true,
+          "expected_resolution": [
+            640,
+            400
+          ],
+          "actual_resolution": [
+            640,
+            400
+          ],
+          "error": null
+        },
+        "right_trigger_camera": {
+          "passed": true,
+          "expected_resolution": [
+            640,
+            480
+          ],
+          "actual_resolution": [
+            640,
+            480
+          ],
+          "error": null
+        },
+        "head_tracking_camera": {
+          "passed": true,
+          "expected_resolution": [
+            720,
+            960
+          ],
+          "actual_resolution": [
+            720,
+            960
+          ],
+          "error": null
+        }
+      },
+      "passed": true,
+      "issues": [],
+      "numeric_value_checks": {},
+      "motion_alignment_checks": {},
+      "warnings": []
+    }
+  },
+  "dataset_checks": {
+    "config_device_names": {
+      "passed": true,
+      "expected_devices": [
+        "left_tracking_camera",
+        "left_umi_camera",
+        "left_umi_gripper",
+        "right_tracking_camera",
+        "right_umi_camera",
+        "right_umi_gripper"
+      ],
+      "config_devices": [
+        "head_tracking_camera",
+        "left_tracking_camera",
+        "left_trigger_camera",
+        "left_umi_camera",
+        "left_umi_gripper",
+        "right_tracking_camera",
+        "right_trigger_camera",
+        "right_umi_camera",
+        "right_umi_gripper"
+      ],
+      "mismatched_names": [],
+      "missing_from_config": [],
+      "issues": []
+    },
+    "device_name_consistency": {
+      "passed": true,
+      "expected_devices": [
+        "left_tracking_camera",
+        "left_umi_camera",
+        "left_umi_gripper",
+        "right_tracking_camera",
+        "right_umi_camera",
+        "right_umi_gripper"
+      ],
+      "video_sources": [
+        "left_tracking_camera",
+        "left_umi_camera",
+        "right_tracking_camera",
+        "right_umi_camera"
+      ],
+      "numeric_sources": [
+        "left_umi_gripper",
+        "right_umi_gripper"
+      ],
+      "episodes_with_missing_devices": {},
+      "episodes_with_extra_devices": {}
+    },
+    "gripper_serial_consistency": {
+      "passed": true,
+      "issues": [
+        "No gripper serial data found in any episode"
+      ],
+      "gripper_serials": {},
+      "inconsistent_episodes": []
+    }
+  },
+  "summary": {
+    "total_episodes": 3,
+    "passed_episodes": 3,
+    "failed_episodes": 0,
+    "failed_episode_indices": [],
+    "issues_by_type": {}
+  }
+}

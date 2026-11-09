@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+# UMI gripper (Raspberry Pi Pico, USB CDC): persistent /dev/ttyACM* access
+#
+# Without this rule /dev/ttyACM* is mode 0660 root:dialout, and the device node
+# is recreated on every unplug and replug. The rule applies the dialout group on
+# every replug and adds a stable /dev/umi_gripper* symlink, so nothing needs
+# sudo at calibration time.
+#
+# Access itself comes from `dialout` membership (see the usermod line below). A
+# station whose operator is in dialout works without this rule; a station with
+# this rule but an operator outside dialout does not.
+#
+# The ids are the ones the gripper firmware declares (see board.h in
+# GEAR_UMI/files/firmware/umi-encoder/):
+#     BOARD_USB_VID          0x2E8A   (Raspberry Pi)
+#     BOARD_USB_PID_RP2040   0x000a   (RP2040 boards)
+#     BOARD_USB_PID_DEFAULT  0x0009   (everything else, e.g. RP2350)
+# usb_descriptors.c picks the PID with `#if PICO_RP2040`, so the PID a gripper
+# reports depends on the board it was built on. Both are matched below.
+#
+# Install (scripts/setup_station.sh offers to do this):
+#     sudo cp 99-umi-gripper.rules /etc/udev/rules.d/
+#     sudo udevadm control --reload-rules && sudo udevadm trigger
+#     sudo usermod -aG dialout $USER      # then log out and back in
+#
+# Verify against a connected gripper:
+#     udevadm info -a -n /dev/ttyACM0 | head -40
+#     ls -l /dev/umi_gripper*
+# If idVendor/idProduct there differ from the values below, edit this file to
+# match the hardware.
+
+SUBSYSTEM=="tty", ATTRS{idVendor}=="2e8a", ATTRS{idProduct}=="000a", MODE="0660", GROUP="dialout", SYMLINK+="umi_gripper%n"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="2e8a", ATTRS{idProduct}=="0009", MODE="0660", GROUP="dialout", SYMLINK+="umi_gripper%n"

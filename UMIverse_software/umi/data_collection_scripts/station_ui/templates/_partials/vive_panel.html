@@ -1,0 +1,162 @@
+{# Render per-arm tracker results on the server. A run confirms one arm while
+   watching every puck for swaps. Use separate camera/Vive IDs for panels and
+   external badges. #}
+<div id="vive-panel">
+  <div class="calibration-guidance">
+    <strong>Tracker check setup</strong>
+    <ol>
+      <li>Keep the tracker bridge running and both trackers visible to the base stations.</li>
+      <li>Check the left tracker, then the right. Move only the named gripper and keep the other still.</li>
+      <li>Watch the live movement plot in this tab. Each tracker is confirmed automatically when its movement passes the check.</li>
+    </ol>
+  </div>
+  {# Show no tracker sections only when config declares no arm-owned tracker. #}
+  {% if not vive_sections %}
+    <p class="muted">No trackers to check.</p>
+  {% endif %}
+
+  {% for section in vive_sections %}
+    {% set vive = section.view %}
+    {% set arm = section.arm %}
+    {% set row = vive.rows[0] if vive.rows else none %}
+    {# Use the same blocked_by arm in button rendering and start-route validation. #}
+    {% set blocked = section.blocked_by %}
+    <section class="calibration-tracker" aria-labelledby="tracker-heading-{{ arm }}">
+      <h3 id="tracker-heading-{{ arm }}">{{ arm|title }} tracker</h3>
+
+      {% if vive.cross %}
+        {# Name both arms on a detected swap: plausible motion from exchanged keys
+           can pass downstream data checks. Single-arm verification still observes
+           every puck. #}
+        <div class="banner banner--error" role="alert">
+          <span class="banner__icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"></circle>
+              <path d="M9 9 L15 15"></path><path d="M15 9 L9 15"></path>
+            </svg>
+          </span>
+          <div>
+            <b>The tracker keys look swapped.</b>
+            <p>
+              The {{ vive.cross.prompted|upper }} gripper was moved, but the tracker
+              bound to the {{ vive.cross.moved|upper }} arm is what moved. Fix the
+              keys on the Configuration page, then run this again.
+            </p>
+          </div>
+        </div>
+      {% elif vive.timed_out %}
+        {# Present inactivity timeout as a stopped check rather than a hardware
+           fault. #}
+        <p class="check__prompt">◐ Timed out after 5 minutes — press Start again.</p>
+      {% elif vive.done %}
+        <p class="check__prompt">{{ arm|title }} tracker confirmed.</p>
+      {% elif vive.running and vive.prompted %}
+        <span class="calibration-eyebrow">Current action</span>
+        <p class="check__prompt">
+          Move the <span class="check__side">{{ arm|upper }}</span> gripper around.
+        </p>
+      {% elif vive.running %}
+        {# Wait for bridge readiness before prompting for gripper motion. #}
+        <p class="check__prompt">◐ Connecting to the tracker bridge…</p>
+      {% endif %}
+
+      {% if section.chart %}
+        {% with chart = section.chart %}{% include "_partials/calibration_tracker_chart.html" %}{% endwith %}
+      {% elif vive.running %}
+        <p class="muted" role="status">Waiting for movement samples. The live plot will appear here.</p>
+      {% endif %}
+
+      {% if row %}
+        {# Highlight an arm only while its own check runs. #}
+        <div class="device-row{% if vive.running %} device-row--current{% endif %}">
+          <span class="device-row__name">
+            {# Label Vive sources directly; camera-role labels may imply iPhone
+               tracking. #}
+            {{ arm|title }} — <code>{{ row.tracker_key }}</code>
+          </span>
+
+          {% if row.state == "confirmed" %}
+            <span class="device-row__value badge badge--ok">✓ Confirmed</span>
+          {% elif row.state == "untracked" %}
+            <span class="device-row__value badge badge--error">✕ Not tracked</span>
+          {% elif row.state == "moving" %}
+            <span class="device-row__value badge badge--warn">● Moving</span>
+          {% elif row.state == "still" %}
+            <span class="device-row__value badge">○ Still</span>
+          {% else %}
+            <span class="device-row__value badge">○ Waiting</span>
+          {% endif %}
+        </div>
+        {# Render motion-bar width from server-validated numbers and child-reported
+           thresholds. #}
+        <div class="disp-bar" role="presentation">
+          <div class="disp-bar__fill{% if row.state == 'confirmed' %} disp-bar__fill--ok{% endif %}"
+               style="width: {{ "%.0f"|format(row.percent_value) }}%"></div>
+        </div>
+        <p class="muted">
+          {% if row.disp is none %}—{% else %}{{ "%.0f"|format(row.disp * 1000) }} mm{% endif %}
+        </p>
+      {% endif %}
+
+      {# Report startup failure when no events arrived, unless a more specific
+         cross-talk result already explains it. #}
+      {% if vive.failed and not vive.cross %}
+        <p class="muted">
+          The check stopped: {{ vive.error or "the child exited" }}.
+          {% if vive.job_id %}
+            <a href="/calibration/jobs/{{ vive.job_id }}/log">Full log</a>
+          {% endif %}
+        </p>
+      {% endif %}
+
+      {# Show bridge diagnostics without JSON event lines; open the log on failure. #}
+      {% if vive.log %}
+        <details class="job-details"{% if vive.failed %} open{% endif %}>
+          <summary>Show what the {{ arm }} tracker check printed</summary>
+          <pre class="job-log">{% for line in vive.log %}{{ line|ansi }}
+{% endfor %}</pre>
+        </details>
+      {% endif %}
+
+      {# Offer Check again after confirmation even while the child is releasing the
+         bridge. #}
+      {% if vive.running and not vive.done %}
+        <form method="post" action="/calibration/vive/stop">
+          <button class="btn" type="submit" {% if not can_edit %}disabled aria-describedby="rig-read-only"{% endif %}>Stop {{ arm }} tracker check</button>
+        </form>
+      {% else %}
+        <form method="post" action="/calibration/vive/start">
+          <input type="hidden" name="arm" value="{{ arm }}">
+          <button form="configuration-form" formaction="/calibration/vive/start" name="arm" value="{{ arm }}" class="btn{% if not blocked %} btn--primary{% endif %}" type="submit"
+            {% if not can_edit %}disabled aria-describedby="rig-read-only"
+            {% elif blocked %}disabled aria-describedby="vive-blocked-{{ arm }}"{% endif %}>
+            {% if vive.done %}Check {{ arm }} again{% else %}Check {{ arm }} tracker{% endif %}
+          </button>
+        </form>
+        {# Explain the per-arm sequence beside a disabled Start control. #}
+        {% if blocked %}
+          <p class="muted" id="vive-blocked-{{ arm }}">
+            Confirm the {{ blocked }} tracker first.
+          </p>
+        {% endif %}
+      {% endif %}
+      {% if vive.done and not loop.last %}
+        <p class="calibration-complete">✓ {{ arm|title }} tracker complete.
+          <a href="#tracker-heading-{{ loop.nextitem.arm }}">Continue to the {{ loop.nextitem.arm }} tracker →</a>
+        </p>
+      {% endif %}
+    </section>
+  {% endfor %}
+  {% if vive_sections and vive_sections|selectattr('view.done')|list|length == vive_sections|length %}
+    <p class="calibration-complete">✓ All trackers confirmed.
+      <a href="#step-gripper_cal">Continue to calibrate grippers →</a>
+    </p>
+  {% endif %}
+</div>
+
+{# Update the Vive step badge out of band using its unique ID, distinct from the
+   camera badge. #}
+{% if vive_badge %}
+<span id="vive-badge" hx-swap-oob="true"
+      class="section__action badge {{ vive_badge[2] }}">{{ vive_badge[0] }} {{ vive_badge[1] }}</span>
+{% endif %}

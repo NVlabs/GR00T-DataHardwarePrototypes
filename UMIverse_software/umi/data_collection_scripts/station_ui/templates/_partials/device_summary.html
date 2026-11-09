@@ -1,0 +1,53 @@
+{# Group devices by USB ownership to associate grippers with their OAK and phone;
+   list computer-connected trigger cameras separately. Refresh the table out of band
+   without replacing inputs. Only the controlling tab may open previews. #}
+{% set summary = device_summary %}
+<div class="card device-summary" id="device-summary" {% if oob %}hx-swap-oob="true"{% endif %}>
+  <h3 class="card__title">Detected devices</h3>
+  {% if summary.failure %}
+    <p class="device-summary__status field__warn" role="status">{{ summary.unavailable }} ({{ summary.failure }}).</p>
+  {% elif summary.running %}
+    <p class="device-summary__status muted" role="status">Looking for connected devices…</p>
+  {% elif summary.rows is none %}
+    <p class="device-summary__status muted">Press Refresh devices to see what is connected.</p>
+  {% elif not summary.rows %}
+    <p class="device-summary__status muted" role="status">{{ summary.empty }}</p>
+  {% else %}
+    <p class="device-summary__note muted" id="device-summary-note">
+      One row per USB port. A gripper's camera and phone share its row: use one
+      row for the left arm and another for the right. Trigger cameras plug into
+      the computer, not the gripper, so each USB camera has a row of its own.
+      {% if can_edit %}Click a camera or iPhone ID to see it live; for a USB
+      camera, that is how to tell which gripper it is on.{% endif %}
+    </p>
+    <div class="device-summary__scroll">
+      <table class="device-summary__table" aria-describedby="device-summary-note">
+        <thead>
+          <tr>
+            <th scope="col">{{ summary.port_heading }}</th>
+            {% for _, heading in summary.columns %}<th scope="col">{{ heading }}</th>{% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in summary.rows %}
+            <tr>
+              <td class="mono">{{ row.port or "—" }}</td>
+              {% for kind, _ in summary.columns %}
+                <td class="mono">
+                  {%- for cell in row[kind] -%}
+                    {%- if can_edit and kind in summary.previewable and cell.available -%}
+                      <button type="button" class="device-summary__id mono"
+                              data-preview-kind="{{ kind }}" data-preview-device="{{ cell.name }}"
+                              title="Show a live preview of {{ cell.name }}">{{ cell.name }}</button>
+                    {%- else -%}{{ cell }}{%- endif -%}
+                    {%- if not loop.last %}, {% endif -%}
+                  {%- else -%}—{%- endfor -%}
+                </td>
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+</div>

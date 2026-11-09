@@ -1,0 +1,3 @@
+# The hardware designs and documentation website are published on
+# https://research.nvidia.com/labs/gear/hardware-prototypes/; this repository holds the software.
+*.zip binary

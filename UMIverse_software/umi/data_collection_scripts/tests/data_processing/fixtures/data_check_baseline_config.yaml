@@ -1,0 +1,122 @@
+# Data Check Configuration
+# Threshold parameters for data validation checks
+
+# Timestamp validation thresholds
+timestamp:
+  enabled: true
+  # Maximum allowed FPS deviation from expected (percentage)
+  fps_deviation_pct: 10.0
+  # Minimum required timestamp coverage overlap ratio (0.0 - 1.0)
+  coverage_threshold: 0.95
+  # Maximum allowed consecutive frame interval as multiplier of expected dt (1/fps)
+  # If time_diff > max_missing_frames * dt, the frame is flagged as missing frames
+  max_missing_frames: 4.0
+  # Sustained frame drop: fail if any time window has FPS significantly below target
+  frame_drop_window_s: 1.0       # window duration in seconds (e.g. 1s of delay/drops)
+  frame_drop_min_fps_ratio: 0.7  # in any such window, require at least this ratio of expected FPS (e.g. 70%)
+
+# Gripper sensor validation thresholds
+gripper:
+  enabled: true
+  # Minimum movement threshold in mm to detect gripper moved
+  movement_threshold_mm: 10.0
+  # Jump detection threshold in mm (consecutive frame difference)
+  jump_threshold_mm_per_s: 2000.0
+  # Valid distance range [min, max] in mm
+  range_min_mm: -2.0
+  range_max_mm: 85.0
+
+# iPhone tracking validation thresholds
+tracking:
+  enabled: true
+  # Minimum pose movement threshold in meters to detect movement
+  pose_movement_threshold_m: 0.01
+  # Downsample factor for N×N pose comparison
+  pose_downsample: 10
+  # Minimum consecutive frame movement in meters
+  consecutive_min_movement_m: 0.0005
+  # Required ratio of frames showing movement (0.0 - 1.0)
+  consecutive_required_ratio: 0.80
+  # Apply this ratio to every tracker. Null selects consecutive_required_ratio instead.
+
+
+  multi_tracking_consecutive_required_ratio: 0.15
+  # Pose jump detection threshold in meters (consecutive frame position difference)
+  # Detects sudden large position changes that may indicate tracking errors
+  pose_jump_threshold_m_per_s: 4.5
+
+# Require a steady arm before gripper closure.
+
+arm_steady_before_close:
+  # Enable/disable this check
+  enabled: true
+  # Required steady duration before gripper closes (seconds)
+  hold_duration_s: 0.3
+  # Maximum allowed arm movement during hold period (meters)
+  steady_threshold_m: 0.05
+  # Minimum gripper distance decrease over window to detect closing (mm)
+  # Uses sliding window for robust detection instead of single frame difference
+  close_threshold_mm: 3.0
+  # Number of frames in sliding window for closing detection
+  # Larger values = more robust but may miss quick closes
+  window_frames: 5
+  # Minimum frames between separate close events to avoid double-counting
+  min_gap_frames: 90
+  # Pre-window distance stability identifies closure onset rather than
+  # the middle of an ongoing close.
+
+  stable_threshold_mm: 2.0
+  # Initial gripper distance range (mm)
+  gripper_initial_distance_range: [55.0, 85.0]
+
+device_name_consistency:
+  enabled: true
+  optional_devices:
+    - "head_tracking_camera"
+    - "head_umi_camera"
+    - "left_trigger_camera"
+    - "right_trigger_camera"
+  left_video_sources:
+    - "left_tracking_camera"
+    - "left_umi_camera"
+  right_video_sources:
+    - "right_tracking_camera"
+    - "right_umi_camera"
+  left_numeric_sources:
+    - "left_umi_gripper"
+  right_numeric_sources:
+    - "right_umi_gripper"
+
+# Video resolution validation (per-device, expected widths/heights from recording config)
+video_resolution:
+  enabled: true
+
+# Episode duration validation thresholds (per-task settings)
+# Each task can have its own min/max duration bounds
+duration:
+  enabled: true
+  # Default duration bounds (used when task-specific settings not found)
+  default:
+    min_duration_s: 12.0    # Minimum episode duration in seconds
+    max_duration_s: 45.0  # Maximum episode duration in seconds
+  # Task-specific overrides (optional)
+
+# Latency validation settings. All should be positive.
+latency:
+  enabled: true
+  expected_gripper_latency: 0.084
+
+# Idle validation settings
+# Checks whether the trajectory has idle periods where nothing moves for too long.
+idle:
+  enabled: true
+  # Maximum allowed idle duration in seconds
+  max_idle_duration_s: 5.0
+  # Minimum per frame movement threshold in meters to consider tracking as moving
+  tracking_movement_threshold_m: 0.002
+  # Minimum per frame movement threshold in mm to consider gripper as moving
+  gripper_movement_threshold_mm: 1.0
+  # Maximum total displacement in meters to consider truly idle (filters slow movement)
+  total_displacement_threshold_m: 0.01
+  # Maximum total gripper displacement in mm to consider truly idle
+  gripper_total_displacement_threshold_mm: 2.0

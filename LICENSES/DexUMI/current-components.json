@@ -1,0 +1,34 @@
+{
+  "date": "2026-11-03",
+  "scope": "Standalone DexUMI hand monitor. The DexUMI station software's Python dependencies are listed in LICENSES/python-dependencies.md.",
+  "project_license": "Apache-2.0 for NVIDIA-owned rights",
+  "components": [
+    {
+      "name": "pySerial",
+      "version": "3.5",
+      "license": "BSD-3-Clause",
+      "artifact": "GEAR_DexUMI/files/software/dexumi-hand-monitor-v2.0.zip",
+      "artifact_sha256": "ae32a8e96060ac22ccb5d67c963132bbcfda97e08a78d3f2340c25d5c67ca715",
+      "archive_members": "dexumi-hand-monitor-v2.0/vendor/serial/",
+      "license_files": [
+        "LICENSES/DexUMI/pyserial-3.5/LICENSE.txt",
+        "GEAR_DexUMI/files/software/dexumi-hand-monitor-v2.0.zip!dexumi-hand-monitor-v2.0/vendor/NOTICE-pyserial.txt"
+      ],
+      "publisher_wheel_url": "https://files.pythonhosted.org/packages/07/bc/587a445451b253b285629263eb51c2d8e9bcea4fc97826266d186f96f558/pyserial-3.5-py2.py3-none-any.whl",
+      "publisher_wheel_sha256": "c4451db6ba391ca6ca299fb3ec7bae67a5c55dde170964c7a14ceefec02f2cf0",
+      "publisher_license_url": "https://raw.githubusercontent.com/pyserial/pyserial/v3.5/LICENSE.txt",
+      "license_sha256": "f91cb9813de6a5b142b8f7f2dede630b5134160aedaeaf55f4d6a7e2593ca3f3",
+      "bundled": true,
+      "all_28_source_members_match_publisher": true
+    },
+    {
+      "name": "windows-curses",
+      "version": null,
+      "version_status": "Unpinned, separately installed by Windows users",
+      "publisher_declared_license": "PSF2",
+      "publisher_url": "https://pypi.org/project/windows-curses/",
+      "bundled": false,
+      "native_dependency_note": "Publisher identifies its PDCurses basis; inspect exact installed wheel/runtime notices if redistributing a Windows environment. No Windows binary is distributed in the source ZIP."
+    }
+  ]
+}

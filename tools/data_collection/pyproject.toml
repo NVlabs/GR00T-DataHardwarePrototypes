@@ -1,0 +1,22 @@
+# The `umi_dc` and `dexumi_dc` commands. `uv sync` at the repository root
+# installs them into the repository's .venv (see ../../pyproject.toml).
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gear-data-collection-commands"
+version = "0.1.0"
+description = "Start the GEAR UMI and DexUMI data-collection GUIs"
+requires-python = ">=3.12,<3.13"
+# Standard library only: the GUIs' own dependencies come from their projects,
+# which the same `uv sync` installs.
+dependencies = []
+
+[project.scripts]
+umi_dc = "dc_commands:umi_dc"
+dexumi_dc = "dc_commands:dexumi_dc"
+
+[tool.hatch.build.targets.wheel]
+only-include = ["dc_commands.py"]

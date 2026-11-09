@@ -1,0 +1,268 @@
+# Bimanual V4 with Vive poses, OAK CAM_B wrist cameras and USB triggers.
+# Store raw shared-world lighthouse poses; apply the fixed tracker-to-gripper
+# mount transform only during conversion. Keep shared hardware settings
+# consistent with bimanual_v4.yaml. Add head/bottom cameras per session.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Meta
+meta:
+  operator_name: Enter Name Here
+  task_name: Enter Task Name Here
+  task_description: Description
+  use_head_mount: false
+
+# General recording settings
+recording:
+  record_fps: 30
+  stream_fps: 45
+  verbose: false
+  video_encoder: ffmpeg_h264
+  video_frame_type: RGBCameraFrame
+  numeric_frame_type: GripperFrame
+
+# Video sources. List left before right to preserve UI/preview order.
+# Dataset identity uses source names, not list positions.
+
+
+
+
+
+video_sources:
+  # OAK-SoM baseboard: the wrist camera only. See bimanual_v4.yaml for why only
+  # CAM_B is used.
+  - type: oak_device
+    oak_device_name: "oak-left-wrist"  # Set by the Station Console
+    fps: 30
+    ae_max_exposure_us: 22222  # 1/45 s, the exposure limit of a 45 fps capture
+    latency: 0.08
+    streams:
+      - name: left_umi_camera
+        socket: CAM_B
+        resolution: [640, 400]
+
+  - type: oak_device
+    oak_device_name: "oak-right-wrist"  # Set by the Station Console
+    fps: 30
+    ae_max_exposure_us: 22222  # 1/45 s, the exposure limit of a 45 fps capture
+    latency: 0.08
+    streams:
+      - name: right_umi_camera
+        socket: CAM_B
+        resolution: [640, 400]
+
+  # Upright IMX179 MJPG USB trigger cameras. Assembly replaces camera_index
+  # with the discovered V4L2 index. Resolution is used by data checks; latency
+  # by alignment. The latency estimate comes from a different USB trigger
+  # module and must be measured for this hardware before precise synchronization.
+
+
+
+
+  - type: uvc_camera
+    name: left_trigger_camera
+    record_fps: 25
+    stream_fps: 30
+    frame_type: RGBCameraFrame
+    latency: 0.0917
+    params:
+      camera_index: 0
+      camera_resolution: [1280, 720]
+      fps: 30
+      pixel_format: MJPG
+
+  - type: uvc_camera
+    name: right_trigger_camera
+    record_fps: 25
+    stream_fps: 30
+    frame_type: RGBCameraFrame
+    latency: 0.0917
+    params:
+      camera_index: 0
+      camera_resolution: [1280, 720]
+      fps: 30
+      pixel_format: MJPG
+
+# Use wrist OAKs or an optional head OAK for camera-relative calibration.
+# UVC lacks intrinsics and Vive supplies poses rather than images, so neither
+# can solve the board. Remove an absent optional reference during assembly.
+
+
+
+
+
+reference_camera: head_oak_camera
+
+# Recompute camera-relative transforms at the configured refresh interval
+# and reuse cached calibration between those episodes.
+
+
+pre_episode_checks:
+  - name: umi_device.uart_connected
+  - name: camera.relative_calibration
+    params:
+      reference_camera: head_oak_camera
+      cameras: [head_oak_camera, right_umi_camera, left_umi_camera]
+      run_every_n_episodes: 1
+      marker:
+        mode: charuco
+        squares_x: 14
+        squares_y: 9
+        square_length: 0.04       # 40mm
+        marker_length: 0.03       # 30mm
+        aruco_dict: "DICT_5X5_1000"
+        min_markers: 24
+      align_t_mm: 3.0
+      align_r_deg: 0.5
+      align_stable_required: 4
+      loop_timeout_sec: 30.0
+
+# List left numeric sources before right to match the video/UI order.
+
+
+
+
+numeric_sources:
+  # Keep tracking in pose-source names and retain the pose field so checks
+  # and same-side motion pairing discover these streams. tracker_key is the
+  # live SteamVR role, separate from the recording source name; verify it
+  # against the bridge before recording.
+  # The 0.10664 s latency estimate combines a 0.08 s camera placeholder with
+  # approximately 27 ms of measured bridge offset (11 ms transport plus
+  # 16 ms average hold at 31 Hz). Measure camera latency and current bridge
+  # cadence before treating this as an absolute synchronization calibration.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  - type: vive_tracker
+    name: left_tracking_pose
+    record_fps: 30
+    stream_fps: 30
+    frame_type: PoseFrame
+    latency: 0.10664
+    params:
+      endpoint: "tcp://127.0.0.1:5555"
+      tracker_key: left_knee   # verify against the live server
+      poll_hz: 90
+      timeout_s: 0.25    # must exceed the ~65 ms server RTT, not the 1.4 ms ping
+      max_age_s: 0.15    # must exceed the achieved poll period (~32 ms)
+
+  - type: vive_tracker
+    name: right_tracking_pose
+    record_fps: 30
+    stream_fps: 30
+    frame_type: PoseFrame
+    latency: 0.10664
+    params:
+      endpoint: "tcp://127.0.0.1:5555"
+      tracker_key: right_knee  # verify against the live server
+      poll_hz: 90
+      timeout_s: 0.25
+      max_age_s: 0.15
+
+  # Use matching V4 generation/calibration and 15 mm geometry. The 45 ms
+  # encoder latency is an inherited estimate, not an independent V4 measurement.
+
+
+
+
+
+
+
+
+  - type: umi_gripper
+    name: left_umi_gripper
+    uart_device_name: "UMI-V4-0001"
+    reader_baudrate: 1000000
+    record_fps: 30
+    stream_fps: 45
+    frame_type: GripperFrame
+    latency: 0.045
+    params:
+      config_file: "config/umi_gripper/left_umi_gripper_config.yaml"
+      gripper_generation: v4
+      gear_radius: 15.0
+
+  - type: umi_gripper
+    name: right_umi_gripper
+    uart_device_name: "UMI-V4-0002"
+    reader_baudrate: 1000000
+    record_fps: 30
+    stream_fps: 45
+    frame_type: GripperFrame
+    latency: 0.045
+    params:
+      config_file: "config/umi_gripper/right_umi_gripper_config.yaml"
+      gripper_generation: v4
+      gear_radius: 15.0
+
+# Background alignment settings (runs in a daemon process during collection)
+alignment:
+  enabled: true
+  index_sources: "right_umi_camera"  # tried in order; first match wins
+  uniform_fps: 30      # aligned rows are an even 1/30 s apart
+  copy_videos: true    # copy mp4s into aligned output
+  aligned_dir: null  # default: output/aligned/{task}/{session}
+  align_timeout: 300
+
+# Visualization settings
+visualization:
+  enabled: true
+  fps: 30
+  window_name: "V4 flexure gripper + Vive Recording"
+  show_fps: true
+  show_episode_id: true
+  layout: grid
+  overlay_numeric: true
+  overlay_position: [10, 60]
+  # Launch maximized, whatever the composite's aspect ratio.
+  window_fraction: 1.0
+  # Operator panels (instruction and placement grid) go in a full-height
+  # column to the right of the grid; with no panel content, "cells" is used.
+  filler_position: side
+  # Sized against the grid height so the composite still fills a 16:9 screen.
+  # Two tiles per arm with no phone, so narrower than bimanual_v4's.
+  side_panel_width: 720
+  # One column per arm (left/right token in the camera name); head_* appends
+  # last. grid_columns is only the fallback for a rig that is not two-sided.
+  grid_fill: sides
+  grid_columns: 2

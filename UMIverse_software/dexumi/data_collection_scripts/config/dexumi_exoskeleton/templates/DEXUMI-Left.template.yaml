@@ -1,0 +1,41 @@
+# Design defaults for a left glove. First calibration adds measured zeros,
+# method, tool angles and board serial. Direction signs assume the standard
+# build; use calibrate_exo.py --device DEXUMI-Left --manual for another build.
+
+
+
+
+
+
+
+device_name: dexumi_exoskeleton
+directions: +--++-++-++-++-
+encoder_sensor_ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+exo_to_robot_joint_map: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+fingertip_poly_map:
+  5: [-1.706463e-05, 0.00319688893, 0.541428002, 0.457106778]
+  8: [-1.4374673e-05, 0.00231921345, 0.603361026, 0.334068957]
+  11: [-1.706463e-05, 0.00319688893, 0.541428002, 0.457106778]
+  14: [1.51488028e-05, 0.000850983612, 0.533179936, 0.132020487]
+geometry_verified: true
+hand_config: umi/control/robot/configs/xhand_left.yaml
+joint_limits:
+- [0, 90]
+- [0, 95]
+- [0, 100]
+- [-10, 60]
+- [0, 100]
+- [0, 53]
+- [-35, 10]
+- [0, 100]
+- [0, 53]
+- [-35, 10]
+- [0, 100]
+- [0, 54]
+- [-35, 10]
+- [0, 100]
+- [0, 41]
+- [0, 20]
+num_hand_joints: 16
+simulation_only: false
+tactile_sensor_ids: [33, 34, 35, 36, 37]

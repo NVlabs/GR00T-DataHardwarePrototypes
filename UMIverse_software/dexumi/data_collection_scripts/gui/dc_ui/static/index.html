@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<!--
+SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+SPDX-License-Identifier: Apache-2.0
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
+  <title>DexUMI · Data collection</title>
+  <link rel="stylesheet" href="/static/dc.css">
+</head>
+<body>
+<a class="skip-link" href="#panel-devices">Skip to device setup</a>
+<svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <symbol id="icon-cube" viewBox="0 0 24 24"><path d="m12 3 9 5v8l-9 5-9-5V8l9-5Z M3 8l9 5 9-5 M12 13v8 M7.5 5.5l9 5v5"/></symbol>
+  <symbol id="icon-sliders" viewBox="0 0 24 24"><path d="M4 7h8m4 0h4M4 17h3m4 0h9"/><circle cx="14" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol>
+  <symbol id="icon-check" viewBox="0 0 24 24"><path d="m7 12 3 3 7-7"/><rect x="3" y="3" width="18" height="18" rx="5"/></symbol>
+  <symbol id="icon-activity" viewBox="0 0 24 24"><path d="M2 12h5l3-8 4 16 3-8h5"/></symbol>
+  <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></symbol>
+  <symbol id="icon-refresh" viewBox="0 0 24 24"><path d="M20 8a8 8 0 1 0 0 8M20 3v5h-5"/></symbol>
+  <symbol id="icon-monitor" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="13" rx="2"/><path d="M8 21h8m-4-5v5"/></symbol>
+</svg>
+<header class="appbar">
+  <a href="#panel-devices" class="brand" aria-label="DexUMI data collection home"><span class="brand-mark" aria-hidden="true"></span><span>DexUMI</span><small>Data collection</small></a>
+  <a href="#panel-record" class="header-link"><svg class="icon"><use href="#icon-activity"/></svg> Recorder &amp; log</a>
+</header>
+<aside class="sidebar">
+  <div class="sidebar-label">WORKFLOW</div>
+  <nav class="step-nav" aria-label="Data collection workflow">
+    <a href="#panel-calibrate" class="step-link active" id="step-calibrate" aria-current="step"><span class="step-number">01</span><span>Calibrate</span><span class="step-indicator"></span></a>
+    <a href="#panel-devices" class="step-link" id="step-devices"><span class="step-number">02</span><span>Devices</span><span class="step-indicator"></span></a>
+    <a href="#panel-session" class="step-link" id="step-session"><span class="step-number">03</span><span>Session</span><span class="step-indicator"></span></a>
+    <a href="#panel-record" class="step-link" id="step-record"><span class="step-number">04</span><span>Record</span><span class="step-indicator"></span></a>
+    <a href="#panel-convert" class="step-link" id="step-convert"><span class="step-number">05</span><span>Convert</span><span class="step-indicator"></span></a>
+  </nav>
+  <div class="sidebar-context"><span class="sidebar-label">CURRENT SESSION</span><dl><dt>Date</dt><dd id="summary-date">—</dd><dt>Task</dt><dd id="summary-task">Not set</dd><dt>Folder</dt><dd id="summary-dir" class="mono small">—</dd></dl></div>
+  <div class="sidebar-footer"><span class="connection-dot" id="connection-dot"></span><span id="connection-label">Connecting to workstation</span><small>Local recording control</small></div>
+</aside>
+<div class="workspace">
+
+<main class="layout">
+  <div class="page-heading"><div><h1>Data collection</h1><p class="page-description">Select your devices, prepare the session, and start collecting.</p></div></div>
+
+<section class="panel" id="panel-calibrate" aria-labelledby="calibrate-title">
+  <div class="section-heading"><div class="section-icon"><svg class="icon"><use href="#icon-check"/></svg></div><div><p class="section-step">STEP 01</p><h2 id="calibrate-title">Calibrate gloves</h2></div><span class="section-tag" id="calibrate-tag"></span></div>
+  <p class="section-description">Each glove needs a one-time calibration so its finger encoders report correct joint angles. You can skip this step if your gloves are already calibrated.</p>
+  <div class="glove-grid" id="glove-cards"></div>
+  <p class="field-hint" id="glove-saved"></p>
+  <div class="calibrate-guide" id="calibrate-guide" hidden>
+    <h3 id="calibrate-guide-title">Calibrate a new glove</h3>
+    <ol class="calibrate-steps">
+      <li id="cal-step-plug"><strong>Plug in only the glove to calibrate:</strong> Unplug every other glove. The boards look identical over USB, so a glove can only be recognised when it is plugged in alone.</li>
+      <li><strong>Seat it in the calibration tool.</strong> Place the glove fully in the calibration tool, with every finger in its slot and none bouncing back up.</li>
+      <li id="cal-step-hand"><strong>Choose the left or right glove below,</strong> based on the hand it is worn on.</li>
+      <li><strong>Record the pose.</strong> When the status says it is ready, keep the glove still and press <em>Record pose</em>, then check the result and press <em>Save calibration</em>.</li>
+      <li><strong>Repeat</strong> for any other glove that needs it.</li>
+    </ol>
+    <p id="calibrate-boards" class="field-hint" role="status"></p>
+    <div class="row" id="calibrate-actions">
+      <button id="btn-cal-left" class="primary">Calibrate as Left glove</button>
+      <button id="btn-cal-right" class="primary">Calibrate as Right glove</button>
+      <button id="btn-cal-recal" class="primary" hidden>Start recalibration</button>
+      <button id="btn-cal-back" class="secondary" hidden>Back</button>
+      <button id="btn-cal-record" class="primary" hidden>Record pose</button>
+      <button id="btn-cal-save" class="primary" hidden>Save calibration</button>
+      <button id="btn-cal-discard" class="secondary" hidden>Discard</button>
+      <button id="btn-cal-cancel" class="danger-secondary" hidden>Cancel</button>
+    </div>
+    <div class="gate" id="calibrate-status" role="status"></div>
+    <details class="calibrate-output" id="calibrate-output"><summary>Calibration output</summary><pre id="calibrate-log" class="mono"></pre></details>
+  </div>
+</section>
+
+<section class="panel" id="panel-devices" aria-labelledby="devices-title">
+  <div class="section-heading"><div class="section-icon"><svg class="icon"><use href="#icon-cube"/></svg></div><div><p class="section-step">STEP 02</p><h2 id="devices-title">Connected devices</h2></div><div class="device-actions"><button id="btn-identify" class="primary compact" disabled>Identify cameras</button><button id="btn-devices" class="secondary compact"><svg class="icon"><use href="#icon-refresh"/></svg> Refresh devices</button></div></div>
+  <p class="section-description">Select the connected cameras for each hand. Each exoskeleton is filled in from the glove calibrated for that hand in Step 01.</p>
+
+  <p id="device-status" class="field-hint" role="status"></p>
+  <p id="device-inactive" class="field-hint"></p>
+  <div id="device-errors" class="error" role="status"></div>
+  <div class="camera-grid" id="device-slots"></div>
+  <details class="device-help"><summary>How to identify cameras</summary><p class="field-hint">Click Identify cameras. Show the on-screen board to each hand's iPhone and wrist OAK together, left hand first, then right. Check the live previews before scanning. Closing the dialog releases the cameras. You can also select cameras manually from the lists; the head OAK is optional.</p></details>
+</section>
+
+<section class="panel" id="panel-session" aria-labelledby="session-title">
+  <div class="section-heading"><div class="section-icon"><svg class="icon"><use href="#icon-sliders"/></svg></div><div><p class="section-step">STEP 03</p><h2 id="session-title">Session</h2></div></div>
+  <p class="section-description">Enter the session details.</p>
+  <div class="task-fields">
+    <label>Task name<input id="task-name" placeholder="e.g. my_task_v1" autocomplete="off" spellcheck="false"><small>Letters, digits, <code>_</code>, <code>-</code>, <code>.</code> — it names the session folder.</small></label>
+    <label><span>Operator name <span class="field-optional">(optional)</span></span><input id="operator-name" placeholder="e.g. Jane Doe" autocomplete="off"><small>Written to <code>meta.operator_name</code> and every episode; recorded as <code>Unknown</code> when empty.</small></label>
+    <label><span>Task description <span class="field-optional">(optional)</span></span><textarea id="task-description" rows="2" placeholder="e.g. pick up the object and place it in the bin"></textarea><small>The live task label shown while recording; recorded as <code>Unknown</code> when empty.</small></label>
+  </div>
+  <label class="data-dir-field">Recording folder (automatic)<div class="data-dir-row"><input id="data-dir" class="mono" readonly aria-readonly="true" spellcheck="false" placeholder="Set the task name to generate the recording folder"></div></label>
+</section>
+
+<section class="panel" id="panel-record" aria-labelledby="record-title">
+  <div class="section-heading"><div class="section-icon"><svg class="icon"><use href="#icon-activity"/></svg></div><div><p class="section-step">STEP 04</p><h2 id="record-title">Record</h2></div><span class="section-tag" id="process-count">stopped</span></div>
+  <div class="process-toolbar" id="process-controls"><div class="row"><button id="btn-start" class="primary" disabled>Start recorder</button><button id="btn-stop" class="danger-secondary" disabled>Stop recorder</button><button id="btn-cancel-check" class="secondary" hidden disabled>Cancel camera check</button></div><p class="muted" id="process-operation">Start checks camera streams, then launches record_data.py with the generated yaml.</p></div>
+  <div id="gate" class="gate" role="status">Build a valid plan before starting.</div>
+  <ul id="findings" class="findings" aria-label="Blockers"></ul>
+  <div id="camera-stream-check" class="camera-stream-check" hidden role="status"><strong>Camera stream check</strong><ul id="camera-stream-results" class="identify-results"></ul><p id="camera-stream-recovery"></p><button id="btn-retry-start" class="primary">Retry Start</button></div>
+  <div id="proc-cards" class="proc-grid"></div>
+  <div class="process-note"><svg class="icon"><use href="#icon-monitor"/></svg><p>The recorder opens its preview window on the workstation's desktop. Focus that window: press <strong>s</strong> to record, <strong>w</strong> to save, <strong>a</strong> to discard, <strong>t</strong> to set the task, <strong>q</strong> to quit. <strong>Stop</strong> here sends Ctrl-C: an episode still being recorded is discarded, and alignments still running are interrupted until this folder is started again (<strong>q</strong> waits for them).</p></div>
+</section>
+
+<section class="panel" id="panel-convert" aria-labelledby="convert-title">
+  <div class="section-heading"><div class="section-icon"><svg class="icon"><use href="#icon-cube"/></svg></div><div><p class="section-step">STEP 05</p><h2 id="convert-title">Convert for training</h2></div><div class="device-actions"><button id="btn-convert-refresh" class="secondary"><svg class="icon"><use href="#icon-refresh"/></svg>Refresh sessions</button></div></div>
+  <p class="muted">When a session is finished, convert it to a LeRobot dataset: the glove data and fingertip forces become robot-hand joint positions and torques, then the dataset is written to <code>&lt;session&gt;_lerobot</code> next to the session. A session converts once every episode is aligned, and not while the recorder runs. You can also convert later from a terminal: <code>./launch.sh lerobot --input-dataset output/&lt;session&gt;_aligned</code>.</p>
+  <div id="convert-sessions" class="convert-sessions" aria-live="polite"></div>
+  <div id="convert-proc" class="proc-grid single"></div>
+</section>
+<footer class="page-footer"><span>DexUMI data collection</span><span>Detect. Name. Check. Record.</span></footer>
+</main>
+</div>
+<dialog id="camera-identify-dialog" class="identify-dialog" aria-labelledby="identify-title" aria-describedby="identify-instructions">
+  <div class="identify-heading"><div><p class="eyebrow" id="identify-step">Step 1 of 2</p><h2 id="identify-title">Identify left cameras</h2></div><button id="btn-identify-close" class="secondary">Close</button></div>
+  <p id="identify-instructions" class="identify-instructions"></p>
+  <div class="identify-stage">
+  <ul id="identify-cameras" class="identify-cameras" aria-label="Live camera previews"></ul>
+  <div class="identify-board-frame"><img id="identify-board" alt="ChArUco camera identification board"><span id="identify-board-label" class="identify-board-label"></span></div>
+  </div>
+  <div class="identify-feedback" aria-live="polite"><p id="identify-status"></p><p id="identify-lock-status" class="identify-lock-status" role="status"></p></div>
+  <ul id="identify-results" class="identify-results" aria-label="Camera scan results"></ul>
+  <div class="identify-actions"><button id="btn-identify-restart" class="secondary" hidden>Restart cameras</button><button id="btn-identify-back" class="secondary" hidden>Back: left</button><button id="btn-identify-scan" class="primary" disabled>Scan left</button><button id="btn-identify-next" class="secondary" disabled>Next: right <svg class="icon"><use href="#icon-arrow"/></svg></button></div>
+</dialog>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<script src="/static/app.js"></script>
+</body>
+</html>

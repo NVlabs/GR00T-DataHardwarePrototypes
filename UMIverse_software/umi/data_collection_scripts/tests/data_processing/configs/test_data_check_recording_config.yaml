@@ -1,0 +1,76 @@
+# Bimanual integration config using mock devices and production source names.
+
+
+
+# General recording settings
+recording:
+  data_dir: "./local_data/recordings"
+  record_fps: 45
+  stream_fps: 60
+  verbose: false
+  video_encoder: ffmpeg_h264
+  video_frame_type: RGBCameraFrame
+  numeric_frame_type: GripperFrame
+
+# Video sources — bimanual device names with mock/iphone types
+# iphone_camera type is used to skip video resolution checks (no .mp4 files in test)
+video_sources:
+  - type: iphone_camera
+    name: left_tracking_camera
+    record_fps: 30
+    stream_fps: 45
+    frame_type: RGBCameraFrame
+    latency: 0.13
+    params: {}
+
+  - type: iphone_camera
+    name: right_tracking_camera
+    record_fps: 30
+    stream_fps: 45
+    frame_type: RGBCameraFrame
+    latency: 0.13
+    params: {}
+
+  - type: iphone_camera
+    name: left_umi_camera
+    frame_type: RGBCameraFrame
+    latency: 0.0875
+    params: {}
+
+  - type: iphone_camera
+    name: right_umi_camera
+    frame_type: RGBCameraFrame
+    latency: 0.0875
+    params: {}
+
+  - type: iphone_camera
+    name: left_trigger_camera
+    frame_type: RGBCameraFrame
+    latency: 0.0875
+    params: {}
+
+  - type: iphone_camera
+    name: right_trigger_camera
+    frame_type: RGBCameraFrame
+    latency: 0.0875
+    params: {}
+
+# Numeric sources — bimanual gripper names
+numeric_sources:
+  - type: umi_gripper
+    name: left_umi_gripper
+    record_fps: 45
+    stream_fps: 60
+    frame_type: GripperFrame
+    latency: 0.084
+    params:
+      gear_radius: 26.0
+
+  - type: umi_gripper
+    name: right_umi_gripper
+    record_fps: 45
+    stream_fps: 60
+    frame_type: GripperFrame
+    latency: 0.084
+    params:
+      gear_radius: 26.0

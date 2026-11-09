@@ -1,0 +1,72 @@
+{# Optional camera logical names are fixed downstream keys, not editable labels. Keep
+   identity and placement grouped under their owning section. #}
+<div class="device-row device-row--card" id="row-{{ row.logical_name }}" data-section="{{ row.section }}">
+  <div class="device-row__head">
+    <span class="badge">{{ row.label }}</span>
+
+    {# Confirm removal server-side so it works without JavaScript. Use a real
+       formaction submit; HTMX updates only the section and preserves scroll. #}
+    <button class="btn btn--danger device-row__action" type="submit"
+            formaction="/config/optional/remove"
+            name="logical_name" value="{{ row.logical_name }}"
+            hx-post="/config/optional/remove"
+            hx-include="closest form"
+            hx-vals='{"logical_name": "{{ row.logical_name }}"}'
+            hx-target="#{{ row.section_id }}"
+            hx-swap="outerHTML show:none"
+            {% if not can_edit %}disabled aria-disabled="true"{% endif %}>
+      Remove
+    </button>
+  </div>
+
+  {# Render removal confirmation inside the swapped section. Avoid nested forms by
+     carrying confirm=yes in formaction. Other actions dismiss the unanswered
+     confirmation. #}
+  {% if row.confirm %}
+    <div class="banner banner--warn device-row__confirm" role="alert">
+      <span class="banner__icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.3 4.2 2.6 18a2 2 0 0 0 1.7 3h15.4a2 2 0 0 0 1.7-3L13.7 4.2a2 2 0 0 0-3.4 0Z"></path>
+          <path d="M12 9 L12 13"></path>
+          <path d="M12 17 L12.01 17"></path>
+        </svg>
+      </span>
+      <div><b>Confirm.</b> {{ row.confirm_message }}</div>
+      <span class="banner__action">
+        <button class="btn btn--danger" type="submit"
+                formaction="/config/optional/remove?confirm=yes"
+                name="logical_name" value="{{ row.logical_name }}"
+                hx-post="/config/optional/remove?confirm=yes"
+                hx-include="closest form"
+                hx-vals='{"logical_name": "{{ row.logical_name }}"}'
+                hx-target="#{{ row.section_id }}"
+                hx-swap="outerHTML show:none"
+                {% if not can_edit %}disabled aria-disabled="true"{% endif %}>
+          Remove it
+        </button>
+      </span>
+    </div>
+  {% endif %}
+
+  <div class="device-row__fields">
+
+    {% with field = row.device_view %}
+      {% include "_partials/device_field.html" %}
+    {% endwith %}
+
+    {# Offer section-specific placement tokens while preserving accepted persisted
+       aliases. Store tokens, display readable labels, and carry placement into
+       recording provenance. #}
+    <div class="field">
+      <label class="field__label" for="{{ row.placement_field }}">Placement</label>
+      <select class="select" id="{{ row.placement_field }}" name="{{ row.placement_field }}"
+              {% if not can_edit %}disabled{% endif %}>
+        {% for option in placements(row.section, row.placement) %}
+          <option value="{{ option.value }}" {% if option.selected %}selected{% endif %}>
+            {{ option.label or "— none —" }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+</div>

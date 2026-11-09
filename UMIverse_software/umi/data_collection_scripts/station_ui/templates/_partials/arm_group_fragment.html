@@ -1,0 +1,4 @@
+{# Return the arm card first and updated assignment diagrams out of band so both
+   reflect the changed gripper. #}
+{% include "_partials/arm_group.html" %}
+{% with oob = True %}{% include "_partials/gripper_diagrams.html" %}{% endwith %}

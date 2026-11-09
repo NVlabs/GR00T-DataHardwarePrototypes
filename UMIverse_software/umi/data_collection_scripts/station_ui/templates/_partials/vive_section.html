@@ -1,0 +1,98 @@
+{# Render tracker controls only for configured Vive sources, initialized from
+   template defaults. Keep the wrapper present for outerHTML swaps even when the
+   section is empty. #}
+<section class="section" id="vive-section">
+  {% if vive %}
+  <div class="section__header">
+    <h2>Vive trackers</h2>
+    <span class="muted">pose source</span>
+    <span class="section__action row">
+      {# Show probe results only after an explicit request. #}
+      {% if vive.probe_badge %}
+
+        <span class="badge badge--{{ vive.message_state }}" role="status">
+          {{ "✓" if vive.message_state == "ok" else "○" }} {{ vive.probe_badge }}
+        </span>
+      {% endif %}
+
+      {# Probe only on explicit submission to limit shared REP-bridge load. Keep
+         native form fallback and disable the control during the request; no
+         intermediate server state is rendered. #}
+      <button class="btn btn--accent" type="submit" formaction="/config/vive/probe"
+              hx-post="/config/vive/probe"
+              hx-include="closest form"
+              hx-target="#vive-section"
+              hx-swap="outerHTML show:none"
+              hx-disabled-elt="this"
+              {% if not can_edit %}disabled aria-disabled="true"{% endif %}>
+        Test connection
+      </button>
+    </span>
+  </div>
+
+  <div class="card stack">
+    <div class="field">
+      <label class="field__label" for="{{ vive.field }}">Server</label>
+      {# Normalize a bare bridge host by adding tcp:// and the default port
+         server-side. #}
+      <input class="input" type="text" id="{{ vive.field }}" name="{{ vive.field }}"
+             value="{{ vive.endpoint }}" placeholder="192.168.1.20"
+             autocomplete="off" spellcheck="false"
+             {% if vive.message %}aria-describedby="{{ vive.message_id }}"{% endif %}
+             {% if not can_edit %}readonly{% endif %}>
+      {# Probe failures warn without blocking Apply; configuration may precede bridge
+         startup. Tracker calibration remains the recording-readiness gate. #}
+      <div class="field__foot">
+        {% if vive.message %}
+          <span class="{{ 'field__hint--ok' if vive.message_state == 'ok' else 'field__warn' }}"
+                id="{{ vive.message_id }}">{{ vive.message }}</span>
+        {% endif %}
+      </div>
+    </div>
+
+    {% for row in vive.rows %}
+      <div class="field">
+        <label class="field__label" for="{{ row.field }}">{{ row.label }}</label>
+        {# The combo wrapper enables full-list choices; the native datalist remains
+           the typing fallback. #}
+        <div class="combo" id="combo-{{ row.list_id }}">
+          <input class="input" type="text" list="{{ row.list_id }}"
+                 id="{{ row.field }}" name="{{ row.field }}"
+                 value="{{ row.value }}"
+                 autocomplete="off" spellcheck="false"
+                 {% if row.error %}aria-invalid="true" aria-describedby="{{ row.error_id }}"
+                 {% elif row.message %}aria-describedby="{{ row.message_id }}"{% endif %}
+                 {% if not can_edit %}readonly{% endif %}>
+          {% if can_edit %}
+            <button class="combo__toggle" type="button" tabindex="-1" hidden
+                    aria-expanded="false"
+                    aria-label="Show the trackers this bridge publishes"
+                    aria-controls="{{ row.list_id }}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M6 9 L12 15 L18 9"></path>
+              </svg>
+            </button>
+          {% endif %}
+        </div>
+        {# Keep bridge choices with their probe result, separate from datalists
+           replaced by hardware discovery. #}
+        <datalist id="{{ row.list_id }}">
+          {% for option in vive.options %}
+            <option value="{{ option.value }}"{% if option.note %} label="{{ option.note }}"{% endif %}></option>
+          {% endfor %}
+        </datalist>
+        {# Show assembly rejection before probe status, including duplicate puck keys
+           that can otherwise produce plausible but misattributed recordings. #}
+        <div class="field__foot">
+          {% if row.error %}
+            <span class="field__error" id="{{ row.error_id }}">{{ row.error }}</span>
+          {% elif row.message %}
+            <span class="{{ 'field__hint' if row.message_state == 'ok' else 'field__warn' }}"
+                  id="{{ row.message_id }}">{{ row.message }}</span>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</section>

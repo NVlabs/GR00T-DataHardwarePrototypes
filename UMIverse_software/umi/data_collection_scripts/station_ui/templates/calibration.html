@@ -1,0 +1,252 @@
+{% extends "section.html" if embedded else "base.html" %}
+
+{% block subheading %}{% endblock %}
+
+{% block banner %}
+  {% if not can_edit %}
+    {% if not embedded %}{% include "_partials/rig_banner.html" %}{% endif %}
+  {% elif error %}
+    <div class="banner banner--error" role="alert">
+      <span class="banner__icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M9 9 L15 15"></path>
+          <path d="M15 9 L9 15"></path>
+        </svg>
+      </span>
+      <div>{{ error }}</div>
+    </div>
+  {% endif %}
+
+{% endblock %}
+
+{% block content %}
+
+{% if blocked %}
+  <div class="card">
+    <h2>Nothing to calibrate yet</h2>
+    <p class="muted">{{ blocked }}</p>
+    <p><a class="btn" href="/">Go to Setup</a></p>
+  </div>
+{% else %}
+
+<div class="stack" id="cal-steps" data-gripper-running="{{ "true" if gripper_running else "false" }}"
+  {# Poll terminal-based gripper calibration because it has no SSE stream. Replace
+     only the step stack; remove polling when complete. Native refresh is the
+     no-JavaScript fallback. #}
+  {% if gripper_running %}hx-get="/calibration" hx-trigger="every 1.5s" hx-select="#cal-steps" hx-target="#cal-steps" hx-swap="outerHTML"{% endif %}>
+  {% for entry in steps %}
+    {% set step = entry.step %}
+    <section class="section card">
+      <div class="section__header">
+        <h2 id="step-{{ step.id }}">{{ step.title }}</h2>
+
+        {# Give camera and Vive badges distinct IDs for out-of-band updates from
+           their live panels. #}
+        <span class="section__action badge {{ entry.badge[2] }}"
+              {% if entry.check %}id="check-badge"{% elif entry.vive %}id="vive-badge"{% endif %}>{{ entry.badge[0] }} {{ entry.badge[1] }}</span>
+      </div>
+
+      {% if step.summary %}<p class="muted">{{ step.summary }}</p>{% endif %}
+
+      {% if step.watch %}<p>{{ step.watch }}</p>{% endif %}
+
+      {# Whole-rig camera/tracker panels derive per-device results from their child
+         events. #}
+      {% if entry.check %}
+        {% include "_partials/check_panel.html" %}
+      {% elif entry.vive %}
+        {% include "_partials/vive_panel.html" %}
+      {% else %}
+        {% if not entry.runs %}
+          <p class="muted">{{ entry.empty }}</p>
+        {% endif %}
+
+        <div class="calibration-grippers">
+        {% for row in entry.runs %}
+          {% set view = row.view %}
+          <div class="calibration-gripper card">
+          <div class="device-row">
+            <span class="device-row__name">{{ view.label }}</span>
+            <span class="device-row__value badge {{ row.badge[2] }}">{{ row.badge[0] }} {{ row.badge[1] }}</span>
+
+            <form method="post" action="{{ entry.action }}">
+              <input type="hidden" name="{{ entry.field }}" value="{{ view.key }}">
+              <button class="btn" type="submit" form="configuration-form"
+                formaction="{{ entry.action }}" name="{{ entry.field }}" value="{{ view.key }}"
+                {% if not can_edit %}disabled aria-describedby="rig-read-only"{% endif %}>
+                {% if view.state == "pending" %}{{ entry.verb }}{% else %}{{ entry.verb }} again{% endif %}
+              </button>
+            </form>
+          </div>
+
+          {# Show calibration measurements and plots on both success and failure. #}
+          {# A reported hardware fault stops calibration before measurement. Make the
+             out-of-service state visible without requiring log inspection. #}
+          {% if view.summary and view.summary.hardware_fault %}
+            {% set fault = view.summary.hardware_fault %}
+            <div class="banner banner--error" role="alert">
+              <div>
+                <b>Hardware fault reported</b> —
+                {% if fault.check == "close_repeatability" %}
+                  the closes spread {{ "%.2f"|format(fault.measured_deg) }}°,
+                  over the {{ "%.2f"|format(fault.limit_deg) }}° limit
+                {% else %}
+                  only {{ "%.2f"|format(fault.measured_deg) }}° of travel from
+                  closed, under the {{ "%.2f"|format(fault.limit_deg) }}° minimum
+                {% endif %}
+                after {{ fault.attempts }} attempt{{ "" if fault.attempts == 1 else "s" }}.
+                <br>
+                <span class="muted">
+                  Not calibrated, and no config was written.
+                  Report saved to {{ fault.local_path }}
+                </span>
+              </div>
+            </div>
+          {% elif view.summary %}
+            <p class="muted">
+              {% if view.summary.movement_error %}
+                {{ view.summary.movement_error }}
+              {% else %}
+                range {{ "%.1f"|format(view.summary.range_mm or 0) }} mm
+                ({{ "%.1f"|format(view.summary.min_mm or 0) }}–{{ "%.1f"|format(view.summary.max_mm or 0) }})
+                · {{ view.summary.num_jumps or 0 }} jump{{ "" if view.summary.num_jumps == 1 else "s" }}
+                {% if not view.summary.moved %} · did not move{% endif %}
+                {% if not view.summary.in_range %}
+                  · {{ view.summary.num_out_of_range }} frame(s) outside
+                  {{ view.summary.expected_range }} mm
+                {% endif %}
+              {% endif %}
+            </p>
+          {% endif %}
+          {# Read the calibration tee log rather than terminal-emulator stdout. Keep
+             diagnostics expandable and open them on failure. #}
+          {% if view.log %}
+            <details id="gripper-log-{{ view.key }}" class="job-details"{% if view.state == "failed" %} open{% endif %}>
+              <summary>Show what the calibration printed</summary>
+              <pre class="job-log">{% for line in view.log %}{{ line|ansi }}
+{% endfor %}</pre>
+            </details>
+          {% endif %}
+
+          {% if view.plot_url %}
+
+            <img class="cal-plot" src="{{ view.plot_url }}"
+                 alt="Joint angle and distance recorded during {{ view.label }} calibration">
+          {% endif %}
+
+          {% if view.state == "failed" %}
+
+            <p class="muted">
+              Failed{% if view.error %} — {{ view.error }}{% endif %}.
+              {% if view.job_id %}
+                <a href="/calibration/jobs/{{ view.job_id }}/log">Full log</a>
+              {% endif %}
+            </p>
+          {% endif %}
+          </div>
+        {% endfor %}
+        </div>
+      {% endif %}
+    </section>
+  {% endfor %}
+</div>
+
+{% endif %}
+
+
+
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/calibration.js" defer></script>
+{% if check_stream_url %}
+<script>
+  // Native EventSource enhances server-rendered panels; refresh remains available
+  // without JavaScript.
+
+
+
+  (function () {
+    if (!window.EventSource) { return; }
+    var source = new EventSource({{ check_stream_url|tojson }});
+    var pending = false;
+    source.onmessage = function () {
+      // Coalesce repeated camera events so panel refetches do not run at frame rate.
+
+      if (pending) { return; }
+      pending = true;
+      setTimeout(function () {
+        pending = false;
+        if (window.htmx) {
+          // Replace outerHTML because the response includes the check-panel wrapper.
+
+
+          htmx.ajax("GET", "/calibration/check/panel", {
+            target: "#check-panel",
+            swap: "outerHTML"
+          });
+        }
+      }, 400);
+    };
+    // Close completed streams and reload final step state from the server.
+
+
+    source.addEventListener("end", function () {
+      source.close();
+
+      if (document.body.classList.contains("page--workflow") && window.htmx) {
+        htmx.ajax("GET", "/calibration", {target: "#cal-steps", select: "#cal-steps", swap: "outerHTML"});
+        if (window.refreshWorkflowStatus) window.refreshWorkflowStatus();
+      } else { window.location.reload(); }
+    });
+    source.onerror = function () { source.close(); };
+  })();
+</script>
+{% endif %}
+
+{# Open one stream only while a tracker check is live. Keep its script outside
+   frequently swapped panel fragments to avoid duplicate connections. #}
+{% if vive_stream_url %}
+<script>
+  // On tracker completion, refresh its panel rather than reloading beneath another
+  // active check.
+
+
+
+  (function () {
+    if (!window.EventSource) { return; }
+    var source = new EventSource({{ vive_stream_url|tojson }});
+    var pending = false;
+    function refresh() {
+      if (window.htmx) {
+        // Replace outerHTML because the response includes the vive-panel wrapper.
+
+
+        htmx.ajax("GET", "/calibration/vive/panel", {
+          target: "#vive-panel",
+          swap: "outerHTML"
+        });
+      }
+    }
+    source.onmessage = function () {
+      // Coalesce tracker events to bound repeated parsing and panel requests.
+
+
+
+      if (pending) { return; }
+      pending = true;
+      setTimeout(function () { pending = false; refresh(); }, 400);
+    };
+    // Close the stream on every terminal state, including timeout and cancellation.
+
+    source.addEventListener("end", function () {
+      source.close();
+      refresh();
+    });
+    source.onerror = function () { source.close(); };
+  })();
+</script>
+{% endif %}
+
+{% endblock %}

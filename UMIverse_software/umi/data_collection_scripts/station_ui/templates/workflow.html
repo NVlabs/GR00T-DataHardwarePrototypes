@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block subheading %}Choose your setup, configure the rig, calibrate, and record.{% endblock %}
+{% block banner %}
+  <div class="banner banner--warn" id="workflow-recording-lock" role="status"{% if not recording_locked %} hidden{% endif %}>
+    {% if recording_locked %}<p>A recording is in progress, so setup, configuration, and calibration are read-only. <a href="#record">Go to Record</a> to stop it.</p>{% endif %}
+  </div>
+  {% if not can_edit %}{% include "_partials/rig_banner.html" %}{% endif %}
+{% endblock %}
+{% block content %}
+  {% for section in workflow_sections %}
+    <section class="workflow-section" id="{{ section.id }}" aria-labelledby="workflow-{{ section.id }}">
+      <div class="workflow-section__heading">
+        <p class="workflow-step">STEP {{ "%02d"|format(loop.index) }}</p>
+        <h2 id="workflow-{{ section.id }}">{{ "Choose your setup" if section.id == "setup" else section.label }}</h2>
+      </div>
+      {{ render_section(section) }}
+    </section>
+  {% endfor %}
+  {% include "_partials/identify_dialog.html" %}
+  <footer class="workflow-footer">GEAR UMI data collection</footer>
+{% endblock %}
+{% block scripts %}
+  <script type="application/json" id="workflow-progress">{{ workflow_progress|tojson }}</script>
+  <script src="/static/workflow.js" defer></script>
+  <script src="/static/identify.js" defer></script>
+{% endblock %}

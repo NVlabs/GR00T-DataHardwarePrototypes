@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% import "_partials/crash_entry.html" as entries %}
+
+{% block heading %}Station log{% endblock %}
+{% block subheading %}{% endblock %}
+
+{% block banner %}
+  {% if log_problem %}
+    {# Explain when file logging is unavailable: the in-memory error list is lost on
+       restart. #}
+    <div class="banner banner--warn" role="status">
+      <span class="banner__icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.3 4.2 2.6 18a2 2 0 0 0 1.7 3h15.4a2 2 0 0 0 1.7-3L13.7 4.2a2 2 0 0 0-3.4 0Z"></path>
+          <path d="M12 9 L12 13"></path>
+          <path d="M12 17 L12.01 17"></path>
+        </svg>
+      </span>
+      <div>
+        <b>Errors are not being written to a file.</b> {{ log_problem }} They are
+        listed here until the console restarts.
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="section__header">
+    <h2 id="errors-heading">Errors</h2>
+
+    <span class="section__action"><a class="btn" href="/log">Refresh</a></span>
+  </div>
+
+  <div class="card">
+    {% for crash in crashes %}
+      {{ entries.crash_entry(crash, open=(crash.id == open_error)) }}
+    {% else %}
+      {# Scope the empty error list to the current process lifetime. #}
+      <p class="muted">No errors since the console started at {{ started_at }}.</p>
+    {% endfor %}
+  </div>
+</section>
+
+{% if has_log_file %}
+<section class="section">
+  <div class="section__header">
+    <h2 id="log-file-heading">Station log</h2>
+    {# Expose stream disconnection with a Not live label, not color alone. #}
+    <span class="section__action"><span class="badge" id="log-stream-state">Live</span></span>
+  </div>
+
+  <div class="card stack">
+    <p class="field__hint">{{ log_size }} · newest entries last</p>
+
+    <pre class="job-log" id="station-log" tabindex="0"
+         aria-labelledby="log-file-heading" aria-live="off"
+         data-stream="/log/file/stream"
+         data-state="live">{% for line in log_lines %}{{ line|ansi }}
+{% endfor %}{% if not log_lines %}(the log file is empty){% endif %}</pre>
+
+    <div class="row">
+      <a class="btn" href="/log/file.txt">Download station.log</a>
+      <a class="btn" href="/log">Refresh</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+  {% if has_log_file %}<script src="/static/log.js" defer></script>{% endif %}
+{% endblock %}

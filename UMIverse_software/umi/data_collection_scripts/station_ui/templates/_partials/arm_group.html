@@ -1,0 +1,36 @@
+{# Render arm cards independently so linked-camera updates preserve other unsaved
+   fields. Match group.id with the gripper control's swap target. #}
+{% set diagram = (gripper_diagrams | default([]) | selectattr('arm', 'equalto', group.arm) | first) | default(none) %}
+<div class="card stack config-arm {% if diagram %}config-arm--diagram{% endif %}" id="{{ group.id }}">
+  <h3 class="card__title">{% if diagram %}{{ group.arm | capitalize }} gripper{% else %}{{ group.label }}{% endif %}</h3>
+  <div class="config-arm__content">
+    {% if diagram %}{% include "_partials/gripper_diagram.html" %}{% endif %}
+    <div class="config-arm__fields">
+    {% set display_fields = namespace(items=[]) %}
+    {% if diagram %}
+      {% set diagram_roles = ('gripper', 'tracking', 'umi', 'trigger') %}
+      {% for role in diagram_roles %}
+        {% for field in group.fields if field.role == role %}
+          {% set display_fields.items = display_fields.items + [field] %}
+        {% endfor %}
+      {% endfor %}
+      {% for field in group.fields if field.role not in diagram_roles %}
+        {% set display_fields.items = display_fields.items + [field] %}
+      {% endfor %}
+    {% else %}
+      {% set display_fields.items = group.fields %}
+    {% endif %}
+    {% for field in display_fields.items %}
+      {% if diagram %}
+        {% set numbers = {'gripper': 4, 'tracking': 1, 'umi': 2, 'trigger': 3} %}
+        {% set labels = {'gripper': 'Gripper', 'tracking': 'Phone', 'umi': 'Top camera', 'trigger': 'Trigger camera'} %}
+        {% with device_number = numbers.get(field.role), device_label = labels.get(field.role, field.label) %}
+          {% include "_partials/device_field.html" %}
+        {% endwith %}
+      {% else %}
+        {% include "_partials/device_field.html" %}
+      {% endif %}
+    {% endfor %}
+    </div>
+  </div>
+</div>

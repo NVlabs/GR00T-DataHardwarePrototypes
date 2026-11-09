@@ -1,0 +1,32 @@
+{% extends "section.html" if embedded else "base.html" %}
+
+
+{% block subheading %}{% endblock %}
+
+{% block banner %}
+  {# Show stale-day status here too so operators arriving directly at Record
+     can see where the current session is filed. #}
+  {# Keep an in-flight recording on its starting day; change the next session
+     only after the recorder releases the rig. #}
+  {% if stale_day %}
+    <div class="banner banner--warn" role="alert">
+      <span class="banner__icon" aria-hidden="true">!</span>
+      <p>
+        This session is from another day ({{ draft_date }}). Episodes recorded
+        now are filed under {{ draft_date }}.
+        {% if recording_locked %}
+          This console starts today's session as soon as this recording stops.
+        {% else %}
+          Start a new session on <a href="#configuration">Configuration</a> first.
+        {% endif %}
+      </p>
+    </div>
+  {% endif %}
+  {% if not can_edit %}
+    {% if not embedded %}{% include "_partials/rig_banner.html" %}{% endif %}
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+{% include "_partials/record_status.html" %}
+{% endblock %}

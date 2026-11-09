@@ -1,0 +1,18 @@
+# Use Ruff for import sorting and formatting to keep pre-commit fixes consistent.
+
+
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.12
+    hooks:
+      - id: ruff-format
+        exclude: |
+          (?x)^(
+            third_parties/
+          )
+      - id: ruff
+        args: [--fix]
+        exclude: |
+          (?x)^(
+            third_parties/
+          )

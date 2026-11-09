@@ -1,0 +1,42 @@
+# Optional head/bottom source defaults keyed by source_type. Inject the
+# operator's device ID separately and derive OAK resolution from discovery
+# to preserve native aspect. Static block output is covered by
+# tests/station_ui/test_optional_device_params.py.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+iphone_camera:
+  type: iphone_camera
+  record_fps: 30
+  stream_fps: 90  # above Record3D's 60 Hz, so frames are stamped on arrival
+  frame_type: RGBDCameraFrame
+  latency: 0.125  # 0.13 - 5 ms: a 90 Hz poll stamps ~5 ms sooner than 45 Hz
+  params:
+    # iPhone Record3D RGB native size, matching IphoneCamera.NATIVE_RGB_RESOLUTION.
+    camera_resolution: [720, 960]
+
+# oak_camera holds only its fixed fields; the assembler adds `camera_resolution`
+# from the scanned device, first in the emitted params.
+oak_camera:
+  type: oak_camera
+  record_fps: 30
+  stream_fps: 45
+  frame_type: RGBCameraFrame
+  latency: 0.0875
+  params:
+    fps: 30
+    ae_max_exposure_us: 22222  # 1/45 s, the exposure limit of a 45 fps capture
+    enable_color: true
+    enable_mono_cameras: false

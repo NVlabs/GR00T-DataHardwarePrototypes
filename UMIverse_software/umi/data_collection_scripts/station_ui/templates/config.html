@@ -1,0 +1,294 @@
+{% extends "section.html" if embedded else "base.html" %}
+
+
+{% block subheading %}{% endblock %}
+{% block page_meta %}{% if preset %}<span class="config-preset">{{ preset.label }}</span>{% endif %}{% endblock %}
+
+{% block banner %}
+  {# Show stale-day status when automatic rollover cannot proceed. Never roll while
+     recording is active; the console and recorder must keep the same session path.
+     Offer manual rollover only when idle. #}
+  {% if stale_day %}
+    <div class="banner banner--warn" role="alert">
+      <span class="banner__icon" aria-hidden="true">!</span>
+      <p>
+        This session is from another day ({{ draft.date }}). Episodes recorded
+        now are filed under {{ draft.date }}.
+        {% if recording_locked %}
+          This console starts today's session as soon as the recording stops.
+        {% endif %}
+      </p>
+      {% if not recording_locked %}
+        <form class="banner__action" method="post" action="/config/session/uid">
+          <input type="hidden" name="config_form" value="1">
+          <input type="hidden" name="confirm" value="yes">
+          <button class="btn" type="submit">Start a new session</button>
+        </form>
+      {% endif %}
+    </div>
+  {% endif %}
+  {% if not can_edit %}
+    {% if not embedded %}{% include "_partials/rig_banner.html" %}{% endif %}
+  {% endif %}
+
+  {% if notice %}
+    {# Announce the server-side one-shot Apply confirmation politely without moving
+       focus. #}
+    <div class="banner banner--ok" role="status">
+      <span class="banner__icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M8.5 12.5 L11 15 L15.5 9.5"></path>
+        </svg>
+      </span>
+      <div>{{ notice }}</div>
+    </div>
+  {% endif %}
+
+  {% if confirm %}
+    {# Use server-confirmed second POSTs for destructive actions, including without
+       JavaScript. #}
+    <div class="banner banner--warn" role="alert">
+      <span class="banner__icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.3 4.2 2.6 18a2 2 0 0 0 1.7 3h15.4a2 2 0 0 0 1.7-3L13.7 4.2a2 2 0 0 0-3.4 0Z"></path>
+          <path d="M12 9 L12 13"></path>
+          <path d="M12 17 L12.01 17"></path>
+        </svg>
+      </span>
+      <div><b>Confirm.</b> {{ confirm.message }}</div>
+      <form class="banner__action" method="post" action="{{ confirm.action }}">
+        <input type="hidden" name="confirm" value="yes">
+        <button class="btn btn--danger" type="submit"
+                {% if confirm.name %}name="{{ confirm.name }}" value="{{ confirm.value }}"{% endif %}>
+          {{ confirm.label }}
+        </button>
+      </form>
+    </div>
+  {% endif %}
+
+  {% if banner %}
+    <div class="banner banner--error" role="alert">
+      <span class="banner__icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M9 9 L15 15"></path><path d="M15 9 L9 15"></path>
+        </svg>
+      </span>
+      <div>{{ banner }}</div>
+    </div>
+  {% endif %}
+
+  {% if has_warnings %}
+    {# Show actionable resolution-fallback warnings; otherwise a native-aspect
+       mismatch can silently crop recorded field of view. #}
+    <div class="banner banner--warn" role="status">
+      <span class="banner__icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.3 4.2 2.6 18a2 2 0 0 0 1.7 3h15.4a2 2 0 0 0 1.7-3L13.7 4.2a2 2 0 0 0-3.4 0Z"></path>
+          <path d="M12 9 L12 13"></path><path d="M12 17 L12.01 17"></path>
+        </svg>
+      </span>
+      <div>
+        <b>Saved, but some cameras have not been checked.</b>
+        {% if warned_devices %}
+          <p>
+            {{ warned_devices|join(", ") }} — not scanned, so the default
+            picture size was used. Press “Refresh devices”, then start the action again.
+          </p>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+{% if not preset %}
+  <section class="section">
+    <div class="card">
+      <h2>No setup chosen</h2>
+      <p><a class="btn" href="/">Go to Setup</a></p>
+    </div>
+  </section>
+{% else %}
+{# Use one page form so each action carries unsaved fields. Native formaction selects
+   the endpoint without nested forms. #}
+<form method="post" action="/config/apply" class="config-form" id="configuration-form">
+  <input type="hidden" name="{{ form_marker }}" value="1">
+
+
+
+  <section class="section config-devices">
+    <div class="section__header">
+
+      <span class="section__action row">
+        {% include "_partials/config_scan.html" %}
+      </span>
+    </div>
+
+    {% include "_partials/device_summary.html" %}
+    {% include "_partials/gripper_diagrams.html" %}
+    {# Build arm groups and order from template topology; V4 rows add hardware
+       diagrams without duplicating device inputs. #}
+    {% if not arm_groups %}
+      <div class="card"><p class="muted">No devices for this setup.</p></div>
+    {% endif %}
+    <div class="grid arm-grid {% if gripper_diagrams %}arm-grid--diagrams{% endif %}">
+      {% for group in arm_groups %}
+        {% include "_partials/arm_group.html" %}
+      {% endfor %}
+    </div>
+  </section>
+
+
+  {% if iphone_notice %}
+    <div class="banner banner--info" role="status">
+      <div class="banner__text--lg">{{ iphone_notice }}</div>
+    </div>
+  {% endif %}
+
+  {% for section in sections %}
+    {% include "_partials/" + section + "_section.html" %}
+  {% endfor %}
+
+  {# Render Vive sources from the template separately from optional Add/Remove
+     cameras. Keep the partial wrapper for probe swaps, while omitting the entire
+     section for non-Vive rigs. #}
+  {% if vive %}{% include "_partials/vive_section.html" %}{% endif %}
+
+  {# Offer world references after optional cameras are known; the native select also
+     submits without HTMX. #}
+  {% include "_partials/reference_section.html" %}
+
+  <section class="section config-session">
+    <div class="section__header config-session__heading">
+      <h2>Session</h2>
+      <span class="muted">
+        {{ preset.label }} · {{ preset.operation_mode }}
+      </span>
+    </div>
+    <div class="card stack config-session__card">
+      <div class="grid grid--2 config-session__fields">
+        <div class="field">
+          <label class="field__label" for="task_name">Task</label>
+          {# Refresh task status with the whole unsaved form. Debounce typing by 400
+             ms, handle change for paste/autofill, and replace stale in-flight
+             requests. Native datalist and Apply remain the no-JavaScript path. #}
+          <div class="combo combo--search" id="combo-task-options">
+            <input class="input" id="task_name" name="task_name" type="text"
+                   list="task-options"
+                   value="{{ draft.task_name }}" {% if not can_edit %}readonly{% endif %}
+                   placeholder="Search previous tasks or enter a new task…"
+                   autocomplete="off" spellcheck="false"
+                   aria-describedby="{{ error_ids.get('task_name', 'task-hint') }}"
+                   {% if can_edit %}
+                   hx-post="/config/task"
+                   hx-include="closest form"
+                   hx-trigger="keyup changed delay:400ms, change"
+                   hx-sync="this:replace"
+                   hx-target="#task-status"
+                   hx-swap="outerHTML show:none"
+                   {% endif %}>
+            {% if can_edit %}
+              <button class="combo__toggle" type="button" tabindex="-1" hidden
+                      aria-expanded="false" aria-label="Show previous tasks"
+                      aria-controls="task-options">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M6 9 L12 15 L18 9"></path>
+                </svg>
+              </button>
+            {% endif %}
+          </div>
+          <datalist id="task-options">
+            {% for option in task_options %}
+              <option value="{{ option.value }}" label="{{ option.label }}"></option>
+            {% endfor %}
+          </datalist>
+          {% if errors.get('task_name') %}
+            <span class="field__error" id="{{ error_ids['task_name'] }}">{{ errors['task_name'] }}</span>
+          {% endif %}
+          {% include "_partials/task_status.html" %}
+        </div>
+        <div class="field">
+          <label class="field__label" for="operator_name">Operator</label>
+          <input class="input" id="operator_name" name="operator_name" type="text"
+                 value="{{ draft.operator_name }}" {% if not can_edit %}readonly{% endif %}
+                 placeholder="Optional — recorded as Unknown if left blank"
+                 {% if errors.get('operator_name') %}aria-invalid="true" aria-describedby="{{ error_ids['operator_name'] }}"{% endif %}>
+          {% if errors.get('operator_name') %}
+            <span class="field__error" id="{{ error_ids['operator_name'] }}">{{ errors['operator_name'] }}</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="field config-session__path">
+        <div class="config-session__path-label">
+          <span class="field__label" id="folder-label">Session path</span>
+          <span class="muted">Videos will be saved here</span>
+        </div>
+        <output class="path mono" id="session-folder" aria-labelledby="folder-label">{{ folder or folder_error }}</output>
+      </div>
+
+      {# Date and UID are derived outputs. Emit aria-describedby only for error
+         elements that exist. #}
+      <div class="grid grid--2 config-session__details">
+        <div class="field">
+          <span class="field__label" id="date-label">Date</span>
+          <output class="path mono" id="date" aria-labelledby="date-label"
+                  {% if errors.get('date') %}aria-describedby="{{ error_ids['date'] }}"{% endif %}>{{ draft.date }}</output>
+          {% if errors.get('date') %}
+            <span class="field__error" id="{{ error_ids['date'] }}">{{ errors['date'] }}</span>
+          {% endif %}
+        </div>
+        <div class="field">
+
+          <span class="field__label" id="uid-label">Session ID</span>
+          <output class="path mono" id="session_uid" aria-labelledby="uid-label"
+                  {% if errors.get('session_uid') %}aria-describedby="{{ error_ids['session_uid'] }}"{% endif %}>{{ draft.session_uid }}</output>
+          {% if errors.get('session_uid') %}
+            <span class="field__error" id="{{ error_ids['session_uid'] }}">{{ errors['session_uid'] }}</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="row config-session__actions">
+        <button class="btn" type="submit" formaction="/config/session/uid"
+                {% if not can_edit %}disabled aria-disabled="true"{% endif %}>
+          Start a new session
+        </button>
+      </div>
+    </div>
+  </section>
+
+  {# Render shared device datalists once so scans can refresh options independently. #}
+  {% include "_partials/recording_checks.html" %}
+  {% include "_partials/device_choices.html" %}
+
+  {# Keep the preview dialog outside the replaced discovery table so table refreshes
+     do not close it. #}
+  <dialog class="preview-dialog" id="device-preview" aria-labelledby="device-preview-title">
+    <div class="preview-dialog__header">
+      <h2 class="preview-dialog__title" id="device-preview-title">
+        Live preview <span class="mono" data-preview-name></span>
+      </h2>
+      <button type="button" class="btn" data-preview-close>Close</button>
+    </div>
+    <p class="preview-dialog__status muted" role="status" data-preview-status></p>
+    <img class="preview-dialog__image" alt="" data-preview-image hidden>
+    <p class="preview-dialog__note muted">
+      The camera is released when you close this window.
+    </p>
+  </dialog>
+
+</form>
+
+{% endif %}
+{% endblock %}
+
+{# Load dropdown enhancement only on the config page; native inputs remain usable
+   without it. #}
+{% block scripts %}
+  <script src="/static/combobox.js" defer></script>
+  <script src="/static/device_preview.js" defer></script>
+  <script src="/static/gripper_diagram.js" defer></script>
+{% endblock %}

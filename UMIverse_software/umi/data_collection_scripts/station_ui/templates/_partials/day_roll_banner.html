@@ -1,0 +1,24 @@
+{# Announce automatic day rollover once using polite status text. Name the new
+   session and location of prior data; show the notice on whichever page opens next. #}
+{% if day_rolled %}
+<div class="banner banner--ok" role="status">
+  <span class="banner__icon" aria-hidden="true">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4" y="5" width="16" height="16" rx="2"></rect>
+      <path d="M4 10 H20 M9 3 V7 M15 3 V7"></path>
+      <path d="M9 15 L11 17 L15 13"></path>
+    </svg>
+  </span>
+  <div>
+    <b>Started a new session for {{ day_rolled.to_date }}.</b>
+
+    {% if day_rolled.had_episodes %}
+      Episodes recorded on {{ day_rolled.from_date }} stay where they are, under
+      that day.
+    {% else %}
+      This console was still on {{ day_rolled.from_date }}.
+    {% endif %}
+    The rig, the task and the calibration carry over — nothing to set up again.
+  </div>
+</div>
+{% endif %}

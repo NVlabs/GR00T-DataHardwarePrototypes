@@ -1,0 +1,126 @@
+{# Render camera-check state on the server; SSE events trigger fragment refetches
+   without browser-owned verification state. #}
+<div id="check-panel"{% if check.current_side %} class="check check--{{ check.current_side }}"{% endif %}>
+  {% if not check.running and not check.done %}
+    <div class="calibration-guidance">
+      <strong>Verify remaining camera assignments</strong>
+      <p>Cameras confirmed in Identify Cameras are already verified. This check covers manually selected cameras and optional head cameras.</p>
+      <ol>
+        <li>Connect the configured cameras and keep this tab visible near the rig.</li>
+        <li>Start the camera check. Wait for the cameras to open.</li>
+        <li>Use the live preview below to aim each side's cameras at its marker. The next side appears automatically.</li>
+      </ol>
+    </div>
+  {% endif %}
+  {% if check.running and not check.cameras_open %}
+    {# Wait for the ready event before asking the operator to aim at streaming
+       cameras. #}
+    {# Make camera-opening progress prominent so slow OAK initialization does not
+       invite duplicate starts. #}
+    <div class="check__aim check__waiting">
+
+      <p class="check__prompt check__waiting-line">◐ Waiting for the cameras to open…</p>
+      <p class="check__starting">
+        This takes a few seconds. The live preview will appear here once the
+        cameras are ready. Keep the cameras connected.
+      </p>
+    </div>
+  {% elif check.running and check.current_side %}
+    {# Share the current side accent across the label, marker border and camera rows. #}
+    <div class="calibration-camera-layout">
+    <div class="check__aim">
+      <span class="calibration-eyebrow">Current action</span>
+      <p class="check__prompt">
+        Aim the <span class="check__side">{{ check.current_side|upper }}</span> cameras at this code.
+      </p>
+      {# Use cached per-side marker images so panel refreshes do not regenerate them. #}
+      {# Let viewport-aware CSS size the marker; a fixed small width reduces fisheye
+         decoding range. #}
+      <img class="check__qr" alt="Alignment marker for the {{ check.current_side }} cameras"
+           src="/calibration/check/qr/{{ check.current_side }}.svg">
+    </div>
+    <figure class="calibration-camera-preview">
+      <figcaption>Live preview — {{ check.current_side|title }} cameras</figcaption>
+      <img hidden data-calibration-camera-src="/calibration/check/frame/{{ check.job_id }}.jpg"
+           alt="Live view from the {{ check.current_side }} cameras for aiming the marker">
+      <p class="muted" data-calibration-camera-status role="status">Waiting for the live preview…</p>
+      <noscript><p class="muted">Enable JavaScript to see the live preview.</p></noscript>
+      <p class="muted">Keep the marker visible in each camera. Verified cameras are marked below.</p>
+    </figure>
+    </div>
+  {% elif check.done %}
+
+    <p class="check__prompt">All cameras verified.</p>
+  {% endif %}
+
+  {% if not check.rows %}
+    <p class="muted">No cameras to check.</p>
+  {% endif %}
+
+  {% for role, label, state in check.rows %}
+    {% set current = role in check.current_roles %}
+    {# Pair the active-side accent with an Aiming label. #}
+    <div class="device-row{% if current %} device-row--current{% endif %}">
+      <span class="device-row__name">{{ label }}{% if current %}
+        <span class="device-row__aim">Aiming</span>{% endif %}</span>
+
+      {% if state == "matched" %}
+        <span class="device-row__value badge badge--ok">✓ Verified</span>
+      {% elif state == "mismatched" %}
+        <span class="device-row__value badge badge--error">✕ Wrong side</span>
+      {% elif state == "open_failed" %}
+        <span class="device-row__value badge badge--error">✕ Would not open</span>
+      {% else %}
+        <span class="device-row__value badge">○ Waiting</span>
+      {% endif %}
+    </div>
+
+    {% if state == "mismatched" %}
+
+      <p class="muted">Cross-wired — this cable is in the wrong slot.</p>
+    {% endif %}
+  {% endfor %}
+
+  {# Report watcher startup failure even when it emitted no per-camera events. #}
+  {% if check.failed %}
+    <p class="muted">
+      The check stopped: {{ check.error or "the watcher exited" }}.
+      {% if check.job_id %}
+        <a href="/calibration/jobs/{{ check.job_id }}/log">Full log</a>
+      {% endif %}
+    </p>
+  {% endif %}
+
+  {# Include watcher diagnostics for all outcomes. Open the log on camera/open
+     failures and collapse it otherwise. #}
+  {% if check.log %}
+    {% set wrong = check.failed or check.rows | selectattr("2", "equalto", "open_failed") | list %}
+    <details id="check-log-details" class="job-details"{% if wrong %} open{% endif %}>
+      <summary>Show what the camera check printed</summary>
+      <pre class="job-log">{% for line in check.log %}{{ line|ansi }}
+{% endfor %}</pre>
+    </details>
+  {% endif %}
+
+  {# Offer Check again after all cameras verify, even while the watcher is releasing
+     them. #}
+  {% if check.running and not check.done %}
+    <form method="post" action="/calibration/check/stop">
+      <button class="btn" type="submit" {% if not can_edit %}disabled aria-describedby="rig-read-only"{% endif %}>Stop camera check</button>
+    </form>
+  {% else %}
+    <form method="post" action="/calibration/check/start">
+      <button form="configuration-form" formaction="/calibration/check/start" class="btn btn--primary" type="submit"
+        {% if not can_edit %}disabled aria-describedby="rig-read-only"{% endif %}>
+
+        {% if check.rows and check.done %}Check again{% else %}Start camera check{% endif %}
+      </button>
+    </form>
+  {% endif %}
+</div>
+
+{# Update the external step badge out of band with the live panel. #}
+{% if check_badge %}
+<span id="check-badge" hx-swap-oob="true"
+      class="section__action badge {{ check_badge[2] }}">{{ check_badge[0] }} {{ check_badge[1] }}</span>
+{% endif %}

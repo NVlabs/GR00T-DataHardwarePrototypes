@@ -1,0 +1,5 @@
+# Accepted calibration metadata; these keys do not configure the sensors.
+- calibration_method       # Reference pose used for calibration.
+- calibration_tool_angles  # Reference angle table used by the calibration tool.
+- device_serial            # USB serial of the calibrated board.
+- stop_joint_angles        # Legacy calibration key.

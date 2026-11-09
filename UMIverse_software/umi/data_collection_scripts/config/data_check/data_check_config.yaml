@@ -1,0 +1,195 @@
+# Data Check Configuration
+# Threshold parameters for data validation checks
+
+# Timestamp validation thresholds
+timestamp:
+  enabled: true
+  # Maximum allowed FPS deviation from expected (percentage)
+  fps_deviation_pct: 10.0
+  # Minimum required timestamp coverage overlap ratio (0.0 - 1.0)
+  coverage_threshold: 0.95
+  # Report intervals above this many nominal frame periods.
+  # max_missing_frames remains an accepted compatibility alias.
+
+
+  gap_min_frames: 4.0
+  # Report all gaps; fail when any gap limit is exceeded. Pose interpolation
+  # error applies only to pose sources; other streams use duration/volume limits.
+
+
+
+  gap_fail_max_interp_error_mm: 5.0
+  # Volume: share of the episode with no real sample, however recoverable.
+  gap_fail_max_missing_pct: 1.0
+  # Ceiling: longest single gap, in frame periods.
+  gap_fail_max_frames: 10.0
+  # Sustained frame drop: fail if any time window has FPS significantly below target
+  frame_drop_window_s: 1.0       # window duration in seconds (e.g. 1s of delay/drops)
+  frame_drop_min_fps_ratio: 0.7  # in any such window, require at least this ratio of expected FPS (e.g. 70%)
+
+# Gripper sensor validation thresholds
+gripper:
+  # A true section enables every check. A mapping overrides named checks;
+  # omitted checks remain enabled.
+
+
+  enabled:
+    jumps: true
+    range: true
+    # Allow a supporting gripper to remain still during valid unimanual tasks
+    # recorded on a bimanual rig.
+
+
+    movement: false
+  # Minimum movement threshold in mm to detect gripper moved
+  movement_threshold_mm: 10.0
+  # Jump speed uses millimeters per second over actual timestamp gaps.
+  # Set the limit above normal spring release and below a discontinuous reading.
+
+
+  jump_threshold_mm_per_s: 2000.0
+  # Valid distance range [min, max] in mm
+  range_min_mm: -2.0
+  range_max_mm: 90.0
+
+# iPhone tracking validation thresholds
+tracking:
+  enabled: true
+  # Minimum pose movement threshold in meters to detect movement
+  pose_movement_threshold_m: 0.01
+  # Downsample factor for NxN pose comparison
+  pose_downsample: 10
+  # Minimum consecutive frame movement in meters
+  consecutive_min_movement_m: 0.0005
+  # Required ratio of frames showing movement (0.0 - 1.0)
+  consecutive_required_ratio: 0.80
+  # Apply this ratio to every tracker. Null selects consecutive_required_ratio instead.
+
+
+  multi_tracking_consecutive_required_ratio: 0.15
+  # Pose jump speed ceiling in m/s, scored over the real timestamp gap so a
+  # dropped frame does not read as a jump.
+  pose_jump_threshold_m_per_s: 4.5
+  # Tracker excursions are returning position glitches (roughly 20–150 mm
+  # over 100–300 ms) that can remain below the jump ceiling. Store detections
+  # in reports and episode findings; video-confirmed events warn but never
+  # fail the episode. Disable through excursions or excursion_confirm.
+
+
+
+
+
+
+
+
+  excursion_dv_threshold_m_per_s: 1.0  # velocity change that nominates a sample
+  excursion_min_amplitude_mm: 20.0  # distance off the bridged trajectory
+  excursion_min_edge_share: 0.5  # share of it carried by the largest step
+  excursion_max_return_s: 1.0  # must be back on the trajectory within this
+  # Return tolerance: max(floor + per_m_per_s * hand speed, fraction * amplitude)
+  excursion_return_floor_mm: 15.0
+  excursion_return_per_m_per_s_mm: 25.0
+  excursion_return_fraction: 0.25
+  excursion_context_s: 0.3  # trajectory either side the bridge is fitted to
+  # Reject candidates with substantial rotation per meter before video
+  # decoding; real fast motion commonly rotates while relocalization jumps
+  # primarily change position.
+
+
+  excursion_edge_rotation_deg_per_m: 50.0
+  excursion_max_events: 20
+  # Compare edge/context visual gain in pixels per tracker millimeter.
+  # All same-side cameras below confirm_max confirm; any above reject_min
+  # rejects; intermediate evidence stays unverified.
+
+
+  excursion_confirm_max: 0.20
+  excursion_reject_min: 0.40
+  excursion_confirm_pad_s: 0.3
+  excursion_confirm_max_events: 6  # per device
+  # Wall-time budget for the video decode, shared by the episode's devices
+  # (arms first); events past it stay unverified.
+  excursion_confirm_budget_s: 3.0
+
+device_name_consistency:
+  enabled: true
+  # Derive expected source names from session config so optional cameras
+  # are validated without a fixed rig-role list.
+
+
+
+# Video resolution validation (per-device, expected widths/heights from recording config)
+video_resolution:
+  enabled: true
+
+# Compare wrist video with same-side pose and gripper motion on the
+# receive_time - latency clock. Time offsets warn; pose streams unrelated
+# to camera motion fail.
+
+
+
+
+motion_alignment:
+  # Offset limits are hardware-dependent and only warn. Validate measured
+  # offsets on the current rig before using them to tune latency. The
+  # pose-following gate checks agreement independently of these limits.
+
+
+
+
+  enabled: true
+  # Gate same-side wrist-video/pose pairs by default. Set false to add
+  # trigger, self-camera and head diagnostic pairs.
+
+
+
+  umi_cameras_only: true
+  # Motion-analysis grid in rows and columns. Select cells by zero-lag pose
+  # correlation to exclude rigid-mounted hardware and textureless regions.
+
+
+  grid: [6, 8]
+  # Frames are downscaled to this width before differencing
+  downscale_width: 96
+  # Analyze every Nth frame (odd); the rest are decoded but not converted
+  stride: 3
+  # Finger pixels are excluded (fingers move independently of the camera)
+  finger_hsv_lower: [90, 80, 60]
+  finger_hsv_upper: [130, 255, 255]
+  # Min positive zero-lag correlation for a cell to count as tracking the arm
+  cell_min_corr: 0.15
+  # Min number of correlated cells for a pair to be measurable
+  min_cells: 3
+  # Cross-correlation search range (seconds)
+  max_lag_s: 0.5
+  # Max allowed |measured| offset (seconds); expected offset is 0 on both
+  # timelines. NOTE: validate per generation before tightening.
+  max_residual_s: 0.06
+  # Min xcorr peak to trust a measurement (a verified misalignment is a
+  # warning; below this the pair is report-only)
+  min_correlation: 0.35
+  # Motion bursts (analog of gripper close events): threshold is
+  # max(burst_min_omega rad/s, episode burst_percentile of |w|)
+  burst_min_omega: 0.3
+  burst_percentile: 70.0
+  burst_min_duration_s: 0.25
+  burst_merge_gap_s: 0.4
+  # Min bursts for a pair to be measurable
+  min_bursts: 2
+  # Use offset variation across open/close events as uncertainty. Report
+  # and skip pairs that cannot support a reliable timing verdict.
+
+
+
+  gripper_min_events: 3
+  gripper_max_spread_s: 0.030
+  # Correlate binned motion at zero lag before searching for an offset.
+  # A pose stream unrelated to arm motion has no meaningful lag; fail that
+  # case rather than report an arbitrary offset.
+
+
+
+
+
+  pose_tracking_bin_s: 1.0
+  pose_tracking_min_corr: 0.35

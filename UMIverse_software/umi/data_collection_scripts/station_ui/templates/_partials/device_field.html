@@ -1,0 +1,90 @@
+{# Use one text input per device for discovered choices and manual IDs, with native
+   datalist fallback. Include fed streams in the accessible label and expose status
+   through text and an icon. #}
+<div class="field" data-device-field="{{ field.field }}" data-device-kind="{{ field.kind }}">
+  <label class="field__label" for="{{ field.field }}">
+    {% if device_number %}<span class="config-device-number" aria-hidden="true">{{ device_number }}</span>{% endif %}
+    {{ device_label | default(field.label) }}
+  </label>
+
+{# Reference only rendered aria-describedby targets, placing blocking errors first in
+   announcement order. #}
+{% set described = [
+     field.error_id if field.error else (field.message_id if field.message else ""),
+     field.link_id if field.link_state else "",
+   ] | select | join(" ") %}
+{# Post gripper changes with the entire unsaved form so linked-camera fill respects
+   manual camera edits. Do not swap in response to camera typing itself. #}
+  <div class="combo" id="combo-{{ field.list_id }}">
+    <input class="input" type="text" list="{{ field.list_id }}"
+           id="{{ field.field }}" name="{{ field.field }}"
+           value="{{ field.value }}"
+           autocomplete="off" spellcheck="false"
+           {% if field.error or field.message_state == "error" %}aria-invalid="true"{% endif %}
+           {% if described %}aria-describedby="{{ described }}"{% endif %}
+           {% if field.slot == "gripper" and can_edit %}
+           hx-post="/config/devices/link/{{ field.arm }}"
+           hx-trigger="change"
+           hx-target="#{{ field.arm_id }}"
+           hx-swap="outerHTML"
+           hx-include="closest form"
+           {% endif %}
+           {% if not can_edit %}readonly{% endif %}>
+
+    {# The toggle opens all current choices while typing keeps datalist filtering.
+       Hide it without JavaScript; Down Arrow on the input provides the keyboard path
+       without another tab stop. #}
+    {% if can_edit %}
+      <button class="combo__toggle" type="button" tabindex="-1" hidden
+              aria-expanded="false"
+
+              aria-label="Show connected {{ field.kind_label }}s"
+              aria-controls="{{ field.list_id }}">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 9 L12 15 L18 9"></path>
+        </svg>
+      </button>
+    {% endif %}
+  </div>
+
+  {# Render datalists through device_choices.html so scan updates replace options
+     without replacing inputs. #}
+
+  {# Associate pairing and override guidance through aria-describedby. Keep explicit
+     camera selection editable; do not repeatedly interrupt with nonblocking live
+     alerts. #}
+  {# Reserve one message line to align empty and populated device cards without
+     announcing nonexistent content. #}
+  <div class="field__foot">
+  {% if field.link_state == "linked" %}
+    <span class="field__hint" id="{{ field.link_id }}">· linked to {{ field.linked }} — type another name to change it</span>
+  {% elif field.link_state == "overridden" %}
+    <span class="field__warn" id="{{ field.link_id }}">· not the linked camera ({{ field.linked }})</span>
+  {% endif %}
+
+  {# Distinguish blocking errors, accepted-value warnings and descriptive metadata. #}
+  {% if field.error %}
+    <span class="field__error" id="{{ field.error_id }}" {% if field.error.startswith('Pairing mismatch.') %}data-pairing-error{% endif %}>{{ field.error }}</span>
+  {% elif field.message %}
+    <span class="{{ {'error': 'field__error', 'warn': 'field__warn'}.get(field.message_state, 'field__hint') }}"
+          id="{{ field.message_id }}">
+      <span aria-hidden="true">
+        {% if field.message_state == "ok" %}
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+            <circle cx="12" cy="12" r="7"></circle>
+          </svg>
+        {% elif field.message_state == "warn" %}
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+            <path d="M12 4 L22 20 L2 20 Z"></path>
+          </svg>
+        {% elif field.message_state == "error" %}
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M6 6 L18 18"></path><path d="M18 6 L6 18"></path>
+          </svg>
+        {% endif %}
+      </span>
+      {% if field.resolved and field.resolved != field.value %}→ {{ field.resolved }} · {% endif %}{{ field.message }}
+    </span>
+  {% endif %}
+  </div>
+</div>

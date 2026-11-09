@@ -1,0 +1,41 @@
+{# Show an operator-facing action/time summary and a native details disclosure for
+   technical diagnostics. #}
+{% import "_partials/audit_status.html" as status %}
+
+{% macro crash_entry(crash, open=False) %}
+<div class="log-entry" id="error-{{ crash.id }}">
+  <div class="log-entry__head">
+    <span class="log-entry__time num">{{ crash.time }}</span>
+    <span>{{ crash.action }}</span>
+    <code>{{ crash.exc_type }}</code>
+    <span class="error-id">{{ crash.id }}</span>
+    <span class="log-entry__badge">
+      {%- if crash.source == "thread" -%}
+        {# Surface thread failures near the active job because they may leave its
+           status running. #}
+        {{ status.badge("warn", "Warning", "warn") }}
+      {%- else -%}
+        {{ status.badge("cross", "Error", "error") }}
+      {%- endif -%}
+    </span>
+  </div>
+
+  <details class="log-entry__more"{% if open %} open{% endif %}>
+    <summary>Traceback — {{ crash.line_count }} lines, for the engineer</summary>
+
+    {% if crash.method %}
+      <p class="muted"><code>{{ crash.method }} {{ crash.route }}</code></p>
+    {% endif %}
+
+    {# Show the final exception above the complete unmodified traceback. #}
+    <p class="crash-summary">{{ crash.exc_last_line }}</p>
+
+    {# Do not announce traceback lines as a live region; retain explicit navigation
+       to diagnostics. #}
+    <pre class="job-log crash-trace" tabindex="0" aria-live="off"
+         aria-label="Traceback for error {{ crash.id }}">{{ crash.traceback }}</pre>
+
+    <p><a class="btn" href="/log/errors/{{ crash.id }}.txt">Download traceback</a></p>
+  </details>
+</div>
+{% endmacro %}

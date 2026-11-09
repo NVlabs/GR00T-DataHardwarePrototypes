@@ -1,0 +1,11 @@
+{# Explain recording locks separately from ownership conflicts. Keep Stop and Force
+   stop available on the recording page. #}
+{% if recording_locked and active != "/record" %}
+  <div class="banner banner--warn" role="status">
+    <span class="banner__icon" aria-hidden="true">●</span>
+    <p>
+      A recording is in progress, so this page is read-only.
+      <a href="/record">Go to Record</a> to stop it.
+    </p>
+  </div>
+{% endif %}

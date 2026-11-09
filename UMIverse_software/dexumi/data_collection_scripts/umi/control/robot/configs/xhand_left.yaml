@@ -1,0 +1,117 @@
+# X Hand, LEFT: the robot hand the left DexUMI exoskeleton mirrors. The
+# tactile robot-action conversion builds its kinematics + tactile model from
+# this file; see xhand_right.yaml for the key documentation. Only the
+# model keys the conversion reads are kept here.
+#
+# URDF joint/frame names are left-specific (verified against xhand_left.urdf);
+# the underactuation coefficients are COPIED from the verified right-hand
+# model (xhand_right.yaml) — verify them on the physical left hand (see
+# the TODO(geometry) markers below) before trusting left-hand torque labels.
+simulation_only: false
+geometry_verified: true
+
+tactile_use_point: mean
+
+# ---------------------------------------------------------------------------
+# Hand description — see xhand_right.yaml for the full key documentation.
+# Joint/frame names swapped right_hand_* -> left_hand_* (URDF-verified).
+# ---------------------------------------------------------------------------
+kinematics:
+  urdf_path: umi/assets/urdf/xhand/xhand_left/urdf/xhand_left.urdf
+  fingers:
+    thumb:
+      actuated_joint_indices: [0, 1, 2]
+      actuated_joint_names:
+        - left_hand_thumb_mcp0_joint
+        - left_hand_thumb_mcp1_joint
+        - left_hand_thumb_pip_joint
+      fingertip_frame: left_hand_thumb_top_link
+    index:
+      actuated_joint_indices: [3, 4, 5]
+      actuated_joint_names:
+        - left_hand_index_mcp0_joint
+        - left_hand_index_mcp1_joint
+        - left_hand_index_pip_joint
+      fingertip_frame: left_hand_index_top_link
+      coupling:
+        coupled_joint_name: left_hand_index_dip_joint
+        driving_joint_name: left_hand_index_pip_joint
+        # TODO(geometry): coefficients copied from right; verify on left hardware.
+        coefficients: [1.5161, -1.3369, 0.9180, -0.0347]
+    mid:
+      actuated_joint_indices: [6, 7, 8]
+      actuated_joint_names:
+        - left_hand_mid_mcp0_joint
+        - left_hand_mid_mcp1_joint
+        - left_hand_mid_pip_joint
+      fingertip_frame: left_hand_mid_top_link
+      coupling:
+        coupled_joint_name: left_hand_mid_dip_joint
+        driving_joint_name: left_hand_mid_pip_joint
+        # TODO(geometry): coefficients copied from right; verify on left hardware.
+        coefficients: [0.6404, -1.1723, 1.6261, 0.0875]
+    ring:
+      actuated_joint_indices: [9, 10, 11]
+      actuated_joint_names:
+        - left_hand_ring_mcp0_joint
+        - left_hand_ring_mcp1_joint
+        - left_hand_ring_pip_joint
+      fingertip_frame: left_hand_ring_top_link
+      coupling:
+        coupled_joint_name: left_hand_ring_dip_joint
+        driving_joint_name: left_hand_ring_pip_joint
+        # TODO(geometry): coefficients copied from right; verify on left hardware.
+        coefficients: [1.5161, -1.3369, 0.9180, -0.0347]
+    pinky:
+      actuated_joint_indices: [12, 13, 14]
+      actuated_joint_names:
+        - left_hand_pinky_mcp0_joint
+        - left_hand_pinky_mcp1_joint
+        - left_hand_pinky_pip_joint
+      fingertip_frame: left_hand_pinky_top_link
+      coupling:
+        coupled_joint_name: left_hand_pinky_dip_joint
+        driving_joint_name: left_hand_pinky_pip_joint
+        # TODO(geometry): coefficients copied from right; verify on left hardware.
+        coefficients: [1.5114, -1.3585, 0.7957, -0.0342]
+  auxiliary_joints:
+    - actuated_joint_index: 15
+      urdf_joint_name: left_hand_ltspalm_joint
+      transmit_fingertip_torque: false
+
+# Tactile sensor description — see xhand_right.yaml for key documentation.
+tactile:
+  measurement_dim: 3
+  force_unit_scale: 0.001
+  # Polarity, hardware-recalibrated 2026-07-31 (the finger must YIELD IN the
+  # push direction on every axis; the reading is the force the fingertip
+  # applies to the environment). No channel inversion on the fingers.
+  axis_signs: [1, 1, 1]
+  normal_axis: z
+  # Hardware-verified 2026-07-30: the mounting is +90° about sensor z:
+  # tip_x = sensor_z (pad normal), tip_y = -sensor_y, tip_z = sensor_x.
+  R_fingertip_sensor:
+    - [0, 0, 1]
+    - [0, -1, 0]
+    - [1, 0, 0]
+  fingers:
+    thumb:
+      sensor_id: 33
+      # Left-thumb mounting: +90° about sensor z relative to the right
+      # hand's identity (tip_x = -sensor_y, tip_y = sensor_x,
+      # tip_z = sensor_z = normal) — roles hardware-verified.
+      # Polarity override, recalibrated 2026-07-31: both lateral channels
+      # inverted (unlike the fingers' block default).
+      axis_signs: [-1, -1, 1]
+      R_fingertip_sensor:
+        - [0, -1, 0]
+        - [1, 0, 0]
+        - [0, 0, 1]
+    index:
+      sensor_id: 34
+    mid:
+      sensor_id: 35
+    ring:
+      sensor_id: 36
+    pinky:
+      sensor_id: 37

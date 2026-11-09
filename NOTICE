@@ -1,0 +1,420 @@
+GR00T Hardware Designs - software notices
+
+These notices cover the software in this repository: the UMI and DexUMI
+data-collection software, the GEAR Neck control software, the UMI gripper
+firmware, the DexUMI hand monitor and the tools that install them. The
+hardware designs and documentation (websites and media) in this repository
+are licensed under CC BY 4.0 instead (see "Hardware designs and
+documentation" below); vendored website libraries keep their own LICENSE
+files beside them.
+
+Paths below are relative to the repository root. This attribution file does
+not replace the accompanying license texts or source-file notices. Files
+combining upstream code with NVIDIA modifications retain applicable original
+terms and notices. The two Record3D-derived iPhone adapters, including their
+NVIDIA adaptations, are distributed under LGPL-2.1-only as identified below.
+
+Software license scope
+----------------------
+The Apache License, Version 2.0 (SPDX: Apache-2.0), in LICENSE applies to the
+NVIDIA-owned software in this repository, except the LGPL-2.1-only adapters
+identified in "Record3D-derived iPhone camera adapters" below:
+
+  - UMIverse_software/umi/data_collection_scripts/ (UMI data-collection
+    software)
+  - UMIverse_software/dexumi/data_collection_scripts/ (DexUMI
+    data-collection software)
+  - GEAR_Neck/files/software/neck_control/ (GEAR Neck control software)
+  - GEAR_UMI/files/firmware/ (UMI gripper firmware source and its source ZIP,
+    and the firmware/ folder of the UMI gripper electronics ZIP)
+  - GEAR_DexUMI/files/software/dexumi-hand-monitor-v2.0.zip (DexUMI hand monitor)
+  - tools/data_collection/, tools/licenses.py,
+    tools/build_umi_electronics_zips.py, tools/github_export.py and the root
+    pyproject.toml and uv.lock that install the data-collection software
+
+It does not apply to the rest of the repository: hardware designs (CAD,
+drawings, print files, electronics), documentation websites, images, videos
+and other media are licensed under CC BY 4.0 instead (see below). Nor does
+it apply to
+GEAR_Neck/files/firmware/steadywin-gim-manual-v2.0.pdf, SteadyWin's GIM
+actuator manual, which is SteadyWin's document and is included unchanged for
+reference.
+
+Third-party material within the software keeps its own copyright, license
+and notices, as identified in this file, LICENSES/ and the files themselves.
+The X Hand URDFs in the DexUMI software are their vendor's material,
+licensed under the MIT License rather than LICENSE. The retained
+LICENSES/GEAR_UMI/UMI-MIT.txt is an earlier-source/release notice, not an
+alternative license for the current software.
+
+Hardware designs and documentation
+----------------------------------
+Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES.
+The NVIDIA hardware designs in GEAR_DexUMI/, GEAR_UMI/ and GEAR_Neck/ (CAD,
+drawings, print files and electronics, including the KiCad files in the UMI
+gripper electronics ZIP) and the documentation (the project websites,
+images, videos and other media) are licensed under the Creative Commons
+Attribution 4.0 International license (SPDX: CC-BY-4.0).
+License text: LICENSES/CC-BY-4.0.txt
+This does not cover the software listed above, the SteadyWin GIM manual,
+vendored website libraries, vendor product names, or NVIDIA trademarks and
+logos.
+
+NVIDIA UMI and DexUMI data-collection software
+---------------------------------------------
+Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+Files: NVIDIA-owned code under
+       UMIverse_software/umi/data_collection_scripts/ and
+       UMIverse_software/dexumi/data_collection_scripts/, and the
+       tools/data_collection/ launcher.
+License: Apache-2.0, except the LGPL-2.1-only adapters listed below
+License text: LICENSE
+Source: NVIDIA-internal UMI repository (not publicly accessible)
+The maintainer confirmed NVIDIA ownership of its UMI contributions. The
+two Record3D-derived adapters below are exceptions to the Apache-2.0 scope,
+including their NVIDIA adaptations. The episode-clipping implementation
+was adapted from revision
+f78c7f58054c966f8cfa1c2f66b107e3bdce58c5 of that repository's
+umi/common/data/episode_clip.py; comments and documentation have been updated
+for this release.
+The DexUMI station software comes from the same internal repository. Its
+NVIDIA headers do not supersede the third-party terms identified here.
+LICENSES/GEAR_UMI/UMI-MIT.txt preserves the earlier UMI source/release MIT
+notice for provenance and earlier distributions. It is not an alternative
+license for current NVIDIA-owned project material. Separately identified
+third-party portions below retain their original notices and terms.
+
+Record3D-derived iPhone camera adapters
+---------------------------------------
+Files: UMIverse_software/umi/data_collection_scripts/umi/common/hardware_sdk/camera/iphone_camera.py
+       UMIverse_software/dexumi/data_collection_scripts/umi/common/hardware_sdk/camera/iphone_camera.py
+Upstream project and author: Record3D, Marek Simonik
+NVIDIA adaptations: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES.
+License for both complete adapter files, including adaptations: LGPL-2.1-only
+License text: LICENSES/DexUMI/record3d-79e6f446/LICENSE
+Source and release guidance: LICENSES/Record3D/README.md
+Upstream example reference:
+https://github.com/marek-simonik/record3d/blob/79e6f44697150a4f036034af8fec903d11ac6f00/demo-main.py
+The adapters contain material matching this example and are treated
+conservatively as adaptations covered by LGPL-2.1-only. The reference is
+provided to identify that material; the original copy revision is unknown.
+The example carries no per-file copyright notice; its author is identified
+by the upstream package metadata. No upstream copyright year is inferred.
+
+NVIDIA adaptations present in the 2026 source release include integration
+with Camera/RGBDCameraFrame, UDID selection, capture timestamps, pose
+conversion, frame backlog handling, depth conversion, resolution/calibration
+handling and diagnostics. The DexUMI adapter also reports device identity.
+2026-11-05: corrected the licensing notices and documented these existing
+adaptations; executable camera code was not changed. Dates of the earlier
+adaptations are not established by this notice correction. Future changes
+must identify their modifications and dates in the affected files.
+
+Record3D remains a separately installed, replaceable Python package. This
+submission distributes adapter source, not the Record3D wheel or an installed
+environment. The existing uv dependency declarations and lock are retained;
+users download dependencies separately when installing. No third-party
+wheels, preinstalled environments, container images or frozen executables
+are included in this submission. Notices alone do not satisfy the additional
+obligations of any future binary distribution.
+
+NVIDIA GEAR Neck control software
+---------------------------------
+Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+Files: GEAR_Neck/files/software/neck_control/
+License: Apache-2.0
+License text: LICENSE
+Source: NVIDIA-internal g1_deploy repository (not publicly accessible)
+The GDK protocol, CAN id assignment and zeroing code are ported from that
+repository's neck CAN tools; the Neck interface is new. Its Python
+dependencies (python-can and the packages it requires) are installed
+separately; see "Python dependencies" below.
+
+htmx 2.0.10
+-----------
+Files: UMIverse_software/umi/data_collection_scripts/station_ui/static/htmx.min.js
+License: Zero-Clause BSD (0BSD)
+License text: LICENSES/GEAR_UMI/htmx-0BSD.txt
+Source: https://github.com/bigskysoftware/htmx/tree/v2.0.10
+
+pyopenxr Vive tracker example
+----------------------------
+Files: UMIverse_software/umi/data_collection_scripts/real_scripts/vive_server/vive_server.py (adapted example)
+Copyright 2021 Christopher Bruns
+License: Apache License, Version 2.0
+License text: LICENSES/GEAR_UMI/Apache-2.0.txt
+Upstream license notice: LICENSES/GEAR_UMI/pyopenxr.txt
+Source: https://github.com/cmbruns/pyopenxr
+The adaptation is identified in the source file's module documentation.
+
+X Hand (XHAND1 Pro-U) model (DexUMI software)
+---------------------------------------------
+Files: UMIverse_software/dexumi/data_collection_scripts/umi/assets/urdf/xhand/
+       (xhand_left and xhand_right: two URDF files; their STL meshes are not
+       included)
+Copyright 2026 Beijing Xingdongjiyuan Co. Ltd.
+License: MIT
+License text: LICENSES/DexUMI/XHAND-URDF-MIT.txt
+              UMIverse_software/dexumi/data_collection_scripts/umi/assets/urdf/xhand/LICENSE
+              (the same text, kept with the files)
+Origin: vendor-delivered URDF package v1.2 for the X Hand dexterous hand
+        (assemblies REOH-00R and REOH-00L V1.0), exported from SolidWorks
+        with sw_urdf_exporter and edited by the hand's vendor. The only local
+        change removes a trailing space from one mass value.
+The package was delivered without a license; the vendor later provided the
+MIT License above for these two URDF files, which themselves carry no license
+header. They are not NVIDIA material, and the project's Apache-2.0 license
+does not apply to them. The DexUMI software uses them for the hand kinematics
+of the tactile robot-action conversion (joint torques).
+
+UMI gripper firmware v2.0.0
+---------------------------
+Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+Files: GEAR_UMI/files/firmware/umi-encoder/ (RP2040 firmware source)
+       GEAR_UMI/files/firmware/umi-encoder-v2.0.0-source.zip (same source)
+       GEAR_UMI/files/electrical/UMI-Gripper-Rev2617-offline.zip (its
+       firmware/ folder; the KiCad files in that ZIP are under CC BY 4.0)
+License: Apache-2.0 for NVIDIA-owned portions
+License text: LICENSE
+Release tag: firmware-umi-encoder-v2.0.0
+Release-tag source commit: a4ded579b16d080cb708d2d675f0082f6ae5c9db
+Source: NVIDIA-internal UMI repository (not publicly accessible)
+Apart from comments, the firmware source matches that commit. Both ZIP files
+are built by tools/build_umi_electronics_zips.py and carry their own LICENSE,
+NOTICE and the license texts listed below. No firmware binary is distributed;
+users build umi-encoder.uf2 from source.
+
+Raspberry Pi Pico SDK import helper
+----------------------------------
+Files: GEAR_UMI/files/firmware/umi-encoder/pico_sdk_import.cmake
+Copyright 2020 (c) 2020 Raspberry Pi (Trading) Ltd.
+License: BSD-3-Clause
+License text: LICENSES/GEAR_UMI/RaspberryPi-BSD-3-Clause.txt
+Source: https://github.com/raspberrypi/pico-sdk
+The copyright notice, conditions and disclaimer are also retained in the file.
+
+Raspberry Pi Pico USB descriptors / MicroPython
+----------------------------------------------
+Files: GEAR_UMI/files/firmware/umi-encoder/usb_descriptors.c (adapted portions)
+Copyright (c) 2020 Raspberry Pi (Trading) Ltd.
+Copyright (c) 2019 Damien P. George
+License: MIT (the descriptor file's license, distinct from the import helper)
+License text: LICENSES/GEAR_UMI/Pico-stdio-usb-MIT.txt
+Source reference: https://github.com/raspberrypi/pico-sdk/blob/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb_descriptors.c
+The file was originally derived from MicroPython. Upstream notices are also
+retained in the adapted source.
+
+TinyUSB audio descriptors and microphone callbacks
+--------------------------------------------------
+Files: GEAR_UMI/files/firmware/umi-encoder/usb_descriptors.c (stereo audio descriptor)
+       GEAR_UMI/files/firmware/umi-encoder/usb_audio.c (adapted UAC2 control callbacks)
+Copyright (c) 2018, hathach (tinyusb.org)
+Copyright (c) 2019 Ha Thach (tinyusb.org)
+Copyright (c) 2020 Reinhard Panhuber
+License: MIT
+License text: LICENSES/GEAR_UMI/TinyUSB-MIT.txt
+Source references: https://github.com/hathach/tinyusb/blob/0.18.0/src/device/usbd.h
+                   https://github.com/hathach/tinyusb/blob/0.18.0/examples/device/audio_4_channel_mic/src/main.c
+The four-channel example/descriptor is adapted for this stereo microphone.
+The inspected reference version is not proof of the original copy revision.
+
+CRC-16 implementation
+---------------------
+Files: GEAR_UMI/files/firmware/umi-encoder/crc16.h
+Copyright 2001-2010 Georges Menie (www.menie.org)
+Copyright 2010-2012 Salvatore Sanfilippo (adapted to Redis coding style)
+License: BSD-3-Clause (the file-specific license)
+License text: LICENSES/GEAR_UMI/CRC16-BSD-3-Clause.txt
+Source reference: https://github.com/redis/redis/blob/7.2/src/crc16.c
+The table and function match this implementation after formatting and local
+header/static changes. The original copy route is unverified; its upstream
+notice is preserved. This is not a claim about Redis's top-level license.
+
+OpenPDM2PCM / OpenPDMFilter
+-------------------------
+Files: GEAR_UMI/files/firmware/umi-encoder/OpenPDM2PCM/OpenPDMFilter.c
+       GEAR_UMI/files/firmware/umi-encoder/OpenPDM2PCM/OpenPDMFilter.h
+Copyright (c) 2018 STMicroelectronics
+License: Apache License, Version 2.0
+License text: LICENSES/GEAR_UMI/Apache-2.0.txt
+The original copyright and license headers are retained in these files.
+The files also identify local formatting/header changes and the C file's
+floating-point literal changes. Upstream reference:
+https://github.com/ArmDeveloperEcosystem/microphone-library-for-pico/tree/main/src/OpenPDM2PCM
+
+Components linked into a built firmware binary
+----------------------------------------------
+Building the firmware links code that is not in this repository. Anyone who
+distributes a built UF2 or ELF must include the notices of the components it
+contains, for the SDK and toolchain versions used. The earlier published
+v2.0.0 binary (built with Pico SDK 2.2.0 and GCC 13.2.1 20231009) contained
+the components below; their texts are retained for such distributions.
+
+Pico SDK runtime
+  Raspberry Pi RP2040 hardware support, startup, synchronization, USB stdio,
+  memory and arithmetic support, among other SDK modules.
+  License: BSD-3-Clause for the identified Raspberry Pi SDK code; the
+  separately licensed printf implementation is listed below.
+  License text: LICENSES/GEAR_UMI/RaspberryPi-BSD-3-Clause.txt
+  Reference: https://github.com/raspberrypi/pico-sdk/tree/2.2.0
+
+TinyUSB device stack
+  RP2040 USB controller, device stack, audio, CDC and vendor classes, and
+  FIFO support. The SDK 2.2.0 reference points to TinyUSB commit
+  86ad6e56c1700e85f1c5678607a762cfe3aa2f47.
+  License: MIT
+  License text: LICENSES/GEAR_UMI/TinyUSB-MIT.txt
+  File-specific copyright and permission notices:
+    LICENSES/GEAR_UMI/TinyUSB-firmware-linked-notices.txt
+  These preserve the additional authors named in the referenced stack files,
+  including Raspberry Pi, Ha Thach, Reinhard Panhuber, Jerzy Kasenberg and
+  HiFiPhile. They supplement the adapted-example notices above.
+  Reference: https://github.com/hathach/tinyusb/tree/86ad6e56c1700e85f1c5678607a762cfe3aa2f47
+
+Pico printf / Marco Paland printf
+  src/rp2_common/pico_printf/printf.c
+  Copyright (c) 2014 Marco Paland
+  License: MIT
+  License text: LICENSES/GEAR_UMI/PicoPrintf-MIT.txt
+  Reference: https://github.com/raspberrypi/pico-sdk/tree/2.2.0/src/rp2_common/pico_printf
+
+Newlib C runtime
+  Newlib 4.4.0.20231231: allocation, reentrancy, stdio, initialization/
+  termination and ARM strlen. Newlib carries file-specific terms; its
+  complete upstream license compilation is retained together with notices
+  from the identified source files.
+  License texts and notices:
+    LICENSES/GEAR_UMI/Newlib-4.4.0.20231231-COPYING.NEWLIB.txt
+    LICENSES/GEAR_UMI/Newlib-4.4.0.20231231-linked-notices.txt
+  The upstream compilation covers multiple Newlib targets and components;
+  it is not a statement that every listed target is present in a binary.
+  Source release: https://sourceware.org/pub/newlib/newlib-4.4.0.20231231.tar.gz
+
+GCC ARM runtime / libgcc
+  libgcc/config/arm/lib1funcs.S. The GCC 13.2 source header identifies
+  GPL-3.0-or-later with the GCC Runtime Library Exception, version 3.1.
+  License and exception texts, with the preserved source notice:
+    LICENSES/GEAR_UMI/GCC-GPL-3.0.txt
+    LICENSES/GEAR_UMI/GCC-Runtime-Library-Exception-3.1.txt
+    LICENSES/GEAR_UMI/GCC-libgcc-ARM-notice.txt
+  Reference license/header source: GCC releases/gcc-13.2.0.
+  https://github.com/gcc-mirror/gcc/tree/releases/gcc-13.2.0
+
+The guide's current build instructions use Arm GNU Toolchain 14.2.Rel1, whose
+Newlib and libgcc versions differ from those above; record the notices of the
+toolchain actually used. The host-side picotool is obtained separately and is
+not code flashed into the gripper firmware.
+
+DexUMI Hand Monitor and pySerial 3.5
+-----------------------------------
+Archive: GEAR_DexUMI/files/software/dexumi-hand-monitor-v2.0.zip
+NVIDIA-owned monitor/launcher portions use Apache-2.0.
+Bundled dependency: pySerial 3.5, BSD-3-Clause
+Copyright (c) 2001-2020 Chris Liechti
+Complete publisher license: LICENSES/DexUMI/pyserial-3.5/LICENSE.txt
+Archive copy: dexumi-hand-monitor-v2.0/vendor/NOTICE-pyserial.txt
+The ZIP includes its Apache project LICENSE and component NOTICE; original
+per-file upstream notices are retained unchanged.
+Source: https://github.com/pyserial/pyserial/tree/v3.5
+The monitor additionally asks Windows users to install windows-curses. Its
+version is unpinned and it is not bundled here. Publisher metadata identifies
+PSF2 and describes its PDCurses basis; record the actual installed version
+and applicable notices if distributing a Windows environment or binary.
+https://pypi.org/project/windows-curses/
+
+Python dependencies (installed separately)
+-----------------------------------------
+uv.lock, at the repository root, pins the third-party Python packages of the
+uv workspace that installs the UMI and DexUMI data-collection software and
+the GEAR Neck control software into one environment: 134 package/version
+entries, including dependency groups, transitive dependencies and
+platform-specific alternatives. They are
+downloaded by `uv sync`; none of them is distributed in this repository.
+
+LICENSES/python-dependencies.md lists every pinned package with the license
+its publisher declares, which project uses it, and links to retained license
+texts. It is generated from uv.lock by `python3 tools/licenses.py deps`.
+Retained license and notice texts for the packages first added by the DexUMI
+software are in LICENSES/DexUMI/, with source and hash records in
+LICENSES/DexUMI/dependencies.json.
+
+Package metadata does not describe native libraries bundled in wheels. In
+particular:
+
+  PyAV (av) 19.0.2
+    PyAV source: BSD-3-Clause. The inspected locked Linux x86_64 wheel also
+    bundles FFmpeg, x264 and x265. FFmpeg's upstream license identifies these
+    codec libraries as GPL components; the complete wheel must not be treated
+    as BSD-only or LGPL-only based on Python metadata or runtime strings.
+    The wheel builder patches FFmpeg's codec license classification (see the
+    patch below). Binary redistribution requires review of the actual
+    component terms.
+    https://github.com/FFmpeg/FFmpeg/blob/n9.0.2/LICENSE.md
+    https://github.com/PyAV-Org/pyav-ffmpeg/blob/9.0.2-1/patches/ffmpeg.patch
+
+  torch 2.14.1 / 2.14.1+cpu
+    Main project: BSD-3-Clause. The release metadata's combined expression is
+    Apache-2.0 AND Apache-2.0 WITH LLVM-exception AND BSD-2-Clause AND
+    BSD-3-Clause AND BSL-1.0 AND MIT. Preserve the package's component licenses.
+    https://github.com/pytorch/pytorch/blob/v2.14.1/LICENSE
+
+  torchcodec 0.17.0 / 0.17.0+cpu
+    Main project: BSD-3-Clause. The locked wheels also include license texts
+    for dav1d, libavif, libjpeg-turbo, libpng, libwebp, libyuv and zlib in
+    their dist-info/licenses/third_party directory. FFmpeg is installed
+    separately and its terms depend on its build.
+    https://github.com/meta-pytorch/torchcodec/blob/v0.17.0/LICENSE
+
+  python-can 4.6.1
+    LGPL-3.0-only, as declared in release metadata and its LICENSE.txt. The
+    GEAR Neck control software imports it as an unmodified library; it is
+    installed by `uv sync` and not distributed here. An environment or image
+    that includes it must carry its license text and meet the LGPL-3.0 terms.
+    https://github.com/hardbyte/python-can/blob/v4.6.1/LICENSE.txt
+
+  record3d 1.4.1
+    LGPL-2.1, as declared in release metadata and its LICENSE. The retained
+    texts in LICENSES/DexUMI/record3d-79e6f446/ come from the matching source
+    tree; the PyPI wheel's LICENSE is byte-identical. Native components such
+    as libusbmuxd, libplist and lzfse retain their own notices.
+
+  opencv-python 4.13.0.92
+    OpenCV: Apache-2.0; packaging scripts: MIT. Wheels also contain native
+    libraries with separate terms, including FFmpeg and (non-headless Linux
+    builds) Qt. Preserve and review LICENSE-3RD-PARTY.txt in the actual wheel.
+    https://github.com/opencv/opencv-python#licensing
+
+  pin 3.7.0 (Pinocchio), eigenpy 3.10.3 and cmeel 0.59.0: BSD-2-Clause;
+    coal 3.0.1: BSD-3-Clause. The cmeel-* packages bundle native libraries:
+    Assimp (BSD-3-Clause, with separate component notices), Boost (BSL-1.0),
+    console_bridge (source carries BSD-3-Clause; metadata says Zlib),
+    OctoMap (BSD-3-Clause), Qhull (Qhull license), TinyXML-2 and zlib (Zlib)
+    and urdfdom (BSD-3-Clause).
+  certifi: MPL-2.0; tqdm: MPL-2.0 AND MIT; typing-extensions: PSF-2.0. Each
+    package's own license gives its full terms.
+
+The retired DexUMI hand simulation used absl-py 2.4.0, etils 1.14.0,
+glfw 2.10.0, mujoco 3.3.5, PyOpenGL 3.1.0 and python-xlib 0.33. These
+packages are no longer installed by the workspace. Their license and source
+records remain in LICENSES/DexUMI/ for reference.
+
+Optional packages, system libraries and build tools
+---------------------------------------------------
+The separate Vive host documentation specifies pyopenxr 1.1.5001 (Apache-2.0),
+glfw 2.10.0 (MIT Python wrapper; native GLFW has zlib/libpng terms), and PyOpenGL
+3.1.10 (BSD main terms with additional component notices). The complete
+PyOpenGL license must be retained if that package is redistributed. These
+packages and their external environment are not locked by uv.lock.
+Sources: https://pypi.org/project/pyopenxr/1.1.5001/
+         https://pypi.org/project/glfw/2.10.0/
+         https://pypi.org/project/PyOpenGL/3.1.10/
+
+System FFmpeg (also used by the recorders), v4l2-ctl, Python, device drivers,
+SteamVR, the Pico SDK, TinyUSB, the ARM toolchain and other system/build
+dependencies retain their own distribution-specific terms. SteamVR is subject
+to Valve's applicable terms. The Record3D iPhone app used by the DexUMI and
+UMI recorders is a separate commercial app under its own terms. hatchling is
+an unpinned MIT build backend declared in the projects' pyproject.toml files;
+uv is a separate install tool. These environments are not fully specified by
+uv.lock, so an installed image or a built firmware binary needs its own
+artifact inventory and preservation of required notices/source obligations.

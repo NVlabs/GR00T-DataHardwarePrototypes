@@ -1,0 +1,26 @@
+<details class="recording-checks card" id="recording-checks">
+  <summary>Recording checks <span class="recording-checks__count muted" id="recording-check-count" aria-live="polite">{% if draft.relaxed_checks %}{{ recording_checks|length - draft.relaxed_checks|length }} enforced · {{ draft.relaxed_checks|length }} warn only{% else %}all {{ recording_checks|length }} enforced{% endif %}</span></summary>
+  <p class="muted">By default, failed checks block recording or reject the saved episode. Uncheck a check to make it <strong>warn only</strong>: it still runs but allows recording and saving.</p>
+  <p class="field__warn"><strong>Warning:</strong> Disabling recording checks can allow missing or invalid data that prevents LeRobot conversion, even when recording and alignment succeed. Keep all checks enforced for recordings intended for LeRobot.</p>
+  <input type="hidden" name="{{ recording_checks_marker }}" value="1">
+  <div class="row">
+    <button class="btn" type="button" data-recording-checks-all="true"{% if not can_edit or recording_locked %} disabled{% endif %}>Enforce all</button>
+    <button class="btn" type="button" data-recording-checks-all="false"{% if not can_edit or recording_locked %} disabled{% endif %}>Warn only for all</button>
+  </div>
+  <div class="recording-checks__groups">
+    {% for stage, title, hint in [('pre', 'Before recording starts', 'A warn-only check no longer blocks the Start press.'), ('data', 'After saving (data check)', 'A warn-only check no longer fails the saved episode.')] %}
+    <div class="recording-checks__group">
+      <h3>{{ title }}</h3>
+      <p class="muted">{{ hint }}</p>
+      {% for check in recording_checks if check.stage == stage %}
+      <label class="recording-checks__row">
+        <input type="checkbox" name="enforce.{{ check.id }}" value="1" data-recording-check{% if check.id not in draft.relaxed_checks %} checked{% endif %}{% if not can_edit or recording_locked %} disabled{% endif %}>
+        <span>
+          <strong>{{ check.title }}</strong><small class="muted">{{ check.detail }}</small>
+        </span>
+      </label>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+</details>

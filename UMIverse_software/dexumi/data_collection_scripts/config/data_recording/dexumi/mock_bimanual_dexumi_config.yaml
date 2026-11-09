@@ -1,0 +1,163 @@
+# Hardware-free bimanual flow test using mock cameras and exoskeletons.
+# Record with launch.sh record and save with w, then run launch.sh align on
+# the session because background alignment is disabled.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Meta
+meta:
+  operator_name: mock_operator
+  # Obviously-disposable task name so flow-test artifacts are easy to find and
+  # delete afterwards.
+  task_name: mock_bimanual_dexumi_flow_test
+  task_description: Mock no-hardware BIMANUAL flow test (record / align / convert / compliance)
+  embodiment: bimanual_dexumi
+  use_head_mount: false
+
+# General recording settings — as the real bimanual config.
+recording:
+  data_dir: "local_data/recordings/mock_bimanual_dexumi_flow_test"
+  record_fps: 45
+  stream_fps: 60
+  verbose: false
+  video_encoder: ffmpeg_h264
+  video_frame_type: RGBCameraFrame
+  # The mock is a schema contract: never continue with a partial camera/hand
+  # set if one logical source fails to construct.
+  require_all_sources: true
+
+# Mock tracking cameras emit poses. All four cameras emit intrinsics to
+# match the bimanual recording schema.
+
+
+
+
+video_sources:
+  - type: mock_camera
+    name: right_tracking_camera
+    frame_type: RGBCameraFrame
+    record_fps: 45
+    stream_fps: 60
+    latency: 0.1
+    params:
+      frame_pattern: solid
+      camera_resolution: [640, 400]
+      fps: 45
+      enable_pose: true
+      enable_intrinsics: true
+
+  - type: mock_camera
+    name: left_tracking_camera
+    frame_type: RGBCameraFrame
+    record_fps: 45
+    stream_fps: 60
+    latency: 0.1
+    params:
+      frame_pattern: gradient
+      camera_resolution: [640, 400]
+      fps: 45
+      enable_pose: true
+      enable_intrinsics: true
+
+  - type: mock_camera
+    name: right_umi_camera
+    frame_type: RGBCameraFrame
+    record_fps: 45
+    stream_fps: 60
+    latency: 0.05
+    params:
+      frame_pattern: gradient
+      camera_resolution: [640, 400]
+      fps: 45
+      enable_intrinsics: true
+
+  - type: mock_camera
+    name: left_umi_camera
+    frame_type: RGBCameraFrame
+    record_fps: 45
+    stream_fps: 60
+    latency: 0.05
+    params:
+      frame_pattern: checkerboard
+      camera_resolution: [640, 400]
+      fps: 45
+      enable_intrinsics: true
+
+# Use real encoder/tactile frame schemas with synthetic values and no UART.
+# Each side's design template supplies conversion and bundling parameters;
+# measured zeros and a physical board ID are not needed for mocks.
+
+
+
+
+
+
+
+numeric_sources:
+  - type: mock_dexumi_exoskeleton
+    name: right_dexumi_exoskeleton
+    record_fps: 45
+    stream_fps: 60
+    latency: 0.034
+    params:
+      config_file: "config/dexumi_exoskeleton/templates/DEXUMI-Right.template.yaml"
+
+  - type: mock_dexumi_exoskeleton
+    name: left_dexumi_exoskeleton
+    record_fps: 45
+    stream_fps: 60
+    latency: 0.034
+    params:
+      config_file: "config/dexumi_exoskeleton/templates/DEXUMI-Left.template.yaml"
+
+# Align offline with align_data.py to select the output directory explicitly.
+# Background alignment otherwise writes a sibling <session>_aligned folder.
+
+
+
+alignment:
+  enabled: false
+  index_sources: "right_umi_camera,left_umi_camera"
+  downsample: 1
+  copy_videos: true
+  aligned_dir: null
+  align_timeout: 300
+
+# Visualization settings — renders the four synthetic panels in the dashboard.
+visualization:
+  enabled: true
+  dashboard: true    # Camera mosaic + separate tactile hand tables
+  resizable: true     # Drag the OpenCV window edges to resize the preview
+  window_width: 1800  # Initial size; live resizing re-renders the dashboard text
+  window_height: 1100
+  fps: 30
+  window_name: "MOCK Bimanual DexUMI Recording"
+  show_fps: true
+  show_episode_id: true
+  layout: bimanual  # Same camera positions as the hardware collection window
+  overlay_numeric: true
+  overlay_position: [10, 60]
+  text_scale: 0.5
+  tactile_components: [fz]  # Preview axes; use [fx, fy, fz] for all three
+  tactile_text_scale: 1.0   # Table font scale; independent of text_scale
+  values_per_line: 8
