@@ -29,7 +29,7 @@ Each project has a documentation website at [https://research.nvidia.com/labs/ge
 
 ## News
 
-- **[2026-11-XX]** Initial public release: GEAR DexUMI, GEAR UMI, and GEAR Neck hardware documentation, design files, and the UMI and DexUMI data collection software.
+- **[2026-11-09]** Initial public release of GEAR DexUMI, GEAR UMI, and GEAR Neck: data collection and control software here, with hardware designs, bills of materials, and assembly guides on the [project website](https://research.nvidia.com/labs/gear/hardware-prototypes/).
 
 ## Table of Contents
 
@@ -217,7 +217,8 @@ link to the license, and say whether you made changes.
 
 Third-party material is not covered by CC BY 4.0. The SteadyWin GIM manual in
 `GEAR_Neck/files/firmware/` is SteadyWin's document, included unchanged for
-reference. Vendor product names, and NVIDIA trademarks and logos, are not
+reference. Vendor product photos (such as some bill-of-materials preview
+images), vendor product names, and NVIDIA trademarks and logos are not
 licensed. Vendored website libraries, on the project website, retain their original MIT licenses:
 
 - `GEAR_DexUMI/vendor/three/` — Three.js, MIT: [license](https://research.nvidia.com/labs/gear/hardware-prototypes/GEAR_DexUMI/vendor/three/LICENSE).

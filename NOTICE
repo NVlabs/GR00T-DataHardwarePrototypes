@@ -57,8 +57,9 @@ images, videos and other media) are licensed under the Creative Commons
 Attribution 4.0 International license (SPDX: CC-BY-4.0).
 License text: LICENSES/CC-BY-4.0.txt
 This does not cover the software listed above, the SteadyWin GIM manual,
-vendored website libraries, vendor product names, or NVIDIA trademarks and
-logos.
+vendored website libraries, vendor product photos (such as some
+bill-of-materials preview images), vendor product names, or NVIDIA
+trademarks and logos.
 
 NVIDIA UMI and DexUMI data-collection software
 ---------------------------------------------
@@ -150,22 +151,24 @@ The adaptation is identified in the source file's module documentation.
 X Hand (XHAND1 Pro-U) model (DexUMI software)
 ---------------------------------------------
 Files: UMIverse_software/dexumi/data_collection_scripts/umi/assets/urdf/xhand/
-       (xhand_left and xhand_right: two URDF files; their STL meshes are not
-       included)
+       (xhand_left and xhand_right: the two URDF files only; the package's
+       STL meshes, CAD CSV metadata, ROS package files and documentation are
+       not included)
 Copyright 2026 Beijing Xingdongjiyuan Co. Ltd.
 License: MIT
 License text: LICENSES/DexUMI/XHAND-URDF-MIT.txt
               UMIverse_software/dexumi/data_collection_scripts/umi/assets/urdf/xhand/LICENSE
               (the same text, kept with the files)
-Origin: vendor-delivered URDF package v1.2 for the X Hand dexterous hand
-        (assemblies REOH-00R and REOH-00L V1.0), exported from SolidWorks
-        with sw_urdf_exporter and edited by the hand's vendor. The only local
-        change removes a trailing space from one mass value.
-The package was delivered without a license; the vendor later provided the
-MIT License above for these two URDF files, which themselves carry no license
-header. They are not NVIDIA material, and the project's Apache-2.0 license
-does not apply to them. The DexUMI software uses them for the hand kinematics
-of the tactile robot-action conversion (joint torques).
+Origin: the vendor's MIT-licensed XHAND1 Pro-U URDF package V1.2 for the
+        X Hand dexterous hand (assemblies REOH-00R and REOH-00L V1.0),
+        exported from SolidWorks with sw_urdf_exporter and edited by the
+        hand's vendor. The only local change removes a trailing space from
+        one mass value (the mid_pip link), which URDF parsers such as
+        Pinocchio's reject.
+Each URDF carries the vendor's SPDX copyright and license header. They are
+not NVIDIA material, and the project's Apache-2.0 license does not apply to
+them. The DexUMI software uses them for the hand kinematics of the tactile
+robot-action conversion (joint torques).
 
 UMI gripper firmware v2.0.0
 ---------------------------
